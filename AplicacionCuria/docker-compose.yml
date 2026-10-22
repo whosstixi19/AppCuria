@@ -1,0 +1,63 @@
+version: '3.8'
+
+volumes:
+  postgres_curia:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: c:/Users/jorge/datapng
+
+
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    container_name: basededato
+    hostname: basededato
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: curia
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_curia:/var/lib/postgresql/data
+    networks:
+      - datalogger_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - datalogger_net
+
+  curia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=uni
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      
+    ports:
+      - "8080:8080"
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - datalogger_net
+
+
+networks:
+  datalogger_net:
+    driver: bridge

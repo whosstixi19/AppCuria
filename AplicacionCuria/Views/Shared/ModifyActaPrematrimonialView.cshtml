@@ -1,0 +1,269 @@
+﻿@model AplicacionCuria.Models.ActaPreMatrimonial
+
+
+
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary" href="/Home/MatrimoniosView#acta">
+        <i class="fas fa-arrow-left me-1"></i> <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Modificar acta Prematrimonial</h1>
+</div>
+
+<div class="tab-pane fade show active" id="acta" role="tabpanel" aria-labelledby="acta-prematrimonial-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+        <div class="col-md-6">
+            <form id="formEditarActa" method="post" action="/ActaPrematrimonial/Edit">
+                <input type="hidden" name="id" value="@Model.id" />
+                <h2>Acta Pre Matrimonial</h2>
+                <div class="row">
+                    <!-- Columna para datos del Novio -->
+                    <div class="col-md-6">
+
+                        <h5>Datos del Novio</h5>
+                        <div class="mb-3">
+                            @*                         <label for="NombreNovio">Nombre del Novio:</label>
+                            *@
+                            <input type="text" id="NombreNovio" name="nombrenovio" class="form-control" placeholder="Nombre del Novio" value="@Model.nombrenovio" required />
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
+                            *@
+                            <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo del Novio" value="@Model.lugarbautizonovio" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="PadreNovio">Padre del Novio:</label>
+                            *@
+                            <input type="text" id="nombrepadrenovio" placeholder="Padre del Novio" name="nombrepadrenovio" class="form-control" value="@Model.nombrepadrenovio" />
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="MadreNovio">:</label>
+                            *@
+                            <input type="text" id="nombremadrenovio" name="nombremadrenovio" placeholder="Madre del Novio" class="form-control" value="@Model.nombremadrenovio" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaNacimientoNovio">Fecha de Nacimiento del Novio:</label>
+                            <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control" value="@Model.fechanacimientonovio.ToString("yyyy-MM-dd")"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaBautizoNovio">Fecha de Bautizo del Novio:</label>
+                            <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control" value="@Model.fechabautizonovio.ToString("yyyy-MM-dd")"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Datos de la Novia</h4>
+                        <div class="mb-3">
+                            @*                         <label for="NombreNovia">Nombre de la Novia:</label>
+                            *@                        
+                            <input type="text" id="NombreNovia" name="nombrenovia" class="form-control" placeholder="Nombre de la Novia" required value="@Model.nombrenovia"/>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="LugarBautizoNovia">Lugar de Bautizo de la Novia:</label>
+                            *@
+                            <input type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo de la Novia" name="lugarbautizonovia" class="form-control" value="@Model.lugarbautizonovia"/>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="PadreNovia">Padre de la Novia:</label>
+                            *@
+
+                            <input type="text" id="nombrepadrenovia" placeholder="Padre de la Novia" name="nombrepadrenovia" class="form-control" value="@Model.nombrepadrenovia" />
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="MadreNovia">Madre de la Novia:</label>
+                            *@
+                            <input type="text" id="nombremadrenovia" placeholder="Madre de la Novia" name="nombremadrenovia" class="form-control" value="@Model.nombremadrenovia"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaNacimientoNovia">Fecha de Nacimiento de la Novia:</label>
+                            <input type="date" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control" value="@Model.fechanacimientonovia.ToString("yyyy-MM-dd")"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaBautizoNovia">Fecha de Bautizo de la Novia:</label>
+                            <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control" value="@Model.fechabautizonovia.ToString("yyyy-MM-dd")"/>
+                        </div>
+                    </div>
+                    <h5>Información del Matrimonio</h5>
+                    <div class="mb-3">
+                        <label for="FechaMatrimonio">Fecha del Matrimonio:</label>
+                        <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control" required value="@Model.fechamatrimonio.ToString("yyyy-MM-dd")" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Ministro">Ministro:</label>
+                        <select id="Ministro" name="ministro_id" class="form-control" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Iglesia">Iglesia:</label>
+                        <select id="Iglesia" name="iglesia_id" class="form-control" required></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="testigo1">Testigo 1:</label>
+                        <input type="text" id="testigo1" name="testigo1" class="form-control" value="@Model.testigo1"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testigo2">Testigo 2:</label>
+                        <input type="text" id="testigo2" name="testigo2" class="form-control" value="@Model.testigo2"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testigo3">Testigo 3:</label>
+                        <input type="text" id="testigo3" name="testigo3" class="form-control" value="@Model.testigo3"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testigo4">Testigo 4:</label>
+                        <input type="text" id="testigo4" name="testigo4" class="form-control" value="@Model.testigo4"/>
+                    </div>
+
+                    <input type="hidden" id="cursillo_id" name="cursillo_id" value="@Model.cursillo_id" />
+                    <div class="mb-3">
+                        <h4>Modificar Cursillo Asociado</h4>
+                        <input type="text" class="form-control mb-2" id="busquedaCursilloEdit" placeholder="Buscar cursillo...">
+                        <div id="mensajeErrorCursilloEdit" class="text-danger mb-2" style="display: none;"></div>
+                        <button type="button" class="btn btn-primary" onclick="buscarCursillosEdit()">Buscar</button>
+                        <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCursilloActaEdit()">Limpiar</button>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Novio</th>
+                                    <th>Novia</th>
+                                    <th>Fecha</th>
+                                    <th>Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaCursillosEdit">
+                                <!-- Se llenará con JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @* <div class="mb-3">
+                    <label for="LugarMatrimonio">Lugar del Matrimonio:</label>
+                    <input type="text" id="LugarMatrimonio" name="lugarmatrimonio" class="form-control" />
+                    </div> *@
+                    @* <div class="mb-3">
+                    <label for="Celebrante">Celebrante del Matrimonio:</label>
+                    <input type="text" id="Celebrante" name="Celebrante" class="form-control" />
+                    </div> *@
+
+                    <h4>Registro Civil</h4>
+                    <div class="mb-3">
+                        <label for="FechaRegistroCivil">Fecha del Registro Civil:</label>
+                        <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control" value="@Model.fecharegistrocivil.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="LugarRegistroCivil">Lugar del Registro Civil:</label>
+                        <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control" value="@Model.lugarregistrocivil"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Acta del Registro Civil:</label>
+                        <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control" value="@Model.numeroactaregistrocivil"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Página del Registro Civil:</label>
+                        <input type="text" id="NumeroActaRegistroCivil" name="numeropaginaregistrocivil" class="form-control"value="@Model.numeropaginaregistrocivil"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Tomo del Registro Civil:</label>
+                        <input type="text" id="NumeroActaRegistroCivil" name="numertomoregistrocivil" class="form-control"value="@Model.numertomoregistrocivil" />
+                    </div>
+                    
+
+                    <h4>Registro Eclesiástico</h4>
+                    <div class="mb-3">
+                        <label for="Tomo">Tomo:</label>
+                        <input type="text" id="Tomo" name="tomo" class="form-control" value="@Model.tomo"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Pagina">Página:</label>
+                        <input type="text" id="Pagina" name="pagina" class="form-control" value="@Model.pagina"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Acta">Número de Acta:</label>
+                        <input type="text" id="Acta" name="acta" class="form-control" value="@Model.acta"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaRegistroParroquial">Fecha de Registro:</label>
+                        <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control" value="@Model.fecharegistro.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Observaciones">Observaciones:</label>
+                        <input type="text" id="Observaciones" name="observaciones" class="form-control" value="@Model.observaciones"/>
+                    </div>
+                    
+                </div>
+
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <div id="mensajeNotificacion" class="alert mt-3" style="display:none;"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+    const ministerioSelect = document.getElementById("Ministro");
+    const iglesiaSelect = document.getElementById("Iglesia");
+
+    const idMinistroActual = @Model.ministro_id;
+    const idIglesiaActual = @Model.iglesia_id;
+
+    try {
+        const resMin = await fetch("/ActasAntiguas/GetMinistros");
+        const ministros = await resMin.json();
+        ministerioSelect.innerHTML = ministros.map(m =>
+            `<option value="${m.id}" ${m.id === idMinistroActual ? 'selected' : ''}>${m.nombre}</option>`
+        ).join('');
+
+        const resIglesia = await fetch("/ActasAntiguas/GetIglesias");
+        const iglesias = await resIglesia.json();
+        iglesiaSelect.innerHTML = iglesias.map(i =>
+            `<option value="${i.id}" ${i.id === idIglesiaActual ? 'selected' : ''}>${i.nombre}</option>`
+        ).join('');
+    } catch (err) {
+        const mensaje = document.getElementById("mensajeNotificacion");
+        mensaje.className = "alert alert-danger mt-3";
+        mensaje.textContent = "Error al cargar ministros o iglesias.";
+        mensaje.style.display = "block";
+        return;
+    }
+
+    // Captura y envía el formulario manualmente con fetch
+    const form = document.querySelector('#formEditarActa');
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const mensaje = document.getElementById("mensajeNotificacion");
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                mensaje.classList.remove("alert-success", "alert-danger");
+
+                if (result.success) {
+                    mensaje.classList.add("alert", "alert-success");
+                    mensaje.textContent = result.message || "Actualización exitosa.";
+                    mensaje.style.display = "block";
+
+                    setTimeout(() => {
+                        window.location.href = '/Home/MatrimoniosView#acta';
+                    }, 3000);
+                } else {
+                    mensaje.classList.add("alert", "alert-danger");
+                    mensaje.textContent = result.message || "Error al actualizar.";
+                    mensaje.style.display = "block";
+                }
+            } catch (error) {
+                mensaje.classList.add("alert", "alert-danger");
+                mensaje.textContent = "Error inesperado al conectar con el servidor.";
+                mensaje.style.display = "block";
+            }
+        });
+});
+</script>
+

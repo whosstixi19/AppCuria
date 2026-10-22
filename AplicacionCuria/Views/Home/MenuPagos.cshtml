@@ -1,0 +1,278 @@
+@{
+    ViewData["Title"] = "Menú de Pagos";
+    Layout = "_Layout";
+}
+
+<h2>Menú de Pagos</h2>
+
+<ul class="nav nav-tabs" id="formTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="nuevo-pago-tab" data-bs-toggle="tab" data-bs-target="#nuevo-pago" type="button" role="tab" aria-controls="nuevo-pago" aria-selected="true">
+            Nuevo Pago
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ver-pagos-tab" data-bs-toggle="tab" data-bs-target="#ver-pagos" type="button" role="tab" aria-controls="ver-pagos" aria-selected="false">
+            Ver Pagos
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="formTabsContent">
+    <div class="tab-pane fade show active" id="nuevo-pago" role="tabpanel" aria-labelledby="nuevo-pago-tab">
+        <div class="row">
+            <!-- Formulario lado izquierdo -->
+            <div class="col-md-6">
+                <form id="nuevoPagoForm" method="post" action="/Pagos/Create">
+                    <!-- Nombres -->
+                    <div class="mb-3">
+                        <label for="nombres" class="form-label">Nombres</label>
+                        <input type="text" class="form-control" id="nombres" name="Nombres" required>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="mb-3">
+                        <label for="apellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidos" name="Apellidos" required>
+                    </div>
+
+                    <!-- Cédula -->
+                    <div class="mb-3">
+                        <label for="cedula" class="form-label">Cédula</label>
+                        <input type="text" class="form-control" id="cedula" name="Cedula" required>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" name="Telefono" required>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="Direccion" required>
+                    </div>
+
+                    <!-- Tipo de Servicio (tipo_pago) -->
+                    <div class="mb-3">
+                        <label for="tipoPago" class="form-label">Tipo de Pago</label>
+                        <select class="form-select" id="tipoPago" name="tipo_pago" required>
+                            <option value="">Seleccione...</option>
+                            <option value="bautismo-cursillo">Bautismo - Cursillo</option>
+                            <option value="bautismo-celebracion">Bautismo - Celebración</option>
+                            <option value="matrimonio-cursillo">Matrimonio - Cursillo</option>
+                            <option value="matrimonio-celebracion">Matrimonio - Celebración</option>
+                        </select>
+                    </div>
+
+                    <!-- Método de Pago (tipopago) -->
+                    <div class="mb-3">
+                        <label for="tipopago" class="form-label">Método de Pago</label>
+                        <select class="form-select" id="tipopago" name="TipoPago" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                        </select>
+                    </div>
+
+                    <!-- Valor -->
+                    <div class="mb-3">
+                        <label for="monto" class="form-label">Monto</label>
+                        <input type="number" class="form-control" id="monto" name="Valor" step="0.01" required>
+                    </div>
+
+                    <!-- Fecha del Pago -->
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" name="FechaPago" required>
+                    </div>
+
+                    <!-- Concepto -->
+                    <div class="mb-3">
+                        <label for="concepto" class="form-label">Concepto</label>
+                        <input type="text" class="form-control" id="concepto" name="Concepto">
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="observaciones" name="Observaciones"></textarea>
+                    </div>
+
+                    <!-- Referencias ocultas -->
+                    <input type="hidden" id="Referencia_Id" name="Referencia_Id" required>
+                    <input type="hidden" id="Referencia_Tabla" name="Referencia_Tabla" required>
+
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <button type="reset" class="btn btn-secondary">Deshacer</button>
+                </form>
+            </div>
+
+            <!-- Tabla lado derecho -->
+            <div class="col-md-6">
+                <div id="tablaReferenciasDiv">
+                    <label class="form-label" id="referenciaLabel">Referencias disponibles</label>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaReferenciasBody">
+                            <tr><td colspan="3">Seleccione un tipo de pago para ver registros.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="ver-pagos" role="tabpanel" aria-labelledby="ver-pagos-tab">
+        <h4>Pagos Registrados</h4>
+        <table class="table table-striped table-bordered" id="tablaPagos">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo de Servicio</th>
+                    <th>Método</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Concepto</th>
+                    <th>Referencia</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPagosBody">
+                <tr>
+                    <td colspan="8">Cargando pagos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Cargar referencias según el tipo de pago
+        document.getElementById('tipoPago').addEventListener('change', function () {
+            var tipo = this.value;
+            var tablaDiv = document.getElementById('tablaReferenciasDiv');
+            var tablaBody = document.getElementById('tablaReferenciasBody');
+            var refLabel = document.getElementById('referenciaLabel');
+            tablaBody.innerHTML = '<tr><td colspan="3">Cargando...</td></tr>';
+            if (tipo) {
+                tablaDiv.style.display = 'block';
+
+                // Cambiar el label visible
+                if (tipo === 'bautismo-celebracion') refLabel.textContent = 'Actas de Bautismo';
+                else if (tipo === 'bautismo-cursillo') refLabel.textContent = 'Cursillos Pre-Bautismales';
+                else if (tipo === 'matrimonio-celebracion') refLabel.textContent = 'Actas de Matrimonio';
+                else if (tipo === 'matrimonio-cursillo') refLabel.textContent = 'Cursillos Pre-Matrimoniales';
+
+                // Obtener registros
+                fetch('/Pagos/GetReferencias?tipo_pago=' + tipo)
+                    .then(resp => resp.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            tablaBody.innerHTML = '<tr><td colspan="3">No hay registros disponibles</td></tr>';
+                        } else {
+                            tablaBody.innerHTML = '';
+                            data.forEach(function (item) {
+                                tablaBody.innerHTML += `<tr>
+                                    <td>${item.id}</td>
+                                    <td>${item.nombre}</td>
+                                    <td><button type="button" class="btn btn-sm btn-success" onclick="seleccionarReferencia(${item.id}, '${item.nombre}')">Seleccionar</button></td>
+                                </tr>`;
+                            });
+                        }
+                    });
+            } else {
+                tablaDiv.style.display = 'block';
+                tablaBody.innerHTML = '<tr><td colspan="3">Seleccione un tipo de pago para ver registros.</td></tr>';
+            }
+        });
+
+        // Selección de referencia
+        function seleccionarReferencia(id, nombre) {
+            document.getElementById('Referencia_Id').value = id;
+
+            // Detectar tabla asociada
+            const tipo = document.getElementById('tipoPago').value;
+            let tabla = '';
+            if (tipo === 'bautismo-celebracion') tabla = 'actasbautismo';
+            else if (tipo === 'bautismo-cursillo') tabla = 'cursillosprebautismales';
+            else if (tipo === 'matrimonio-celebracion') tabla = 'actasprematrimoniales';
+            else if (tipo === 'matrimonio-cursillo') tabla = 'cursillosprematrimoniales';
+
+            document.getElementById('Referencia_Tabla').value = tabla;
+
+            // Visual feedback
+            Array.from(document.querySelectorAll('#tablaReferenciasBody tr')).forEach(tr => tr.classList.remove('table-primary'));
+            var filas = document.querySelectorAll('#tablaReferenciasBody tr');
+            for (let fila of filas) {
+                if (fila.children[0] && fila.children[0].textContent == id) {
+                    fila.classList.add('table-primary');
+                }
+            }
+        }
+
+        // Mostrar pagos registrados
+        document.getElementById('ver-pagos-tab').addEventListener('click', function () {
+            var tbody = document.getElementById('tablaPagosBody');
+            tbody.innerHTML = '<tr><td colspan="8">Cargando pagos...</td></tr>';
+            fetch('/Pagos/Search')
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="8">No hay pagos registrados.</td></tr>';
+                    } else {
+                        tbody.innerHTML = '';
+                        data.forEach(function (pago) {
+                            tbody.innerHTML += `<tr>
+                                <td>${pago.id}</td>
+                                <td>${pago.tipo_pago}</td>
+                                <td>${pago.tipoPago}</td>
+                                <td>${pago.valor}</td>
+                                <td>${pago.fechaPago ? pago.fechaPago.substring(0,10) : ''}</td>
+                                <td>${pago.estado}</td>
+                                <td>${pago.concepto || ''}</td>
+                                <td>${pago.referencia_tabla || ''} #${pago.referencia_id || ''}</td>
+                            </tr>`;
+                        });
+                    }
+                });
+        });
+
+        // Registrar pago sin recargar
+        document.getElementById('nuevoPagoForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            // Añadir referencias manualmente
+            formData.append("Referencia_Id", document.getElementById("Referencia_Id").value);
+            formData.append("Referencia_Tabla", document.getElementById("Referencia_Tabla").value);
+
+            const response = await fetch('/Pagos/Create', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(" Pago registrado con éxito.");
+                form.reset();
+                document.getElementById("Referencia_Id").value = "";
+                document.getElementById("Referencia_Tabla").value = "";
+                document.getElementById("tablaReferenciasBody").innerHTML = '<tr><td colspan="3">Seleccione un tipo de pago para ver registros.</td></tr>';
+            } else {
+                alert(" Error al registrar:\n" + result.errors.join("\n"));
+            }
+        });
+    </script>
+}

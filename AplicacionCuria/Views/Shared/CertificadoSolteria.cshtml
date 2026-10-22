@@ -1,0 +1,125 @@
+﻿@model AplicacionCuria.Models.Solteria
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado de Soltería</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+
+        h3, h1 {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        p {
+            margin: 15px 0; /* Aumentado el espacio entre párrafos */
+            line-height: 1.8; /* Mejora la lectura */
+            text-align: justify;
+        }
+
+        ul {
+            margin: 20px 0; /* Espacio superior e inferior de las listas */
+            padding-left: 40px; /* Mantiene margen para los bullets */
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        img {
+            max-width: 140px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .firmas {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 200px; /* Más espacio arriba de las firmas */
+            text-align: center;
+        }
+
+        .firma p {
+            margin: 8px 0; /* Espaciado dentro de la firma */
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;  /* Centrar todo el contenido */
+            font-size: 19px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            text-align: center;  /* Asegurar que cada línea esté centrada */
+        }
+
+        .footer .line {
+            border: none;
+            border-bottom: 5px solid #000;
+            width: 300px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="text-center">
+            <img src="~/imagenes/escudo.png" alt="Escudo">
+            <h3>PARROQUIA SANTA MARÍA DE EL VERGEL</h3>
+            <h1>CERTIFICADO DE SOLTERÍA</h1>
+        </div>
+        <div>
+            <p>
+                <b>@Model.nombreNovio</b>, portador de la cédula de identidad <b>@Model.cedulaNovio</b>, domiciliado en
+                <b>@Model.domicilioNovio</b>, pretende contraer matrimonio eclesiástico con: <b>@Model.nombrePareja</b>.
+            </p>
+            <p>
+                Ambos son feligreses de <b>@Model.parroquia</b> y desean obtener el certificado de soltería correspondiente.
+            </p>
+            <p>
+                Para este fin, presenta como testigos a:
+            </p>
+            <p>
+                Testigo 1: <b>@Model.testigo1</b>, C.I. <b>@Model.cedula1</b>, domiciliado en <b>@Model.direccion1</b>,
+                Teléfono: <b>@Model.telefono1</b>.
+            </p>
+            <p>
+                Testigo 2: <b>@Model.testigo2</b>, C.I. <b>@Model.cedula2</b>, domiciliado en <b>@Model.direccion2</b>,
+                Teléfono: <b>@Model.telefono2</b>.
+            </p>
+            <p>
+                Quienes, bajo juramento según Derecho e instruidos y conocedores de la gravedad del perjurio, declaran:
+            </p>
+            <ul>
+                <li>Que es católico, libre, soltero (o viudo), y feligrés de esta parroquia.</li>
+                <li>Que no existe parentesco de consanguinidad entre los pretendientes.</li>
+                <li>Que <b>@Model.impedimento</b> existe algún impedimento para su matrimonio.</li>
+            </ul>
+        </div>
+        <div class="firmas">
+            <div class="col-2 text-center">
+                <p>‎‎ ‎‎‎‎‎‎‎ ____________________ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ____________________  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ____________________</p>
+                <p>‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎  Primer Testigo ‎‎‎‎‎‎‎‎‎‎‎‎‎‎ ‎ ‎ ‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎  Parroco ‎ ‎ ‎‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Segundo Testigo</p>
+            </div>
+        </div>
+        <div class="footer text-center">
+            <p>Cuenca, @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
+            <p>PARROQUIA SANTA MARÍA DE EL VERGEL</p>
+        </div>
+    </div>
+</body>
+</html>

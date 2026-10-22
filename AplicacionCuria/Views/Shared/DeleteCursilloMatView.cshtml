@@ -1,0 +1,131 @@
+﻿@model AplicacionCuria.Models.CursilloPreMatrimonial
+
+
+
+
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MatrimoniosView" aria-label="Regresar al menú de sacramentos">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Eliminar Cursillo</h1>
+            </div>
+
+            <form asp-action="Edit" asp-controller="CursilloPreMatrimonial" method="post" id="formularioCursillo">
+                <h2>Cursillo Matrimonial</h2>
+                <div class="row">
+                    <!-- Columna para datos del Novio -->
+                    <div class="col-md-6">
+                        <h4>Datos del Novio</h4>
+                        <div class="mb-3">
+                            <label for="cursillo_nombrenovio">Nombre del Novio:</label>
+                            <label type="text" id="cursillo_nombrenovio" name="nombrenovio" class="form-control">@Model.nombrenovio</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cursillo_cedulanovio">Cédula del Novio:</label>
+                            <label type="text" id="cursillo_cedulanovio" name="cedulanovio" class="form-control">@Model.cedulanovio</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cursillo_telefononovio">Teléfono del Novio:</label>
+                            <label type="tel" id="cursillo_telefononovio" name="telefononovio" class="form-control">@Model.telefononovio</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fechanacimientonovio">Fecha de Nacimiento del Novio:</label>
+                            <label type="date" id="fechanacimientonovio" name="fechanacimientonovio" class="form-control">@Model.fechanacimientonovio.ToString("yyyy-MM-dd")</label>
+                        </div>
+                    </div>
+
+                    <!-- Columna para datos de la Novia -->
+                    <div class="col-md-6">
+                        <h4>Datos de la Novia</h4>
+                        <div class="mb-3">
+                            <label for="cursillo_nombrenovia">Nombre de la Novia:</label>
+                            <label type="text" id="cursillo_nombrenovia" name="nombrenovia" class="form-control">@Model.nombrenovia</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cursillo_cedulanovia">Cédula de la Novia:</label>
+                            <label type="text" id="cursillo_cedulanovia" name="cedulanovia" class="form-control">@Model.cedulanovia</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cursillo_telefononovia">Teléfono de la Novia:</label>
+                            <label type="tel" id="cursillo_telefononovia" name="telefononovia" class="form-control">@Model.telefononovia</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fechanacimientonovia">Fecha de Nacimiento de la Novia:</label>
+                            <label type="date" id="fechanacimientonovia" name="fechanacimientonovia" class="form-control">@Model.fechanacimientonovia.ToString("yyyy-MM-dd")</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechacursillo">Fecha de Cursillo:</label>
+                    <label type="date" id="fechacursillo" name="fechacursillo" class="form-control">@Model.fechacursillo.ToString("yyyy-MM-dd")</label>
+                </div>
+                <div class="mb-3">
+                    <label for="fechamatrimonio">Fecha de Matrimonio:</label>
+                    <label type="date" id="fechamatrimonio" name="fechamatrimonio" class="form-control">@Model.fechamatrimonio.ToString("yyyy-MM-dd")</label>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="estado" class="form-label">Estado del Cursillo</label>
+
+                    <label type="text" id="estado" name="estado" class="form-control">@Model.estado</label>
+                </div>
+
+                <button type="submit" asp-controller="CursilloPreMatrimonial" asp-action="DeleteConfirmed" class="btn btn-danger mt-3" asp-route-id="@Model.id">Eliminar Cursillo</button>
+                <label id="exito" class="text-success" style="display: none;">Cursillo Eliminado</label>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+
+
+    document.getElementById("acta-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito").style.display = "none";
+
+                if (data.success) {
+                    // Redirigir a la raíz o hacer otras acciones en caso de éxito
+
+                    document.getElementById("exito").style.display = "block";
+                    //location.reload();
+                    setTimeout(function () {
+                        console.log("Han pasado 5 segundos");
+                        window.location.href = "/Home/MenuSacramentos";
+                    }, 5000);
+
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito").innerText = error;
+                document.getElementById("exito").style.display = "block";
+            });
+
+
+    });
+</script>

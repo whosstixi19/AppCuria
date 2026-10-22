@@ -1,0 +1,1614 @@
+﻿<title>@ViewData["Title"] - Registro de Bautizo</title>
+@{
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Contenedor principal para el título y el botón -->
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuSacramentos" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Registro de Matrimonio</h1>
+</div>
+
+<!-- Sistema de pestañas -->
+<ul class="nav nav-tabs" id="formTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="cursillo-tab" data-toggle="tab" data-target="#cursillo" type="button" role="tab" aria-controls="cursillo" aria-selected="true">
+            Cursillo Pre Matrimonial
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="acta-prematrimonial-tab" data-toggle="tab" data-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false">
+            Acta Pre Matrimonial
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="acta-matrimonio-tab" data-toggle="tab" data-target="#matrimonial" type="button" role="tab" aria-controls="matrimonial" aria-selected="false">
+            Acta de Matrimonio
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="antiguos-tab" data-toggle="tab" data-target="#antiguos" type="button" role="tab" aria-controls="antiguos" aria-selected="false">
+            Matrimonios Antiguos
+        </button>
+    </li>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+</ul>
+
+<div class="tab-content mt-3" id="formTabsContent">
+    <!-- Formulario Cursillo Pre Matrimonial -->
+    <div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+        <div class="row">
+            <div class="col-md-6">
+                <form asp-action="Create" asp-controller="CursilloPreMatrimonial" method="post" id="formularioCursillo">
+                    <h2>Registro de Cursillo Pre Matrimonial</h2>
+                    <div class="row">
+                        <!-- Columna para datos del Novio -->
+                        <div class="col-md-6">
+                            <h4>Datos del Novio</h4>
+                            <div class="mb-3">
+                                <label for="cursillo_nombrenovio">Nombre del Novio:</label>
+                                <input type="text" id="cursillo_nombrenovio" name="nombrenovio" required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cursillo_cedulanovio">Cédula del Novio:</label>
+                                <input type="text" id="cursillo_cedulanovio" name="cedulanovio" required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cursillo_telefononovio">Teléfono del Novio:</label>
+                                <input type="tel" id="cursillo_telefononovio" name="telefononovio" required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechanacimientonovio">Fecha de Nacimiento del Novio:</label>
+                                <input type="date" id="fechanacimientonovio" name="fechanacimientonovio" required class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Columna para datos de la Novia -->
+                        <div class="col-md-6">
+                            <h4>Datos de la Novia</h4>
+                            <div class="mb-3">
+                                <label for="cursillo_nombrenovia">Nombre de la Novia:</label>
+                                <input type="text" id="cursillo_nombrenovia" name="nombrenovia" required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cursillo_cedulanovia">Cédula de la Novia:</label>
+                                <input type="text" id="cursillo_cedulanovia" name="cedulanovia" required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cursillo_telefononovia">Teléfono de la Novia:</label>
+                                <input type="tel" id="cursillo_telefononovia" name="telefononovia" required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechanacimientonovia">Fecha de Nacimiento de la Novia:</label>
+                                <input type="date" id="fechanacimientonovia" name="fechanacimientonovia" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fechacursillo">Fecha de Cursillo:</label>
+                        <input type="date" id="fechacursillo" name="fechacursillo" required class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechamatrimonio">Fecha de Matrimonio:</label>
+                        <input type="date" id="fechamatrimonio" name="fechamatrimonio" required class="form-control">
+                    </div>
+
+                    @* <div class="mb-3 d-flex align-items-center">
+                        <label for="consanguinidad" class="mr-2">¿Son de Consanguinidad?</label>
+                        <button type="submit" class="btn btn-primary" id="printButton" asp-action="Consanguinidad" asp-controller="Matrimonio">Especificar Consanguinidad</button>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="mixtareligion" class="mr-2">¿Son de Religiones Mixtas?</label>
+                        <button type="submit" class="btn btn-primary" id="botonMixta" asp-action="ReligionMixta" asp-controller="Matrimonio">Especificar Religiones</button>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="disponibilidadcultos" class="mr-2">¿Disponibilidad de Cultos?</label>
+                        <button type="submit" class="btn btn-primary" id="botonCultos" asp-action="Cultos" asp-controller="Matrimonio">Especificar Cultos</button>
+                    </div> *@
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="consanguinidad" class="mr-2">¿Son de Consanguinidad?</label>
+                        <button type="button" class="btn btn-primary" id="printButton" onclick="enviarFormulario('Consanguinidad')">Especificar Consanguinidad</button>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="mixtareligion" class="mr-2">¿Son de Religiones Mixtas?</label>
+                        <button type="button" class="btn btn-primary" id="botonMixta" onclick="enviarFormulario('ReligionMixta')">Especificar Religiones</button>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="disponibilidadcultos" class="mr-2">¿Disponibilidad de Cultos?</label>
+                        <button type="button" class="btn btn-primary" id="botonCultos" onclick="enviarFormulario('Cultos')">Especificar Cultos</button>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="estado" class="form-label">Estado del Cursillo</label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="Cursando">Cursando</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Retirado">Retirado</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="parroquia_id" class="form-label">Seleccionar Parroquia:</label>
+                        <select class="form-select w-50" id="parroquia_id" name="parroquia">
+                            <option value="">-- Seleccione una parroquia --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones" rows="3" placeholder="Ingrese observaciones..."></textarea>
+                    </div>
+
+                    <button  type="submit" class="btn btn-primary mt-3">Registrar Cursillo</button>
+                    <label id="exito" class="text-success" style="display: none;">Cursillo Registrado</label>
+                </form>
+                <!-- Segunda columna con detalles e formulario de búsqueda -->
+            </div>
+            <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+                <form id="buscar-cursillo" >
+                    <div class="mb-3">
+                        <label for="nombrecompletonino" class="form-label">Nombre completo del novio/novia</label>
+                        <input type="text" class="form-control" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" onclick="ListCursillo()">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCursilloGeneral()">
+                            <i class="fas fa-times"></i> Limpiar
+                        </button>
+                    </div>
+                    
+                    <div class="mb-3">
+                        
+                            <h3>Resultados de la búsqueda:</h3>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del novio</th>
+                                        <th>Nombre de la novia</th>
+                                        <th>Fecha de Cursillo</th>
+                                        <th>Fecha de Matrimonio</th>
+                                        <th>Estado</th>
+                                        <th>Modificar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultadosCursillo">
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.nombrenovio</td>
+                                            <td>@item.nombrenovia</td>
+                                            <td>@item.fechacursillo.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.fechamatrimonio.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.estado</td>
+                                            <td>
+                                                <a asp-action="ModifyCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No se encontraron resultados.</p>
+                                }
+                                </tbody>
+                            </table>
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+   
+
+    <!-- Formulario Acta de PreMatrimonio -->
+    <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-prematrimonial-tab">
+        <div class="row">
+            <!-- Formulario de creación a la izquierda -->
+            <div class="col-md-6">
+                <form asp-action="Create" asp-controller="ActaPrematrimonial" method="post" id="acta-prematrimonial">
+                    <h2>Registro de Acta Pre Matrimonial</h2>
+                    <div id="tooltipCursillo" class="invalid-tooltip" style="display: none; position: absolute; z-index: 10;">
+                    Primero debes seleccionar un cursillo.
+                    </div>
+                    <div class="row">
+                        <!-- Columna para datos del Novio -->
+                        <div class="col-md-6">
+
+                    <h5>Datos del Novio</h5>
+                    <div class="mb-3">
+@*                         <label for="NombreNovio">Nombre del Novio:</label>
+                                *@                        
+                         <input type="text" id="NombreNovio" name="nombrenovio" class="form-control" placeholder="Nombre del Novio" required />
+                    </div>
+                    <div class="mb-3">
+@*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
+                                *@                        
+                         <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo del Novio" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+@*                         <label for="PadreNovio">Padre del Novio:</label>
+                                *@                        
+                         <input type="text" id="nombrepadrenovio" placeholder="Padre del Novio" name="nombrepadrenovio" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+@*                         <label for="MadreNovio">:</label>
+                                *@                        
+                         <input type="text" id="nombremadrenovio" name="nombremadrenovio" placeholder="Madre del Novio" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaNacimientoNovio">Fecha de Nacimiento del Novio:</label>
+                        <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaBautizoNovio">Fecha de Bautizo del Novio:</label>
+                        <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control" />
+                    </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Datos de la Novia</h4>
+                    <div class="mb-3">
+@*                         <label for="NombreNovia">Nombre de la Novia:</label>
+ *@                        <input type="text" id="NombreNovia" name="nombrenovia" class="form-control" placeholder="Nombre de la Novia" required />
+                    </div>
+                    <div class="mb-3">
+@*                         <label for="LugarBautizoNovia">Lugar de Bautizo de la Novia:</label>
+                                *@                        
+                         <input type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo de la Novia" name="lugarbautizonovia" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+@*                         <label for="PadreNovia">Padre de la Novia:</label>
+                                *@                        
+                                
+                         <input type="text" id="nombrepadrenovia" placeholder="Padre de la Novia" name="nombrepadrenovia" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+@*                         <label for="MadreNovia">Madre de la Novia:</label>
+                                *@                       
+                         <input type="text" id="nombremadrenovia" placeholder="Madre de la Novia" name="nombremadrenovia" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaNacimientoNovia">Fecha de Nacimiento de la Novia:</label>
+                        <input type="date" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaBautizoNovia">Fecha de Bautizo de la Novia:</label>
+                        <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control" />
+                    </div>
+                        </div>
+                    <h5>Información del Matrimonio</h5>
+                    <div class="mb-3">
+                        <label for="FechaMatrimonio">Fecha del Matrimonio:</label>
+                        <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ministro_id">Ministro:</label>
+                        <select id="ministro_id" name="ministro_id" class="form-control" required>
+                            <option value="">Seleccione un ministro</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="iglesia_id">Iglesia:</label>
+                        <select id="iglesia_id" name="iglesia_id" class="form-control" required>
+                            <option value="">Seleccione una iglesia</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Testigo1">Testigo 1:</label>
+                        <input type="text" id="testigo1" name="testigo1" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="testigo2">Testigo 2:</label>
+                        <input type="text" id="testigo2" name="testigo2" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="testigo3">Testigo 3:</label>
+                        <input type="text" id="testigo3" name="testigo3" class="form-control" placeholder="(Opcional)"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testigo4">Testigo 4:</label>
+                        <input type="text" id="testigo4" name="testigo4" class="form-control" placeholder="(Opcional)"/>
+                    </div>
+                    @* <div class="mb-3">
+                        <label for="LugarMatrimonio">Lugar del Matrimonio:</label>
+                        <input type="text" id="LugarMatrimonio" name="lugarmatrimonio" class="form-control" />
+                    </div> *@
+                    @* <div class="mb-3">
+                        <label for="Celebrante">Celebrante del Matrimonio:</label>
+                        <input type="text" id="Celebrante" name="Celebrante" class="form-control" />
+                    </div> *@
+
+                    <h4>Registro Civil</h4>
+                    <div class="mb-3">
+                        <label for="FechaRegistroCivil">Fecha del Registro Civil:</label>
+                        <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="LugarRegistroCivil">Lugar del Registro Civil:</label>
+                        <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Acta del Registro Civil:</label>
+                        <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Página del Registro Civil:</label>
+                        <input type="text" id="NumeroActaRegistroCivil" name="numeropaginaregistrocivil" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Tomo del Registro Civil:</label>
+                        <input type="text" id="NumeroActaRegistroCivil" name="numertomoregistrocivil" class="form-control" />
+                    </div>
+
+                    <h4>Registro Eclesiástico</h4>
+                    <div class="mb-3">
+                        <label for="Tomo">Tomo:</label>
+                        <input type="text" id="Tomo" name="tomo" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Pagina">Página:</label>
+                        <input type="text" id="Pagina" name="pagina" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Acta">Número de Acta:</label>
+                        <input type="text" id="Acta" name="acta" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaRegistroParroquial">Fecha de Registro Parroquial:</label>
+                        <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control" />
+                    </div>
+                        <div class="mb-3">
+                            <label for="Observaciones">Observaciones:</label>
+                            <input type="text" id="Observaciones" name="observaciones" class="form-control" />
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="cursillo_id" name="cursillo_id" />
+                    <input type="hidden" id="CursilloIdSeleccionado" name="CursilloIdSeleccionado" />
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <div id="alertaCursillo" class="alert alert-danger" role="alert" style="display: none;">
+                        Debes seleccionar un cursillo antes de registrar el acta.
+                    </div>
+                    <label id="exito2" class="text-success" style="display: none;">Acta Registrado</label>
+
+                </form>
+            </div>
+
+            <!-- Detalles a la derecha -->
+            <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+
+                <!-- TABLA DE CURSILLOS PARA SELECCIONAR -->
+                <div class="mb-3">
+                    <h4>Seleccionar Cursillo</h4>
+
+                    <input type="text" class="form-control mb-2" id="busquedaCursillo" placeholder="Selecciona el cursillo correspondiente al acta que estás registrando.">
+                    <!-- Mensaje de advertencia en rojo, oculto por defecto -->
+                    <div id="mensajeErrorCursillo" class="text-danger mb-2" style="display: none;">
+                        Ingresa un valor o nombre.
+                    </div>
+                    <!-- Botones -->
+                    <button type="button" class="btn btn-primary" onclick="buscarCursillos()">
+                        <i class="fas fa-search"></i> Buscar 
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCursilloActa()">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre Novio</th>
+                                <th>Nombre Novia</th>
+                                <th>Fecha Cursillo</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCursillos">
+                            <!-- Se llena con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-5">
+                    <h4>Registros de Actas Pre Matrimoniales</h4>
+                </div>
+                <!-- Formulario de búsqueda de actas -->
+                <form asp-action="Search" method="get" id="buscar-cursillo" asp-controller="CursilloPreMatrimonial">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="nombrecompletonino" name="nombrecompletonino" placeholder="Buscar por nombre del novio/novia...">
+                        <div id="mensajeErrorNombre" class="text-danger mt-1" style="display: none;">
+                            Ingresa un valor o nombre.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" onclick="ListActaPre()">
+                            <i class="fas fa-search"></i> Buscar 
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="LimpiarBusqueda()">
+                            <i class="fas fa-times"></i> Limpiar
+                        </button>
+                    </div>
+                    <div class="mb-3">
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nombre Novio</th>
+                                    <th>Nombre Novia</th>
+                                    <th>Fecha de Matrimonio</th>
+                                    <th>Estado</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosActas">
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.nombrenovio</td>
+                                            <td>@item.nombrenovia</td>
+                                            <td>@item.fechamatrimonio.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.estado</td>
+                                            <td>
+                                                <a asp-action="ModifyActaPrematrimonialView" asp-controller="ActaPrematrimonial" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteActaPrematrimonialView" asp-controller="ActaPrematrimonial" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="7">No se encontraron resultados.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-pane fade" id="matrimonial" role="tabpanel" aria-labelledby="acta-matrimonio-tab">
+        <div class="row">
+            <!-- Formulario de creación a la izquierda -->
+            <div class="col-md-6">
+                <form asp-action="Create" asp-controller="ActaMatrimonial" method="post" id="form-acta-matrimonial">
+                    <h2>Registro de Acta de Matrimonio</h2>
+                    <div class="row">
+                        <h5 class="mt-3">Padrinos del Matrimonio</h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <input type="text" id="padrino1" name="padrino1" placeholder="Padrino 1" class="form-control" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input type="text" id="padrino2" name="padrino2" placeholder="Padrino 2" class="form-control" required/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input type="text" id="padrino3" name="padrino3" placeholder="Padrino 3 (Opcional)" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input type="text" id="padrino4" name="padrino4" placeholder="Padrino 4 (Opcional)" class="form-control" />
+                                </div>
+                                <input type="hidden" id="acta_prematrimonial_id" name="acta_prematrimonial_id" />
+                                <input type="hidden" id="hidden_iglesia_id" name="iglesia_id" />
+                                <input type="hidden" id="hidden_ministro_id" name="ministro_id" />
+                                <input type="hidden" name="pagina" id="pagina">
+                                <input type="hidden" name="tomo" id="tomo">
+                                <input type="hidden" name="acta" id="input-acta" />
+                                <input type="hidden" name="fecha_matrimonio" id="fecha_matrimonio" class="form-control" />
+
+
+                            </div>
+
+                        <div class="mb-3">
+                            <label for="fecharegistro" class="form-label">Fecha de registro:</label>
+                            <input type="date" id="fecharegistro" name="fecharegistro" class="form-control" placeholder="dd/mm/aaaa" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones:</label>
+                            <textarea id="observaciones" name="observaciones" class="form-control" rows="3" placeholder="Escribe alguna observación si es necesaria"></textarea>
+                        </div>
+                       
+                    <button type="submit" class="btn btn-primary">Registrar Acta</button>
+                    <div id="errorActaMessage" class="alert alert-danger mt-3 d-none" role="alert">
+                        Debes seleccionar un acta prematrimonial antes de registrar.
+                    </div>
+                    </div> 
+                    <label id="exito3" class="text-success" style="display: none;">Acta Registrada</label>
+
+                </form>
+            </div>
+
+            <!-- Detalles a la derecha -->
+            <div class="col-md-6 mt-4 mt-md-0">
+                <form asp-action="Search" method="get" id="buscar-actamatri" asp-controller="ActaMatrimonial">
+
+                    <!-- Sección de selección de lista mediante RadioButton -->
+                    <div class="mb-3">
+                        <label class="form-label">Selecciona el tipo de lista a mostrar:</label><br>
+                        <input type="radio" id="actasPrematrimoniales" name="tipoActa" value="prematrimonial" checked onclick="mostrarLista('prematrimonial')" />
+                        <label for="actasPrematrimoniales">Actas Prematrimoniales</label>
+
+                        <input type="radio" id="actasCreadas" name="tipoActa" value="creada" onclick="mostrarLista('creada')" />
+                        <label for="actasCreadas">Actas Creadas</label>
+                    </div>
+
+                    
+
+                    <!-- Botón de búsqueda -->
+                  @*   <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div> *@
+
+                    <!-- Resultados de Actas Prematrimoniales -->
+                    <div class="mb-3" id="listaPrematrimonial">
+                        <!-- Campo de búsqueda -->
+                        <div class="mb-3">
+                            <label for="nombreBuscar" class="form-label">Buscar por nombre del novio o novia</label>
+                            <input type="text" class="form-control" id="nombreBuscar" name="nombreBuscar" placeholder="Ej: Carlos o María" />
+                            <button type="button" class="btn btn-primary" onclick="ListActaPreAOfi()">Buscar</button>
+                            <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaActaPrematrimonial()">Limpiar</button>
+                        </div>
+                        <h3>Resultados de Actas Prematrimoniales:</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nombre Novio</th>
+                                    <th>Nombre Novia</th>
+                                    <th>Fecha de Matrimonio</th>
+                                    <th>Acción</th> 
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosActa">
+                                @if (Model?.ActasPrematrimoniales != null)
+                                {
+                                    @foreach (var item in Model.ActasPrematrimoniales)
+                                    {
+                                        <tr>
+                                            <td>@item.NombreNovio</td>
+                                            <td>@item.NombreNovia</td>
+                                            <td>@item.FechaMatrimonio.ToString("dd/MM/yyyy")</td>
+                                            <td><button type="button" onclick="seleccionarActaPreYEnviar(${item.id})" class="btn btn-success">Seleccionar</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3">No se encontraron resultados.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Resultados de Actas Creadas -->
+                    <div class="mb-3" id="listaCreadas" style="display: none;">
+                        <!-- Campo de búsqueda -->
+                        <div class="mb-3 d-flex gap-2">
+                            <input type="text" class="form-control" id="fechacasadosreg" placeholder="Buscar por nombre del novio o novia" />
+                            <button type="button" class="btn btn-primary" onclick="ListActaCreada()">Buscar</button>
+                            <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCreadas()">Limpiar</button>
+                        </div>
+                        <h3>Resultados de Actas Creadas:</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Novio</th>
+                                    <th>Novia</th>
+                                    <th>Padrino 1</th>
+                                    <th>Padrino 2</th>
+                                    <th>Fecha de registro</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosActaCreadas">
+                                @if (Model != null)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.padrino1</td>
+                                            <td>@item.padrino2</td>
+                                            <td>@(item.fecharegistro?.ToString("dd/MM/yyyy") ?? "Sin fecha")</td>
+                                            <td>
+                                                <a asp-action="ModifyActamatrimonialView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteActamatrimonialView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3">No se encontraron resultados.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario Matrimonios Antiguos -->
+    <div class="tab-pane fade" id="antiguos" role="tabpanel" aria-labelledby="antiguos-tab">
+        <div class="container mt-5">
+            <div class="row">
+                <!-- Formulario de creación a la izquierda -->
+                <div class="col-md-6">
+                    <form asp-action="Create" asp-controller="ActasAntiguas" method="post" id="acta-antig">
+                        <h2>Registro de Matrimonios Antiguos</h2>
+                        <div class="row">
+                            <!-- Columna para datos del Novio -->
+                            <div class="col-md-6">
+
+                                <h5>Datos del Novio</h5>
+                                <div class="mb-3">
+                                    @*                         <label for="NombreNovio">Nombre del Novio:</label>
+                                    *@
+                                    <input type="text" id="NombreNovio" name="nombrenovio" class="form-control" placeholder="Nombre del Novio" required />
+                                </div>
+                                <div class="mb-3">
+                                    @*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
+                                    *@
+                                    <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo del Novio" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    @*                         <label for="PadreNovio">Padre del Novio:</label>
+                                    *@
+                                    <input type="text" id="cedulapadrenovio" placeholder="Padre del Novio" name="cedulapadrenovio" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    @*                         <label for="MadreNovio">:</label>
+                                    *@
+                                    <input type="text" id="cedulamadrenovio" name="cedulamadrenovio" placeholder="Madre del Novio" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="FechaNacimientoNovio">Fecha de Nacimiento del Novio:</label>
+                                    <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="FechaBautizoNovio">Fecha de Bautizo del Novio:</label>
+                                    <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>Datos de la Novia</h4>
+                                <div class="mb-3">
+                                    @*                         <label for="NombreNovia">Nombre de la Novia:</label>
+                                    *@                        <input type="text" id="NombreNovia" name="nombrenovia" class="form-control" placeholder="Nombre de la Novia" required />
+                                </div>
+                                <div class="mb-3">
+                                    @*                         <label for="LugarBautizoNovia">Lugar de Bautizo de la Novia:</label>
+                                    *@
+                                    <input type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo de la Novia" name="lugarbautizonovia" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    @*                         <label for="PadreNovia">Padre de la Novia:</label>
+                                    *@
+
+                                    <input type="text" id="cedulapadrenovia" placeholder="Padre de la Novia" name="cedulapadrenovia" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    @*                         <label for="MadreNovia">Madre de la Novia:</label>
+                                    *@
+                                    <input type="text" id="cedulamadrenovia" placeholder="Madre de la Novia" name="cedulamadrenovia" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="FechaNacimientoNovia">Fecha de Nacimiento de la Novia:</label>
+                                    <input type="date" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="FechaBautizoNovia">Fecha de Bautizo de la Novia:</label>
+                                    <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control" />
+                                </div>
+                            </div>
+                            <h5>Información del Matrimonio</h5>
+                            <div class="mb-3">
+                                <label for="FechaMatrimonio">Fecha del Matrimonio:</label>
+                                <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="ministro_id">Ministro que ofició la ceremonia:</label>
+                                <select id="ministro_id_antiguo" name="ministro_id" class="form-control" required>
+                                    <option value="">Seleccione un ministro</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="iglesia_id">Iglesia en la que se celebró:</label>
+                                <select name="iglesia_id" id="iglesia_id_antiguo" class="form-control" required>
+                                    <option value="">Seleccione una iglesia</option>
+                                </select>
+                            </div>
+
+                            <h4>Registro Civil</h4>
+                            <div class="mb-3">
+                                <label for="FechaRegistroCivil">Fecha del Registro Civil:</label>
+                                <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="LugarRegistroCivil">Lugar del Registro Civil:</label>
+                                <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="NumeroActaRegistroCivil">Número de Acta del Registro Civil:</label>
+                                <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="Testigo1">Cedula del Testigo 1:</label>
+                                <input type="text" id="cedulatestigo1" name="cedulatestigo1" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="cedulatestigo2">Cedula del Testigo 2:</label>
+                                <input type="text" id="cedulatestigo2" name="cedulatestigo2" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="cedulatestigo3">Cedula del Testigo 3:</label>
+                                <input type="text" id="cedulatestigo3" name="cedulatestigo3" class="form-control" placeholder="Opcional" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="cedulatestigo4">Cedula del Testigo 4:</label>
+                                <input type="text" id="cedulatestigo4" name="cedulatestigo4" class="form-control" placeholder="Opcional" />
+                            </div>
+
+
+                            <h4>Registro Eclesiástico</h4>
+                            <div class="mb-3">
+                                <label for="Tomo">Tomo:</label>
+                                <input type="text" id="Tomo" name="tomo" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="Pagina">Página:</label>
+                                <input type="text" id="Pagina" name="pagina" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="Acta">Número de Acta:</label>
+                                <input type="text" id="Acta" name="acta" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="FechaRegistroParroquial">Fecha de Registro Parroquial:</label>
+                                <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="Observaciones">Observaciones:</label>
+                                <input type="text" id="Observaciones" name="observaciones" class="form-control" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3">Registrar Matrimonio Antiguo</button>
+
+                        <label id="exito4" class="text-success" style="display: none;">Acta antigua Registrada</label>
+
+                    </form>
+                </div>
+
+                <!-- Detalles y búsqueda a la derecha -->
+                <div class="col-md-6 mb-3">
+
+                    <!-- Formulario de búsqueda -->
+                    <h4>Buscar Matrimonio Antiguo</h4>
+                    <form id="buscar-antiguo">
+                        <div class="mb-3">
+                            <label for="nombreantiguo" class="form-label">Nombre novio o novia</label>
+                            <input type="text" class="form-control" id="nombreantiguo" name="nombreantiguo" placeholder="Ej: Rosa o Antonio">
+                        </div>
+                        <div class="mb-3 d-flex gap-2">
+                            <button type="button" class="btn btn-primary" onclick="BuscarActasAntiguas()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="LimpiarBusquedaActaAntigua()">
+                                Limpiar
+                            </button>
+                        </div>
+                        <div class="mb-3">
+
+                            <h3>Resultados de la búsqueda:</h3>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del novio</th>
+                                        <th>Nombre de la novia</th>
+                                        <th>Fecha de registro</th>
+                                        <th>Modificar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultadosActaAntiguas">
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.nombrenovio</td>
+                                                <td>@item.nombrenovia</td>
+                                                <td>@item.fecharegistro.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.estado</td>
+                                                <td>
+                                                    <a asp-action="ModifyCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                                </td>
+                                                <td>
+                                                    <a asp-action="DeleteCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>No se encontraron resultados.</p>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function buscarCursillos() {
+        const texto = document.getElementById('busquedaCursillo').value;
+        const mensajeError = document.getElementById('mensajeErrorCursillo');
+
+        if (texto.length < 3) {
+            mensajeError.style.display = 'block';
+            mensajeError.innerText = 'Ingresa al menos 3 letras para buscar.';
+            return;
+        }
+
+        mensajeError.style.display = 'none';
+
+        fetch(`/CursilloPreMatrimonial/SearchAprobadoByName?nombrecompleto=${encodeURIComponent(texto)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Resultados recibidos:", data);  // DEBUG
+                const tbody = document.getElementById("tablaCursillos");
+                tbody.innerHTML = "";
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombrenovio}</td>
+                                <td>${item.nombrenovia}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td><button type="button" class="btn btn-success" onclick="seleccionarCursillo(${item.id})">Seleccionar</button></td>
+                            </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                } else {
+                    tbody.innerHTML = "<tr><td colspan='4' class='text-center'>No se encontraron cursillos.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error("Error al buscar cursillos:", error);
+                const tbody = document.getElementById("tablaCursillos");
+                tbody.innerHTML = `<tr><td colspan='4' class='text-danger text-center'>${error.message}</td></tr>`;
+            });
+    }
+
+    function seleccionarCursillo(id) {
+        fetch(`/CursilloPreMatrimonial/GetById?id=${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se pudo obtener el cursillo");
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Guardamos el ID
+                document.getElementById("cursillo_id").value = id;
+
+                const alerta = document.getElementById("alertaCursillo");
+                if (alerta) {
+                    alerta.style.display = "none";
+                }
+
+                // Rellenamos campos del formulario
+                document.getElementById("NombreNovio").value = data.nombrenovio;
+                document.getElementById("NombreNovia").value = data.nombrenovia;
+                document.getElementById("FechaNacimientoNovio").value = data.fechanacimientonovio.substring(0, 10);
+                document.getElementById("FechaNacimientoNovia").value = data.fechanacimientonovia.substring(0, 10);
+                document.getElementById("FechaMatrimonio").value = data.fechamatrimonio.substring(0, 10);
+
+                // MOSTRAR MENSAJE DE SELECCIÓN
+                mostrarMensajeSeleccion(`Cursillo seleccionado: ${data.nombrenovio} & ${data.nombrenovia}`);
+            })
+            .catch(error => {
+                console.error("Error al obtener los datos del cursillo:", error);
+                alert("Hubo un problema al cargar los datos del cursillo.");
+            });
+    }
+
+    // NUEVA FUNCIÓN PARA MENSAJE
+    function mostrarMensajeSeleccion(mensaje) {
+        let div = document.getElementById("mensajeSeleccion");
+        if (!div) {
+            // Si no existe el div, lo creamos
+            div = document.createElement("div");
+            div.id = "mensajeSeleccion";
+            div.className = "alert alert-success mt-2";
+            document.querySelector("body").prepend(div);
+        }
+        div.innerHTML = mensaje;
+        div.style.display = "block";
+
+        // Ocultar después de 5 segundos
+        setTimeout(() => {
+            div.style.display = "none";
+        }, 5000);
+    }
+
+
+    function limpiarBusquedaCursilloActa() {
+        const input = document.getElementById('busquedaCursillo');
+        const tabla = document.getElementById('tablaCursillos');
+
+        input.value = '';
+        tabla.innerHTML = '<tr><td colspan="4" class="text-muted">Sin búsqueda activa.</td></tr>';
+    }
+    
+    function toggleButton() {
+        const select = document.getElementById("consanguinidad");
+        const button = document.getElementById("printButton");
+
+        // Habilita el botón si el valor del select es "true", de lo contrario lo deshabilita
+        button.disabled = select.value === "true";
+    }
+
+    function seleccionarActaPreYEnviar(id) {
+        fetch(`/ActaMatrimonial/GetById?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(" Datos recibidos:", data);
+
+                // Asignaciones al formulario
+                document.getElementById("acta_prematrimonial_id").value = id;
+                document.getElementById("hidden_iglesia_id").value = data.iglesia_id ?? '';
+                document.getElementById("hidden_ministro_id").value = data.ministro_id ?? '';
+                document.getElementById("pagina").value = data.pagina || '';
+                document.getElementById("tomo").value = data.tomo || '';
+                document.getElementById("fecha_matrimonio").value = data.fechamatrimonio 
+                    ? data.fechamatrimonio.substring(0, 10) 
+                    : '';
+                document.getElementById("errorActaMessage")?.classList.add("d-none");
+                // Asignación de acta (esta es la parte importante)
+                const inputActa = document.getElementById("input-acta");
+                if (inputActa) {
+                    inputActa.value = data.acta ?? '';
+                    console.log(" Acta cargada:", inputActa.value);
+                } else {
+                    console.error(" Campo hidden con id='acta' no encontrado en el DOM.");
+                }
+
+                console.log(" Datos cargados en el formulario, ahora puedes enviarlo manualmente");
+
+                // Confirmación de lo que se va a enviar
+                const formData = new FormData(document.getElementById("form-acta-matrimonial"));
+                console.log(" Verificando valores cargados en FormData:");
+                for (let [k, v] of formData.entries()) {
+                    console.log(`${k} = ${v}`);
+                }
+            })
+            .catch(err => {
+                console.error(" Error al obtener acta prematrimonial", err);
+            });
+    }
+
+    function toggleButtonReligion() {
+        const select = document.getElementById("mixtareligion");
+        const button = document.getElementById("botonMixta");
+
+        // Habilita el botón si el valor del select es "true", de lo contrario lo deshabilita
+        button.disabled = select.value === "true";
+    }
+    function toggleButtonCultos() {
+        const select = document.getElementById("disponibilidadcultos");
+        const button = document.getElementById("botonCultos");
+
+        // Habilita el botón si el valor del select es "true", de lo contrario lo deshabilita
+        button.disabled = select.value === "true";
+    }
+
+    document.getElementById("formularioCursillo").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        const form = this;
+        const formData = new FormData(form);
+        const exitoLabel = document.getElementById("exito");
+
+        // Ocultar mensaje anterior (éxito o error)
+        exitoLabel.style.display = "none";
+        exitoLabel.className = "";
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                exitoLabel.textContent = "Acta registrada con éxito";
+                exitoLabel.className = "text-success";
+                exitoLabel.style.display = "block";
+
+                // Limpiar formulario
+                form.reset();
+
+                // Ocultar mensaje después de 3 segundos
+                setTimeout(() => {
+                    exitoLabel.style.display = "none";
+                }, 3000);
+            } else {
+                // Mostrar errores
+                exitoLabel.className = "text-danger";
+                if (Array.isArray(data.errors)) {
+                    exitoLabel.textContent = data.errors.join(", ");
+                } else {
+                    exitoLabel.textContent = data.errors || "Error desconocido.";
+                }
+                exitoLabel.style.display = "block";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            exitoLabel.className = "text-danger";
+            exitoLabel.textContent = "Error de conexión o del servidor.";
+            exitoLabel.style.display = "block";
+        });
+    });
+
+    document.getElementById("acta-prematrimonial").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        //  Validación previa: ¿se ha seleccionado un cursillo?
+        const cursilloId = document.getElementById("cursillo_id").value;
+        const alerta = document.getElementById("alertaCursillo"); // El div de alerta tipo Bootstrap
+
+        if (!cursilloId) {
+            // Mostrar alerta si no se ha seleccionado cursillo
+            alerta.style.display = "block";
+            alerta.innerText = "Debes seleccionar un cursillo antes de registrar.";
+            return; //  Cancelar el envío
+        } else {
+            // Ocultar alerta si estaba visible
+            alerta.style.display = "none";
+        }
+
+        //  Si todo está bien, continuar con el envío
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar mensaje de éxito previo
+                document.getElementById("exito2").style.display = "none";
+
+                if (data.success) {
+                    document.getElementById("exito2").style.display = "block";
+                    setTimeout(function () {
+                        document.getElementById("exito2").style.display = "none";
+                        const inputBuscar = document.getElementById("nombrecompletonino");
+                        if (inputBuscar.value.trim().length >= 3) {
+                            ListActaPre();
+                        }
+                    }, 3000);
+
+                    //  Aquí vacías el formulario y campos adicionales
+                    document.getElementById("acta-prematrimonial").reset();
+                    document.getElementById("cursillo_id").value = "";
+
+                    limpiarBusquedaCursilloActa(); 
+                    // Opcional: Si hay algún mensaje de advertencia que debe ocultarse
+                    document.getElementById("mensajeErrorCursillo").style.display = "none";
+
+                } else {
+                    document.getElementById("exito").className = "text-danger";
+                    document.getElementById("exito").textContent = Array.isArray(data.errors)
+                        ? data.errors.join(", ")
+                        : (data.errors || "Error desconocido.");
+                    document.getElementById("exito").style.display = "block";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("exito2").innerText = error;
+                document.getElementById("exito2").style.display = "block";
+            });
+    });
+
+    document.getElementById("form-acta-matrimonial").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Validar selección de acta prematrimonial
+        const actaPrematrimonialId = document.getElementById("acta_prematrimonial_id").value;
+        const errorDiv = document.getElementById("errorActaMessage");
+
+        if (!actaPrematrimonialId) {
+            errorDiv.classList.remove("d-none"); // Mostrar mensaje de error
+            return; // No enviar formulario
+        } else {
+            errorDiv.classList.add("d-none"); // Ocultar mensaje si ya se seleccionó
+        }
+
+        // Asegúrate que el valor de acta está actualizado
+        const actaInput = document.getElementById("acta");
+        console.log(" Valor del campo acta antes de enviar:", actaInput.value);
+
+        // Crear FormData con los valores actuales del formulario
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("exito3").style.display = "none";
+
+            if (data.success) {
+                document.getElementById("exito3").style.display = "block";
+                setTimeout(() => {
+                    document.getElementById("exito3").style.display = "none";
+                }, 3000);
+                this.reset();
+                limpiarBusquedaActaPrematrimonial()
+                //ListActaCreada();
+            } else {
+                console.error(" Errores en la validación:", data.errors);
+                errorDiv.textContent = "Hubo un error al registrar el acta. Verifica los campos.";
+                errorDiv.classList.remove("d-none");
+            }
+        })
+        .catch(error => {
+            console.error(' Error inesperado:', error);
+            errorDiv.textContent = "Error inesperado al enviar el formulario.";
+            errorDiv.classList.remove("d-none");
+        });
+    });
+
+    fetch("/ActasAntiguas/GetMinistros")
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("ministro_id");
+            data.forEach(ministro => {
+                const option = document.createElement("option");
+                option.value = ministro.id;
+                option.textContent = ministro.nombre;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error al cargar ministros:", error));
+
+    //  Esto llena el SELECT de iglesias dinámicamente
+    fetch("/ActasAntiguas/GetIglesias")
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("iglesia_id");
+            data.forEach(iglesia => {
+                const option = document.createElement("option");
+                option.value = iglesia.id;
+                option.textContent = iglesia.nombre;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error al cargar iglesias:", error));
+
+    fetch("/ActasAntiguas/GetMinistros")
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("ministro_id_antiguo");
+            select.innerHTML = '<option value="">Seleccione un ministro</option>';
+            data.forEach(ministro => {
+                const option = document.createElement("option");
+                option.value = ministro.id;
+                option.textContent = ministro.nombre;
+                select.appendChild(option);
+            });
+        });
+
+    fetch("/ActasAntiguas/GetIglesias")
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("iglesia_id_antiguo");
+            select.innerHTML = '<option value="">Seleccione una iglesia</option>';
+            data.forEach(iglesia => {
+                const option = document.createElement("option");
+                option.value = iglesia.id;
+                option.textContent = iglesia.nombre;
+                select.appendChild(option);
+            });
+        });
+    
+
+    //  Esto es tu script para enviar el formulario
+    document.getElementById("acta-antig").addEventListener("submit", function (event) {
+        event.preventDefault();
+        console.log(this.action);
+        
+        const form = this;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("exito4").style.display = "none";
+
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                document.getElementById("exito4").style.display = "block";
+                document.getElementById("exito4").textContent = "Acta antigua registrada correctamente.";
+
+                // Limpiar el formulario
+                form.reset();
+
+                // Ocultar mensaje luego de 3 segundos
+                setTimeout(function () {
+                    document.getElementById("exito4").style.display = "none";
+                }, 3000);
+            }
+            else {
+                document.getElementById("exito").className = "text-danger";
+                if (Array.isArray(data.errors)) {
+                    document.getElementById("exito").textContent = data.errors.join(", ");
+                } else {
+                    document.getElementById("exito").textContent = data.errors || "Error desconocido.";
+                }
+                document.getElementById("exito").style.display = "block";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("exito4").innerText = error;
+            document.getElementById("exito4").style.display = "block";
+        });
+    });
+
+    function ListCursillo() {
+        const nombre = document.getElementById('nombrecompleto').value.trim();
+        const resultadosBody = document.getElementById('resultadosCursillo');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = "<tr><td colspan='7' class='text-danger text-center'>Ingresa al menos 3 letras para buscar.</td></tr>";
+            return;
+        }
+
+        fetch(`/CursilloPreMatrimonial/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombrenovio}</td>
+                                <td>${item.nombrenovia}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                <td>${item.estado}</td>
+                                <td><a href="/CursilloPreMatrimonial/ModifyCursilloMatView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/CursilloPreMatrimonial/DeleteCursilloMatView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='7' class='text-center'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='7' class='text-danger text-center'>Error al realizar la búsqueda.</td></tr>";
+            });
+    }
+
+
+    document.getElementById('busquedaCursillo').addEventListener('input', () => {
+        document.getElementById('mensajeErrorCursillo').style.display = 'none';
+    });
+
+    function limpiarBusquedaCursilloGeneral() {
+        document.getElementById("nombrecompleto").value = "";
+        const resultadosBody = document.getElementById("resultadosCursillo");
+        resultadosBody.innerHTML = "<tr><td colspan='7'>No se encontraron resultados.</td></tr>";
+    }
+
+    function LimpiarBusqueda() {
+        document.getElementById('nombrecompletonino').value = '';
+        document.getElementById('resultadosActas').innerHTML = '<tr><td colspan="7">Resultados limpiados.</td></tr>';
+    }
+ 
+
+    function ListActaPre() {
+        const input = document.getElementById('nombrecompletonino');
+        const nombre = input.value.trim();
+        const mensajeError = document.getElementById('mensajeErrorNombre');
+
+        if (nombre.length < 3) {
+            mensajeError.style.display = 'block';
+            mensajeError.innerText = 'Ingresa al menos 3 letras para buscar.';
+            return;
+        }
+
+        fetch(`/ActaPrematrimonial/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultados = document.getElementById('resultadosActas');
+                resultados.innerHTML = '';
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        resultados.innerHTML += `
+                            <tr>
+                                <td>${item.nombrenovio}</td>
+                                <td>${item.nombrenovia}</td>
+                                <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                <td>${item.estado}</td>
+                                <td><a href="/ActaPrematrimonial/ModifyActaPrematrimonialView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/ActaPrematrimonial/DeleteActaPrematrimonialView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            </tr>`;         
+                    });
+                } else {
+                    resultados.innerHTML = '<tr><td colspan="7">No se encontraron resultados.</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error al buscar actas:', error);
+            });
+    }
+
+    document.getElementById('nombrecompletonino').addEventListener('input', () => {
+        document.getElementById('mensajeErrorNombre').style.display = 'none';
+    });
+
+    function ListActaPreAOfi() {
+        const nombre = document.getElementById('nombreBuscar').value.trim();
+        const resultadosBody = document.getElementById('resultadosActa');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = "<tr><td colspan='4'>Ingresa al menos 3 caracteres para buscar.</td></tr>";
+            return;
+        }
+
+        fetch(`/ActaMatrimonial/BuscarPorNombre?nombre=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = "";
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombreNovio}</td>
+                                <td>${item.nombreNovia}</td>
+                                <td>${new Date(item.fechaMatrimonio).toLocaleDateString()}</td>
+                                <td><button type="button" onclick="seleccionarActaPreYEnviar(${item.id})" class="btn btn-success">Seleccionar</button></td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='4'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='4'>Ocurrió un error al buscar.</td></tr>";
+            });
+    }
+    //En la vista de Acta matrimonail
+    function limpiarBusquedaActaPrematrimonial() {
+        document.getElementById('nombreBuscar').value = "";
+        document.getElementById('resultadosActa').innerHTML = "<tr><td colspan='4'>Esperando búsqueda...</td></tr>";
+    }
+
+
+    function ListActaCreada() {
+        const nombre = document.getElementById('fechacasadosreg').value.trim();
+        const resultadosBody = document.getElementById("resultadosActaCreadas");
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = "<tr><td colspan='6'>Ingresa al menos 3 caracteres para buscar.</td></tr>";
+            return;
+        }
+
+        fetch(`/ActaMatrimonial/BuscarPorNombreMatrimoniales?nombre=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = "";
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombreNovio}</td>
+                                <td>${item.nombreNovia}</td>
+                                <td>${item.padrino1}</td>
+                                <td>${item.padrino2}</td>
+                                <td>${new Date(item.fechaRegistro).toLocaleDateString()}</td>
+                                <td><a href="/ActaMatrimonial/ModifyActamatrimonialView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/ActaMatrimonial/DeleteActamatrimonialView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='6'>Ocurrió un error al buscar.</td></tr>";
+            });
+    }
+
+    function limpiarBusquedaCreadas() {
+        document.getElementById('fechacasadosreg').value = "";
+        document.getElementById('resultadosActaCreadas').innerHTML = "<tr><td colspan='6'>Esperando búsqueda...</td></tr>";
+    }
+
+    function BuscarActasAntiguas() {
+        const nombre = document.getElementById('nombreantiguo').value.trim();
+        const resultadosBody = document.getElementById('resultadosActaAntiguas');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = "<tr><td colspan='6'> Ingrese al menos 3 caracteres para buscar.</td></tr>";
+            return;
+        }
+
+        fetch(`/ActasAntiguas/SearchByNames?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = "";
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombrenovio}</td>
+                                <td>${item.nombrenovia}</td>
+                                <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
+                                <td><a href="/ActasAntiguas/ModifyActasAntiguasView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/ActasAntiguas/DeleteActasAntiguasView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='6'> Error al buscar.</td></tr>";
+            });
+    }
+
+    function LimpiarBusquedaActaAntigua() {
+        document.getElementById("nombreantiguo").value = "";
+        document.getElementById("resultadosActaAntiguas").innerHTML = "<tr><td colspan='6'>Ingrese un nombre y presione Buscar.</td></tr>";
+    }
+
+
+    function enviarFormulario(accion) {
+        var form = document.getElementById('formularioCursillo');
+        form.action = '/Matrimonio/' + accion; // Define la acción del formulario dinámicamente
+        form.submit(); // Envía el formulario
+    }
+
+    function mostrarLista(tipo) {
+        if (tipo === 'prematrimonial') {
+            document.getElementById('listaPrematrimonial').style.display = 'block';
+            document.getElementById('listaCreadas').style.display = 'none';
+        } else if (tipo === 'creada') {
+            document.getElementById('listaPrematrimonial').style.display = 'none';
+            document.getElementById('listaCreadas').style.display = 'block';
+        }
+    }
+
+    document.querySelectorAll("#acta-prematrimonial input, #acta-prematrimonial select, #acta-prematrimonial textarea").forEach(elemento => {
+        elemento.addEventListener("focus", function (e) {
+            const cursilloId = document.getElementById("cursillo_id").value;
+            if (!cursilloId) {
+                const tooltip = document.getElementById("tooltipCursillo");
+                const parent = e.target.offsetParent;
+                const inputRect = e.target.getBoundingClientRect();
+                const parentRect = parent.getBoundingClientRect();
+
+                // Posicionar el tooltip justo debajo del campo
+                tooltip.style.position = "absolute";
+                tooltip.style.top = (e.target.offsetTop + e.target.offsetHeight + 5) + "px";
+                tooltip.style.left = e.target.offsetLeft + "px";
+                tooltip.style.display = "block";
+
+                setTimeout(() => {
+                    tooltip.style.display = "none";
+                }, 2500);
+
+                document.getElementById("buscar-cursillo").focus();
+            }
+        });
+    });
+
+    function cargarParroquiasMatrimonio() {
+        fetch("/CursilloPreMatrimonial/GetParroquias")
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("parroquia_id");
+                select.innerHTML = '<option value="">-- Seleccione una parroquia --</option>';
+                data.forEach(p => {
+                    const option = document.createElement("option");
+                    option.value = p.id;
+                    option.textContent = p.nombre;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar parroquias:", error));
+    }
+
+    // Llamar al cargar la página
+    document.addEventListener("DOMContentLoaded", cargarParroquiasMatrimonio);
+
+
+    // Código para guardar y restaurar pestaña activa
+    document.addEventListener("DOMContentLoaded", function () {
+        window.onload = function () {
+        };
+    });
+</script>

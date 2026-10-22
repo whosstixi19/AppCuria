@@ -1,0 +1,232 @@
+﻿<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home"
+        asp-action="MenuCertificado">
+        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Confirmación</h1>
+</div>
+
+<div>
+    <form id="buscar-alumno">
+        <h3>Búsqueda de Alumnos</h3>
+        <input type="hidden" id="alumnoId" name="alumnoid">
+
+        <div class="mb-3 d-flex gap-2 align-items-center">
+            <button type="button" id="btnImprimirConfirmacion" class="btn btn-primary">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+        </div>
+
+        <div class="mt-3">
+            <div class="mb-3 d-flex gap-2 align-items-center">
+                <input type="text" class="form-control w-50" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
+
+                <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" onclick="buscarConfirmaciones()">
+                    <i class="fas fa-search me-1"></i> Buscar
+                </button>
+
+                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" onclick="limpiarBusquedaConfirmaciones()">
+                    Limpiar
+                </button>
+
+                <div class="form-check form-switch ms-3">
+                    <input class="form-check-input" type="checkbox" id="toggleLista" onchange="toggleListaConfirmaciones()">
+                    <label class="form-check-label ms-2" for="toggleLista">
+                        Mostrar todos los registros
+                    </label>
+                </div>
+
+            </div>
+            <h4>Resultados de la búsqueda:</h4>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cédula</th>
+                        <th>Telefono</th>
+                        <th>Fecha nacimiento</th>
+                        <th>Parroquia</th>
+
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody id="resultados">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var alumno in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (alumno.foto != null && alumno.foto.Length > 0)
+                                    {
+                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)"
+                                            alt="Foto de @alumno.nombre" width="100" height="100" />
+                                    }
+                                    else
+                                    {
+                                        <span>Sin foto</span>
+                                    }
+                                </td>
+                                <td>@alumno.nombre</td>
+                                <td>@alumno.apellido</td>
+                                <td>@alumno.cedula</td>
+                                <td>@alumno.parroquia</td>
+                                <td>@alumno.telefono</td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">No se encontraron resultados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('btnImprimirConfirmacion').addEventListener('click', function () {
+        const alumnoId = document.getElementById('alumnoId').value;
+
+        if (!alumnoId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Por favor selecciona un alumno antes de imprimir.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            // Llamar al endpoint con el parámetro guardar
+            fetch(`/Certificados/ImprimirConfirmacion?alumnoid=${alumnoId}&guardar=${result.isConfirmed}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        // Si el usuario quiere guardar, descargamos el PDF
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+
+    function seleccionarAlumno(element) {
+        const alumnoId = element.getAttribute('data-id');  // Obtener el ID del alumno
+        document.getElementById('alumnoId').value = alumnoId; // Guardar en el input hidden
+        console.log("Alumno seleccionado con ID:", alumnoId);
+
+        // Restaurar el estado de todos los botones
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');   // Remueve el color oscuro
+            btn.classList.add('btn-success');   // Restaura el verde
+            btn.textContent = "Seleccionar";    // Restaura el texto
+            btn.disabled = false;               // Habilita los botones
+        });
+
+        // Marcar el botón seleccionado
+        element.classList.remove('btn-success'); // Quita el verde
+        element.classList.add('btn-dark');       // Añade oscuro
+        element.textContent = "Seleccionado";    // Cambia el texto
+        element.disabled = true;                 // Deshabilita el botón
+    }
+
+    function listarConfirmaciones(nombre = "") {
+        const url = nombre.length >= 3 
+            ? `/Certificados/SearchConfirmacion?nombre=${encodeURIComponent(nombre)}` 
+            : `/Certificados/SearchConfirmacion`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => renderConfirmaciones(data))
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    function buscarConfirmaciones() {
+        const nombre = document.getElementById('nombrecompleto').value.trim();
+        if (nombre.length < 3) {
+            alert('Por favor, escribe al menos 3 caracteres para buscar.');
+            return;
+        }
+        listarConfirmaciones(nombre);
+    }
+
+    function limpiarBusquedaConfirmaciones() {
+        document.getElementById('nombrecompleto').value = '';
+        document.getElementById('resultados').innerHTML =
+            `<tr><td colspan="7" class="text-center">No se encontraron resultados.</td></tr>`;
+    }
+
+    function toggleListaConfirmaciones() {
+        const toggle = document.getElementById("toggleLista");
+        if (toggle.checked) {
+            listarConfirmaciones(); // Lista todo
+        } else {
+            limpiarBusquedaConfirmaciones();
+        }
+    }
+
+    function renderConfirmaciones(data) {
+        const resultadosBody = document.getElementById('resultados');
+        resultadosBody.innerHTML = "";
+
+        if (data.length > 0) {
+            data.forEach(item => {
+                resultadosBody.innerHTML += `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.apellido}</td>
+                        <td>${item.cedula}</td>
+                        <td>${item.telefono}</td>
+                        <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td>
+                        <td>${item.parroquia || 'Sin asignar'}</td>
+                        <td>
+                            <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            resultadosBody.innerHTML = `<tr><td colspan="7" class="text-center">No se encontraron resultados.</td></tr>`;
+        }
+    }
+</script>

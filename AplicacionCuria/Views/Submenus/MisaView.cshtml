@@ -1,0 +1,243 @@
+@{
+    ViewData["Title"] = "Gestión de Misas";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Misas</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form id="formMisa">
+            <input type="hidden" id="id" name="id" value="0" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="hora_inicio" class="form-label">Hora de Inicio</label>
+                <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required />
+            </div>
+            <div class="mb-3">
+                <label for="hora_fin" class="form-label">Hora de Fin</label>
+                <input type="time" class="form-control" id="hora_fin" name="hora_fin" />
+            </div>
+            <div class="mb-3">
+                <label for="dia_semana" class="form-label">Día de la Semana</label>
+                <select class="form-control" id="dia_semana" name="dia_semana">
+                    <option value="">Seleccione un día</option>
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                    <option value="Sábado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="iglesia_id" class="form-label">Iglesia</label>
+                <select class="form-control" id="iglesia_id" name="iglesia_id">
+                    <option value="">Seleccione una iglesia</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="sacerdote_id" class="form-label">Sacerdote</label>
+                <select class="form-control" id="sacerdote_id" name="sacerdote_id">
+                    <option value="">Seleccione un sacerdote</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-control" id="estado" name="estado">
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button type="button" class="btn btn-secondary" id="btnLimpiarMisa">Limpiar</button>
+        </form>
+        <div id="msgMisa" class="mt-2"></div>
+    </div>
+    <div class="col-md-7">
+        <div class="mb-3">
+            <input type="text" id="busquedaMisa" class="form-control" placeholder="Buscar por nombre..." />
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Fin</th>
+                    <th>Día</th>
+                    <th>Iglesia</th>
+                    <th>Sacerdote</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaMisas">
+                <!-- Se llena por JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(function () {
+            cargarIglesias();
+            cargarSacerdotes();
+            cargarMisas();
+
+            $("#busquedaMisa").on("input", function () {
+                buscarMisas($(this).val());
+            });
+
+            $("#formMisa").submit(function (e) {
+                e.preventDefault();
+                let id = $("#id").val();
+                let url = id == 0 ? "/Misas/Create" : "/Misas/Edit/" + id;
+                let data = {
+                    id: id,
+                    nombre: $("#nombre").val(),
+                    hora_inicio: $("#hora_inicio").val(),
+                    hora_fin: $("#hora_fin").val(),
+                    dia_semana: $("#dia_semana").val(),
+                    iglesia_id: $("#iglesia_id").val(),
+                    sacerdote_id: $("#sacerdote_id").val(),
+                    descripcion: $("#descripcion").val(),
+                    estado: $("#estado").val()
+                };
+                $.post(url, data, function (res) {
+                    if (res.success) {
+                        cargarMisas();
+                        limpiarFormularioMisa();
+                        mostrarMsgMisa("Misa guardada correctamente.", true);
+                    } else {
+                        mostrarMsgMisa(res.message || "Error al guardar.", false);
+                    }
+                });
+            });
+
+            $("#btnLimpiarMisa").click(function () {
+                limpiarFormularioMisa();
+                cargarIglesias();
+                cargarSacerdotes();
+            });
+        });
+
+        function cargarMisas() {
+            $.get("/Misas/GetMisas", function (data) {
+                renderTablaMisas(data);
+            });
+        }
+
+        function buscarMisas(nombre) {
+            if (!nombre) {
+                cargarMisas();
+                return;
+            }
+            $.get("/Misas/SearchByName", { nombre: nombre }, function (data) {
+                renderTablaMisas(data);
+            });
+        }
+
+        function cargarIglesias() {
+            $.get("/Misas/GetIglesiasDisponibles", function (data) {
+                let options = '<option value="">Seleccione una iglesia</option>';
+                data.forEach(function (i) {
+                    options += `<option value="${i.id}">${i.nombre}</option>`;
+                });
+                $("#iglesia_id").html(options);
+            });
+        }
+
+        function cargarSacerdotes() {
+            $.get("/Misas/GetSacerdotesDisponibles", function (data) {
+                let options = '<option value="">Seleccione un sacerdote</option>';
+                data.forEach(function (s) {
+                    options += `<option value="${s.id}">${s.nombre}</option>`;
+                });
+                $("#sacerdote_id").html(options);
+            });
+        }
+
+        function renderTablaMisas(data) {
+            let html = "";
+            data.forEach(function (m) {
+                html += `<tr>
+                    <td>${m.nombre}</td>
+                    <td>${m.hora_inicio ? m.hora_inicio.substring(0,5) : ""}</td>
+                    <td>${m.hora_fin ? m.hora_fin.substring(0,5) : ""}</td>
+                    <td>${m.dia_semana ?? ""}</td>
+                    <td>${m.iglesia_nombre ?? ""}</td>
+                    <td>${m.sacerdote_nombre ?? ""}</td>
+                    <td>${m.descripcion ?? ""}</td>
+                    <td>${m.estado ?? ""}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editarMisa(${m.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarMisa(${m.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+            $("#tablaMisas").html(html);
+        }
+
+        function editarMisa(id) {
+            $.get("/Misas/GetMisas", function (data) {
+                let misa = data.find(m => m.id === id);
+                if (misa) {
+                    $("#id").val(misa.id);
+                    $("#nombre").val(misa.nombre);
+                    $("#hora_inicio").val(misa.hora_inicio ? misa.hora_inicio.substring(0,5) : "");
+                    $("#hora_fin").val(misa.hora_fin ? misa.hora_fin.substring(0,5) : "");
+                    $("#dia_semana").val(misa.dia_semana);
+                    cargarIglesias();
+                    cargarSacerdotes();
+                    setTimeout(function () {
+                        $("#iglesia_id").val(misa.iglesia_id);
+                        $("#sacerdote_id").val(misa.sacerdote_id);
+                    }, 200);
+                    $("#descripcion").val(misa.descripcion);
+                    $("#estado").val(misa.estado);
+                }
+            });
+        }
+
+        function eliminarMisa(id) {
+            if (confirm("¿Seguro que deseas eliminar esta misa?")) {
+                $.post("/Misas/DeleteConfirmed", { id: id }, function (res) {
+                    if (res.success) {
+                        cargarMisas();
+                        mostrarMsgMisa("Misa eliminada.", true);
+                    } else {
+                        mostrarMsgMisa("No se pudo eliminar.", false);
+                    }
+                });
+            }
+        }
+
+        function limpiarFormularioMisa() {
+            $("#id").val(0);
+            $("#nombre").val("");
+            $("#hora_inicio").val("");
+            $("#hora_fin").val("");
+            $("#dia_semana").val("");
+            $("#iglesia_id").val("");
+            $("#sacerdote_id").val("");
+            $("#descripcion").val("");
+            $("#estado").val("ACTIVO");
+        }
+
+        function mostrarMsgMisa(msg, exito) {
+            $("#msgMisa").text(msg).removeClass().addClass(exito ? "text-success" : "text-danger");
+            setTimeout(() => { $("#msgMisa").text(""); }, 3000);
+        }
+    </script>
+}

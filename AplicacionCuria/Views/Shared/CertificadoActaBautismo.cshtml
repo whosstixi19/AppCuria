@@ -1,0 +1,161 @@
+﻿@model AplicacionCuria.Models.ActaBautismoImprimir
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado de Bautismo</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .encabezado {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .encabezado img {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .certificado {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+
+       .contenido {
+            position: relative;
+            padding: 10px;
+        }
+
+        .registro-civil {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 180px;
+            border: 1px solid black;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .datos {
+            margin-left: 200px;
+            font-size: 18px;
+        }
+
+        .datos {
+            margin-left: 240px;   /* Mantiene separación lateral */
+            position: relative;
+            top: -35px;           /* Sube 20px */
+            font-size: 18px;
+        }
+
+        .nota {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .firmas {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .firma-parroco img {
+            width: 250px;
+            height: auto;
+            display: block;
+            margin: 0 auto 3px;
+        }
+
+        .firma-parroco p {
+            margin: 0; /* Eliminar márgenes superiores e inferiores */
+            line-height: 1.2; /* Ajusta el espacio entre líneas */
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="encabezado">
+        <img src="~/imagenes/escudo.png" alt="Escudo Parroquia">
+        <h1>ARQUIDIÓCESIS DE CUENCA</h1>
+        <h2>VICARÍA URBANA</h2>
+        <h3>@Model.NombreIglesia</h3>
+        <h3><u>CERTIFICADO DE BAUTISMO</u></h3>
+    </div>
+
+    <div class="certificado">
+        <p style="text-align:right;">Cuenca, @DateTime.Now.ToString("dddd dd MMMM yyyy")</p>
+        <p>
+            Yo, el infrascrito, certifico en legal forma, a petición de parte interesada, que en el
+            Tomo <b>@Model.Acta.tomo</b> de partidas bautismales de este archivo parroquial, pág. <b>@Model.Acta.pagina</b>,
+            acta <b>@Model.Acta.acta</b> se halla inscrita con los siguientes datos:
+        </p>
+    </div>
+
+    <div class="contenido">
+        <!-- Caja de Registro Civil -->
+        <div class="registro-civil">
+            <p><b>Registro Civil</b></p>
+            <p>Año: @Model.Acta.registrocivilano</p>
+            <p>Tomo: @Model.Acta.registrociviltomo</p>
+            <p>Folio: @Model.Acta.registrocivilfolio</p
+            <p>Acta: @Model.Acta.registrocivilacta</p>
+            <p>Fecha: @Model.Acta.registrocivilfecha.ToString("dd/MM/yyyy")</p>
+        </div>
+
+        <!-- Datos -->
+        <div class="datos">
+            <p>El día <b><i>@Model.Acta.fechabautizo.ToString("dd MMMM yyyy")</i></b></p>
+            <p>en la Iglesia <b><i>@Model.NombreIglesia</i></b></p>
+            <p>el <b>P. @Model.NombreSacerdote </b> bautizó solamente a <b>@Model.Acta.nombrecompleto</b></p>
+            <p>nacido/a en <b><i>@Model.Acta.lugarnacimiento</i></b> el <b><i>@Model.Acta.fechanacimiento.ToString("dd-MMMM-yyyy")</i></b></p>
+            <p>hijo/a de: <b><i>@Model.NombrePadre</i></b> y de: <b><i>@Model.NombreMadre</i></b></p>
+            <p>Fueron sus padrinos <b><i>@Model.NombrePadrino1</i></b> y <b><i>@Model.NombrePadrino2</i></b></p>
+        </div>
+        <!-- Nota marginal -->
+        <p><b>Nota marginal:</b> a quienes se advirtió sus obligaciones y parentesco espiritual.</p>
+        <p>Lo certifica <b><i>P.@Model.NombreSacerdote</i></b></p>
+    </div>
+
+    <p>Son los datos fielmente tomados del original, al que me remito en caso necesario.</p>
+    <p>Lo certifico,</p>
+
+    <!-- Firmas -->
+    <div class="firmas">
+        <div class="firma-parroco">
+            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+            {
+                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" />
+            }
+            <p>________________________</p>
+            <p>@Model.NombreSacerdote</p>
+            <p>Párroco</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Av. 12 de Abril y las Herrerias, Cuenca - Ecuador</p>
+        <p>Teléfonos: 072814-031  Email: elvergelcuenca@hotmail.com</p>
+    </div>
+</body>
+</html>

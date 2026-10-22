@@ -1,0 +1,219 @@
+@model AplicacionCuria.Models.CertificadoMatrimonioImprimir
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acta de Matrimonio</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 19px;
+            margin: 30px;
+            color: #000;
+            line-height: 1.5;
+        }
+
+        .header {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .contenido {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .cajavacia {
+            position: absolute;
+            left: 0;
+            top: 50px; /* La caja vacía estará arriba */
+            width: 130px;
+            border: 1px solid black;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .registro-civil {
+            position: absolute;
+            left: 50;
+            top: 300px; /* Baja 100px para dar espacio a la cajavacia */
+            width: 130px;
+            border: 1px solid black;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .datos {
+            margin-left: 185px;
+            font-size: 19px;
+            text-align: justify;
+        }
+
+        .firmas-container {
+            position: relative;
+            height: 400px; /* Ajusta la altura según lo necesites */
+            width: 100%;
+            margin-top: 40px;
+            margin-left: 40px;
+        }
+
+        .firma {
+            position: absolute;
+            text-align: center;
+            width: 200px; /* Ajusta el ancho de cada bloque de firma */
+        }
+
+        .firma.novio {
+            top: -10;
+            left: 20%; /* Ajusta la posición horizontal */
+        }
+
+        .firma.novia {
+            top: -10;
+            right: 10%; /* Ajusta la posición horizontal */
+        }
+
+        .firma.testigo1 {
+            top: 100px;
+            left: 20%;
+        }
+
+        .firma.testigo2 {
+            top: 100px;
+            right: 10%;
+        }
+
+        .firma.parroco {
+            top: 200px;
+            bottom: 0;
+            left: 45%;
+            transform: translateX(-60%);
+        }
+
+        .acta-matrimonio {
+            margin-left: 185px;
+            border-top: 2px solid #000;
+            padding-top: 15px;
+            margin-top: -40px;
+            font-size: 19px;
+            text-align: justify;
+        }
+
+        .acta-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .firma-parroco-footer {
+            margin-top: 70px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOLIO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>ACTA N°</strong>
+    </div>
+
+    <div class="contenido">
+        <!-- Caja de Registro Civil -->
+        <div class="registro-civil">
+            <p><b>Registro Civil</b></p>
+            <p>Acta: <b>@Model.Acta.numeroactaregistrocivil</b></p>
+            <p>Página: <b>@Model.Acta.numeropaginaregistrocivil</b></p>
+            <p>Tomo: <b>@Model.Acta.numertomoregistrocivil</b></p>
+            <p>Año: <b>@Model.Acta.fecharegistrocivil.Year</b></p>
+        </div>
+        <div class="cajavacia">
+            <p>_________________</p>
+            <p>_________________</p>
+            <p>_________________</p>
+            <p>_________________</p>
+        </div>
+
+        <!-- Datos del acta -->
+        <div class="datos">
+            <p>
+                En el despacho parroquial de <strong>@Model.NombreParroquia</strong> el día
+                <strong>@Model.Acta.fecharegistro.Day</strong> mes
+                <strong>@Model.Acta.fecharegistro.ToString("MMMM")</strong> año
+                <strong>@Model.Acta.fecharegistro.Year</strong>, ante el Párroco se presentaron:
+                el SEÑOR&nbsp; <strong>@Model.Acta.nombrenovio</strong>, hijo de
+                <strong>@Model.Acta.nombrepadrenovio</strong> y de
+                <strong>@Model.Acta.nombremadrenovio</strong> nacido el día <strong>@Model.Acta.fechanacimientonovio.ToString("dd/MM/yyyy")</strong>,
+                y bautizado en &nbsp;<strong>@Model.Acta.lugarbautizonovio</strong>&nbsp;en la fecha <strong>@Model.Acta.fechabautizonovio.ToString("dd/MM/yyyy")</strong>
+                y la SEÑORITA&nbsp; <strong>@Model.Acta.nombrenovia</strong>, hija de&nbsp;<strong>@Model.Acta.nombrepadrenovia</strong> y de
+                <strong>@Model.Acta.nombremadrenovia</strong>&nbsp;nacida el día <strong>@Model.Acta.fechanacimientonovia.ToString("dd/MM/yyyy")</strong>
+                y bautizada en &nbsp;<strong>@Model.Acta.lugarbautizonovia</strong>&nbsp;en la fecha <strong>@Model.Acta.fechabautizonovia.ToString("dd/MM/yyyy")</strong> .
+            </p>
+            <p>
+                Quienes expusieron su deseo de contraer MATRIMONIO ECLESIÁSTICO. Declararon ser católicos,
+                feligreses de <strong>@Model.NombreParroquia</strong>, que proceden libre y espontáneamente
+                y que no tienen impedimento para casarse.
+            </p>
+
+            <p>
+                Para comprobar su libertad y soltería, presentaron a los testigos
+                <strong>@Model.Acta.testigo1</strong> y
+                <strong>@Model.Acta.testigo2</strong> católico, mayores de edad quienes bajo juramento declararon conocer a los contrayentes y les consta
+                que son libres. Leída que les fue la presente declaración,
+                se ratificaron en lo expuesto y firmaron.
+            </p>
+        </div>
+    </div>
+
+    <!-- Firmas -->
+    <div class="firmas-container">
+        <div class="firma novio">
+            ____________________<br />EL NOVIO
+        </div>
+        <div class="firma novia">
+            ____________________<br />LA NOVIA
+        </div>
+        <div class="firma testigo1">
+            ____________________<br />PRIMER TESTIGO
+        </div>
+        <div class="firma testigo2">
+            ____________________<br />SEGUNDO TESTIGO
+        </div>
+        <div class="firma parroco">
+            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+            {
+                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" style="max-height: 65px;" />
+            }
+            ____________________<br />PÁRROCO
+        </div>
+    </div>
+
+    <!-- Acta de Matrimonio -->
+    <div class="acta-matrimonio">
+        <div class="acta-title">ACTA DE MATRIMONIO</div>
+        <p>
+            En el templo parroquial de <strong>@Model.NombreParroquia</strong>,
+            el día <strong>@Model.Acta.fechamatrimonio.Day</strong> mes
+            <strong>@Model.Acta.fechamatrimonio.ToString("MMMM")</strong> del año
+            <strong>@Model.Acta.fechamatrimonio.Year</strong>, realizadas las informaciones prematrimoniales y
+            llenando los requisitos de Derecho, el P.
+            <strong>@Model.NombreSacerdote</strong> presenció y bendijo el matrimonio de
+            <strong>@Model.Acta.nombrenovio</strong> y
+            <strong>@Model.Acta.nombrenovia</strong>, fueron sus padrinos <strong>@Model.Actamatrimonio.padrino1</strong> y
+            <strong>@Model.Actamatrimonio.padrino2</strong>.
+        </p>
+        <div class="firma-parroco-footer">
+            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+            {
+                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" style="max-height: 65px;" />
+            }
+            <div style="border-top:1px solid #000; width:200px; margin:5px auto 0;"></div>
+            PÁRROCO
+        </div>
+    </div>
+</body>
+</html>

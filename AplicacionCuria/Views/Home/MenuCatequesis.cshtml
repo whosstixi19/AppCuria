@@ -1,0 +1,858 @@
+﻿<title>@ViewData["Title"] - Catequesis</title>
+@{
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+@* <div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCatequesis" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Registro de Matrimonio</h1>
+</div> *@
+<style>
+    nav {
+        background-color: #f7f9fc;
+        border-bottom: 2px solid #d4af37;
+    }
+
+    nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    nav ul li {
+        position: relative;
+    }
+
+    nav ul li a {
+        color: #343a40;
+        /* font-weight: bold; */
+        padding: 15px 20px;
+        text-decoration: none;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+        color: #d4af37;
+    }
+
+    nav ul li ul {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #f7f9fc;
+        display: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 0;
+    }
+
+    nav ul li:hover ul {
+        display: block;
+    }
+
+    nav ul li ul li {
+        width: 200px;
+    }
+
+    nav ul li ul li a {
+        display: block;
+        padding: 10px;
+        color: #343a40;
+    }
+
+    nav ul li ul li a:hover {
+        background-color: #d4af37;
+        color: #fff;
+    }
+
+    /* Estilo responsivo */
+    media (max-width: 768px) {
+        nav ul {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        nav ul li {
+            width: 100%;
+        }
+
+        nav ul li ul {
+            position: static;
+            box-shadow: none;
+        }
+
+    }
+
+    .menu-icon {
+        margin-right: 8px;
+    }
+
+    .christian-background {
+        background: url('https://example.com/church-background.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
+<ul class="nav nav-tabs" id="formTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="registro-alumnos-tab" data-bs-toggle="tab"
+            data-bs-target="#registro-alumnos" type="button" role="tab" aria-controls="registro-alumnos"
+            aria-selected="true">
+            Registro de Alumnos de Catequesis
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="faltas-tab" data-bs-toggle="tab" data-bs-target="#faltas" type="button" role="tab"
+            aria-controls="faltas" aria-selected="false">
+            Registro de Faltas de Alumnos
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="formTabsContent">
+    <!-- Pestaña para Registro de Alumnos -->
+    <div class="tab-pane fade show active" id="registro-alumnos" role="tabpanel" aria-labelledby="registro-alumnos-tab">
+        <div class="row">
+            <!-- Formulario de Registro de Alumno a la izquierda -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="col-lg-6">
+                <form asp-action="Create" asp-controller="AlumnosCatequesis" method="post" enctype="multipart/form-data"
+                    id="crearalumno">
+                    <h3>Registro de Alumno</h3>
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Foto</label>
+                        <img style="padding-bottom:20px" alt="" width="150" height="150" id="vistaPrevia" />
+                        <input type="file" class="form-control" id="foto" name="foto"
+                            onchange="mostrarVistaPrevia(event)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
+                        <input type="date" class="form-control" id="fechabautizo" name="fechabautizo">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nivel" class="form-label">Nivel</label>
+                        <select class="form-select" id="nivel" name="nivel" required>
+                            <option value="">Seleccione un nivel</option>
+                            <option value="INICIACIÓN">INICIACIÓN</option>
+                            <option value="RECONCILIACIÓN">RECONCILIACIÓN</option>
+                            <option value="COMUNIÓN">COMUNIÓN</option>
+                            <option value="AÑO BÍBLICO">AÑO BÍBLICO</option>
+                            <option value="DISCIPULADO">DISCIPULADO</option>
+                            <option value="CONFIRMACIÓN">CONFIRMACIÓN</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="paralelo" class="form-label">Paralelo</label>
+                        <select class="form-select" id="paralelo" name="paralelo" required>
+                            <option value="">Seleccione un paralelo</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="catequista" class="form-label">Catequista</label>
+                        <select class="form-select" id="catequista" name="catequista_id" required>
+                            <option value="">Seleccione un Catequista</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="catequista2" class="form-label">Catequista 2 (opcional)</label>
+                        <select class="form-select" id="catequista2" name="catequista_id2">
+                            <option value="">Seleccione un Catequista</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="periodo_id" class="form-label">Período</label>
+                        <select class="form-select" id="periodo_id" name="periodo_id" required>
+                            <option value="">Seleccione un período</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cedula" class="form-label">Cédula</label>
+                        <input type="text" class="form-control" id="cedula" name="cedula">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" name="telefono">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                        <input type="text" class="form-control" id="nacionalidad" name="nacionalidad">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="estadocivil" class="form-label">Estado Civil</label>
+                        <input type="text" class="form-control" id="estadocivil" name="estadocivil">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="correo" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="correo" name="correo">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones" required></textarea>
+                    </div>
+
+                    <h4>Datos del Representante</h4>
+
+                    <div class="mb-3">
+                        <label for="nombrerepresentante" class="form-label">Nombre del Representante</label>
+                        <input type="text" class="form-control" id="nombrerepresentante" name="nombrerepresentante">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefonorepresentante" class="form-label">Teléfono del Representante</label>
+                        <input type="text" class="form-control" id="telefonorepresentante" name="telefonorepresentante">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="relacionconelestudiante" class="form-label">Relación con el Estudiante</label>
+                        <input type="text" class="form-control" id="relacionconelestudiante"
+                            name="relacionconelestudiante">
+                    </div>
+
+                    <!-- Más campos aquí según el modelo AlumnoCatequesis -->
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <label id="exito" class="text-success" style="display: none;">Alumno Registrado</label>
+
+                </form>
+            </div>
+
+            <!-- Buscador de Alumnos a la derecha -->
+            <div class="col-lg-6">
+                <form id="buscar-alumno">
+                    <h3>Búsqueda de Alumnos</h3>
+                    <div class="mb-3">
+                        <label for="nombrecompleto" class="form-label">Nombre Completo del Alumno</label>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" id="inputNombreAlumno" class="form-control" placeholder="Escribe un nombre..." />
+                        <button id="btnBuscar" class="btn btn-primary" type="button">Buscar</button>
+                        <button id="btnLimpiar" class="btn btn-secondary ms-2" type="button">Limpiar</button>
+                    </div>
+                    <div class="mt-3">
+                        <h4>Resultados de la búsqueda:</h4>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Foto</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Direccion</th>
+                                    <th>Telefono</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosAlumnos">
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var alumno in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (alumno.foto != null && alumno.foto.Length > 0)
+                                                {
+                                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)"
+                                                        alt="Foto de @alumno.nombre" width="100" height="100" />
+                                                }
+                                                else
+                                                {
+                                                    <span>Sin foto</span>
+                                                }
+                                            </td>
+                                            <td>@alumno.nombre</td>
+                                            <td>@alumno.apellido</td>
+                                            <td>@alumno.direccion</td>
+                                            <td>@alumno.telefono</td>
+                                            <td>
+                                                    <a asp-action="ModifyAlumnosView"
+                                                    asp-controller="AlumnosCatequesis"
+                                                    asp-route-id="@alumno.id"
+                                                    class="btn btn-warning mb-1">Modificar</a>
+                                            </td>
+                                            <td>
+                                                    <a asp-action="DeleteAlumnosView"
+                                                    asp-controller="AlumnosCatequesis"
+                                                    asp-route-id="@alumno.id"
+                                                    class="btn btn-danger">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7">No se encontraron resultados.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestaña para Registro de Faltas de Alumnos -->
+    <div class="tab-pane fade" id="faltas" role="tabpanel" aria-labelledby="faltas-tab">
+        <div class="row">
+            <!-- Formulario de Registro de Faltas a la izquierda -->
+            <div class="col-lg-6">
+                <form asp-action="Create" asp-controller="Faltas" method="post" id="form-crear-falta">
+                    <h3>Registro de Faltas</h3>
+                    <div class="mb-3 position-relative">
+                        <label for="nombreAlumno" class="form-label">Nombre del Alumno</label>
+                        <input type="text" class="form-control" id="nombreAlumno" name="nombreAlumno" autocomplete="off"
+                            placeholder="Ingrese el Nombre o Apellido del alumno">
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-primary" onclick="buscarAlumnos()">Buscar</button>
+                            <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaAlumnos()">Limpiar</button>
+                        </div>
+                        <!-- Campo oculto para almacenar el id del alumno seleccionado -->
+                        <input type="hidden" id="alumnoId" name="alumno_id">
+
+                        <!-- Contenedor para los resultados de autocompletado -->
+                        <div style="height: 150px; overflow-y: auto;">
+                            <h4>Resultados de la búsqueda:</h4>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Selecciona alumno</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultadosAlumnosParaFaltas">
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var alumno in Model)
+                                        {
+                                            <tr>
+                                                <td>@alumno.nombre</td>
+                                                <td>@alumno.apellido</td>
+                                                <td>
+                                                    <a asp-route-id="@alumno.id" class="btn btn-success">Seleccionar</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4">No se encontraron resultados.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fechaFalta" class="form-label">Fecha de la Falta</label>
+                        <input type="date" class="form-control" id="fechafalta" name="fechafalta" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observacion" class="form-label">Observacion</label>
+                        <textarea class="form-control" id="observacion" name="observacion" rows="3"></textarea>
+                    </div>
+                    <label id="exito2" class="text-success" style="display: none;">Falta Registrada</label>
+
+                    <button type="submit" class="btn btn-primary">Registrar Falta</button>
+                </form>
+            </div>
+
+            <!-- Buscador de Faltas a la derecha -->
+            <div class="col-lg-6">
+                <form id="buscar-falta">
+                    <h3>Búsqueda de Faltas</h3>
+                    <div class="mb-3">
+                        <label for="nombreAlumnoFalta" class="form-label">Nombre del Alumno</label>
+                        <input type="text" class="form-control" id="nombreAlumnoFalta" name="nombreAlumnoFalta"
+                            placeholder="Escribe un nombre...">
+                    </div>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-primary" onclick="buscarFaltas()">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaFaltas()">Limpiar</button>
+                    </div>
+                    <div class="mt-3">
+                        <h4>Resultados de la búsqueda:</h4>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Fecha de la Falta</th>
+                                    <th>Observaciones</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosFaltas">
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var falta in Model)
+                                    {
+                                        <tr>
+                                            <td>@falta.id</td>
+                                            <td>@falta.fechafalta</td>
+                                            <td>@falta.observacion</td>
+                                            <td>
+                                                <a asp-action="ModifyFaltaAlumnosView" asp-controller="Faltas"
+                                                    asp-route-id="@falta.id" class="btn btn-warning">Modificar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteFaltaAlumnosView" asp-controller="Faltas"
+                                                    asp-route-id="@falta.id" class="btn btn-danger">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4">No se encontraron resultados.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    function mostrarVistaPrevia(event) {
+        const archivo = event.target.files[0];
+        if (archivo) {
+            const lector = new FileReader();
+            lector.onload = function (e) {
+                document.getElementById('vistaPrevia').src = e.target.result;
+            };
+            lector.readAsDataURL(archivo);
+        }
+    }
+
+    document.getElementById('btnBuscar').addEventListener('click', function () {
+        const nombre = document.getElementById('inputNombreAlumno').value.trim();
+
+        if (nombre.length >= 3) {
+            fetch(`/AlumnosCatequesis/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+                .then(response => response.json())
+                .then(data => renderResultados(data))
+                .catch(error => console.error('Error al buscar:', error));
+        } else {
+            alert("Debe ingresar al menos 3 caracteres.");
+        }
+    });
+
+    document.getElementById('btnLimpiar').addEventListener('click', function () {
+        document.getElementById('inputNombreAlumno').value = "";
+        document.getElementById('resultadosAlumnos').innerHTML = `
+            <tr><td colspan="7" class="text-center">No se encontraron resultados.</td></tr>`;
+    });
+
+    function renderResultados(alumnos) {
+        const tabla = document.getElementById('resultadosAlumnos');
+        tabla.innerHTML = "";
+
+        if (alumnos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="7" class="text-center">No se encontraron resultados.</td></tr>`;
+            return;
+        }
+
+        alumnos.forEach(alumno => {
+            tabla.innerHTML += `
+                <tr>
+                    <td>${alumno.foto ? `<img src="data:image/jpeg;base64,${alumno.foto}" width="100" height="100" />` : 'Sin foto'}</td>
+                    <td>${alumno.nombre}</td>
+                    <td>${alumno.apellido}</td>
+                    <td>${alumno.direccion || ''}</td>
+                    <td>${alumno.telefono || ''}</td>
+                    <td>
+                        <a href="/AlumnosCatequesis/ModifyAlumnosView/${alumno.id}" class="btn btn-warning">Modificar</a>
+                    </td>
+                    <td>
+                        <a href="/AlumnosCatequesis/DeleteAlumnosView/${alumno.id}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+    function cargarCatequistas() {
+        fetch('/AlumnosCatequesis/GetCatequistas')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Catequistas recibidos:", data);
+
+                // Select principal
+                const select1 = document.getElementById('catequista');
+                select1.innerHTML = '<option value="">Seleccione un Catequista</option>';
+
+                // Select secundario (opcional)
+                const select2 = document.getElementById('catequista2');
+                select2.innerHTML = '<option value="">Seleccione un Catequista</option>';
+
+                data.forEach(c => {
+                    const optionHTML = `<option value="${c.id}">${c.nombre}</option>`;
+                    select1.innerHTML += optionHTML;
+                    select2.innerHTML += optionHTML;
+                });
+            })
+            .catch(error => console.error('Error al cargar catequistas:', error));
+    }
+
+    function cargarPeriodos() {
+        fetch('/AlumnosCatequesis/GetPeriodos')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Periodos recibidos:", data);
+                const selectPeriodo = document.getElementById('periodo_id');
+                selectPeriodo.innerHTML = '<option value="">Seleccione un período</option>';
+
+                data.forEach(periodo => {
+                    selectPeriodo.innerHTML += `<option value="${periodo.id}">${periodo.nombre}</option>`;
+                });
+            })
+            .catch(error => console.error('Error al cargar períodos:', error));
+    }
+    function ListParaFaltas() {
+        const nombre = document.getElementById('nombreAlumno').value;
+        const resultadosBody = document.getElementById('resultadosAlumnosParaFaltas');
+
+        // Solo hacer la búsqueda si hay al menos un carácter
+        if (nombre.length > 0) {
+            fetch(`/AlumnosCatequesis/SearchByName?nombrecompleto=${nombre}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultadosBody = document.getElementById("resultadosAlumnosParaFaltas");
+                    if (!resultadosBody) {
+                        console.error("Elemento con id 'resultadosCursillo' no encontrado.");
+                        return;
+                    }
+                    resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const row = `<tr >
+                                                  <td>${item.nombre}</td>
+                                                  <td>${item.apellido}</td>
+                                                          <td><a  class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)" id="btnEliminar">Seleccionar</a></td>
+                                         </tr>`;
+                            resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                        });
+                    } else {
+                        resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                    }
+                })
+                .catch(error => console.error('Error en la búsqueda:', error));
+        } else {
+            // Mostrar mensaje por defecto si no hay búsqueda activa
+            fetch('/AlumnosCatequesis/Search')
+                .then(response => response.json())
+                .then(data => {
+                    const resultadosBody = document.getElementById("resultadosAlumnosParaFaltas");
+                    if (!resultadosBody) {
+                        console.error("Elemento con id 'resultadosActas' no encontrado.");
+                        return;
+                    }
+                    resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const row = `<tr >
+                                                 <td>${item.nombre}</td>
+                                                 <td>${item.apellido}</td>
+                                                 <td><a  class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)" id="btnEliminar">Seleccionar</a></td>
+
+                                            </tr>`;
+                            resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                        });
+                    } else {
+                        resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                    }
+                })
+                .catch(error => console.error('Error en la búsqueda:', error));
+        }
+    }
+
+    function ListFaltas(nombre) {
+        fetch(`/Faltas/BuscarPorNombre?nombre=${encodeURIComponent(nombre)}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => {
+                const tbody = document.getElementById('resultadosFaltas');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3">No se encontraron resultados.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(falta => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${falta.nombre}</td>
+                        <td>${falta.fechafalta}</td>
+                        <td>${falta.observacion}</td>
+                        <td>
+                            <a href="/Faltas/ModifyFaltaAlumnosView/${falta.id}" class="btn btn-warning btn-sm">Modificar</a>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="eliminarFalta(${falta.id})">Eliminar</button>
+                        </td>`;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error detallado:', error);
+            });
+    }
+    function eliminarFalta(id) {
+        if (!confirm("¿Seguro que deseas eliminar esta falta?")) return;
+
+        fetch(`/Faltas/DeleteConfirmed/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert("Falta eliminada con éxito.");
+                //buscarFaltas(); // Recargar la tabla de resultados
+            } else {
+                alert("No se pudo eliminar la falta.");
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar:", error);
+            alert("Error al eliminar la falta.");
+        });
+    }
+    function seleccionarAlumno(element) {
+        const alumnoId = element.getAttribute('data-id'); // Obtener el id del alumno
+        console.log(alumnoId);
+        document.getElementById('alumnoId').value = alumnoId; // Guardarlo en el input hidden
+
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');   // Remover color verde oscuro
+            btn.classList.add('btn-success');   // Restaurar el color verde claro
+            btn.textContent = "Seleccionar";    // Restaurar texto
+            btn.disabled = false;               // Reactivar los botones deshabilitados
+        });
+
+        element.classList.remove('btn-success'); // Remover la clase verde claro
+        element.classList.add('btn-dark');       // Agregar clase verde oscuro (o btn-dark)
+        element.textContent = "Seleccionado";    // Cambiar el texto del botón
+        element.disabled = true;                 // Deshabilitar el botón para evitar múltiples selecciones
+
+    }
+
+    document.getElementById("crearalumno").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                const exitoLabel = document.getElementById("exito");
+                exitoLabel.style.display = "none";
+
+                if (data.success) {
+                    exitoLabel.className = "text-success";
+                    exitoLabel.textContent = "Alumno Registrado";
+                    exitoLabel.style.display = "block";
+
+                    document.getElementById("crearalumno").reset();
+                    const vistaPrevia = document.getElementById("vistaPrevia");
+                    if (vistaPrevia) {
+                        vistaPrevia.src = "";
+                    }
+
+                    setTimeout(() => {
+                        exitoLabel.style.display = "none";
+                    }, 3000);
+
+                    //List();
+                }
+                else {
+                    document.getElementById("exito").className = "text-danger";
+                    if (Array.isArray(data.errors)) {
+                        document.getElementById("exito").textContent = data.errors.join(", ");
+                    } else {
+                        document.getElementById("exito").textContent = data.errors || "Error desconocido.";
+                    }
+                    document.getElementById("exito").style.display = "block"
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito").innerText = error;
+                document.getElementById("exito").style.display = "block";
+            });
+    });
+
+    document.getElementById("form-crear-falta").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito2").style.display = "none";
+
+                if (data.success) {
+                    // Redirigir a la raíz o hacer otras acciones en caso de éxito
+
+                    document.getElementById("exito2").style.display = "block";
+                    //location.reload();
+                    setTimeout(function () {
+                        console.log("Han pasado 5 segundos");
+                        //window.location.href = "/Home/MenuSacramentos";
+                        ListParaFaltas();
+                        ListFaltas();
+                    }, 2000);
+
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito2").innerText = error;
+                document.getElementById("exito2").style.display = "block";
+            });
+    });
+    function buscarAlumnos() {
+        const input = document.getElementById('nombreAlumno').value.trim();
+        if (input.length < 3) {
+            alert('Por favor, escribe al menos 3 caracteres para buscar.');
+            return;
+        }
+        // Aquí va tu función original, puedes renombrarla si usas AJAX
+        ListParaFaltas(input); 
+    }
+
+    function limpiarBusquedaAlumnos() {
+        document.getElementById('nombreAlumno').value = '';
+        document.getElementById('resultadosAlumnosParaFaltas').innerHTML = `
+            <tr>
+                <td colspan="4">No se encontraron resultados.</td>
+            </tr>`;
+    }
+
+    function buscarFaltas() {
+        const input = document.getElementById('nombreAlumnoFalta').value.trim();
+        if (input.length < 3) {
+            alert('Por favor, escribe al menos 3 caracteres para buscar.');
+            return;
+        }
+        ListFaltas(input); // Llama a tu función AJAX o controlador
+    }
+
+    function limpiarBusquedaFaltas() {
+        document.getElementById('nombreAlumnoFalta').value = '';
+        document.getElementById('resultadosFaltas').innerHTML = `
+            <tr>
+                <td colspan="4">No se encontraron resultados.</td>
+            </tr>`;
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("Cargando catequistas y periodos...");
+        cargarCatequistas();
+        cargarPeriodos();
+    });
+</script>

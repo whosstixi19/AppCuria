@@ -1,0 +1,315 @@
+﻿@model AplicacionCuria.Models.Antiguos
+
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="BautizadosView" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Eliminar acta</h1>
+</div>
+
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+        <div class="col-md-6">
+            <form asp-controller="Antiguos" asp-action="DeleteConfirmed" method="post" id="acta-form">
+                <input type="hidden" name="id" value="@Model.id" /> <!-- Enviar ID al controlador -->
+                <!-- Nombre completo -->
+                <div class="mb-3">
+                    <label for="NombreCompleto" class="form-label">Nombre completo</label>
+                    <label type="text" class="form-control" id="NombreCompleto" name="nombrecompleto">@Model.nombrecompleto</label>
+                </div>
+
+                <!-- Lugar de nacimiento -->
+                <div class="mb-3">
+                    <label for="LugarNacimiento" class="form-label">Lugar de nacimiento</label>
+                    <label type="text" class="form-control" id="LugarNacimiento" name="LugarNacimiento">@Model.lugarnacimiento</label>
+                </div>
+
+                <!-- Cédula y sexo -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Cedula" class="form-label">Cédula</label>
+                        <label type="text" class="form-control" id="Cedula" name="Cedula">@Model.cedula</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Sexo" class="form-label">Sexo</label>
+                        <label type="text" class="form-control" id="Sexo" name="Sexo">"@Model.sexo</label>
+
+                    </div>
+                </div>
+
+                <!-- Fechas -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                        <label type="date" class="form-control" id="FechaNacimiento" name="fechanacimiento">@Model.fechanacimiento.ToString("yyyy-MM-dd")</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="FechaBautizo" class="form-label">Fecha de bautizo</label>
+                        <label type="date" class="form-control" id="FechaBautizo" name="fechabautizo">@Model.fechabautizo.ToString("yyyy-MM-dd")</label>
+                    </div>
+                </div>
+
+                <!-- Información adicional (padres y padrinos) -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="NombrePadre" class="form-label">Nombre del padre</label>
+                        <input type="text" class="form-control" id="NombrePadre" name="nombrepadre" value="@Model.nombrepadre" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="NombreMadre" class="form-label">Nombre de la madre</label>
+                        <input type="text" class="form-control" id="NombreMadre" name="nombremadre" value="@Model.nombremadre" readonly />
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Padrino1" class="form-label">Padrino 1</label>
+                        <label type="text" class="form-control" id="Padrino1" name="cedulapadrino1">@Model.cedulapadrino1</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Padrino2" class="form-label">Padrino 2</label>
+                        <label type="text" class="form-control" id="Padrino2" name="cedulapadrino2">@Model.cedulapadrino2</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Padrino3" class="form-label">Padrino 3</label>
+                        <label type="text" class="form-control" id="Padrino3" name="cedulapadrino3">@Model.cedulapadrino3</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Padrino4" class="form-label">Padrino 4</label>
+                        <label type="text" class="form-control" id="Padrino4" name="cedulapadrino4">@Model.cedulapadrino4</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Padrino5" class="form-label">Padrino 5</label>
+                        <label type="text" class="form-control" id="Padrino5" name="cedulapadrino5">@Model.cedulapadrino5</label>
+                    </div>
+                </div>
+
+                <!-- Datos del acta -->
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="Tomo" class="form-label">Tomo</label>
+                        <label type="text" class="form-control" id="Tomo" name="tomo">@Model.tomo</label>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="Pagina" class="form-label">Folio</label>
+                        <label type="text" class="form-control" id="Pagina" name="pagina">@Model.pagina</label>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="Acta" class="form-label">Número de Acta</label>
+                        <label type="text" class="form-control" id="Acta" name="acta">@Model.acta</label>
+                    </div>
+                </div>
+
+                <!-- Listados desplegables -->
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label for="ministro" class="form-label">Ministro</label>
+                        <label type="text" class="form-control" id="ministro" name="ministro">@ViewBag.MinistroNombre</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="iglesia" class="form-label">Iglesia</label>
+                        <label type="text" class="form-control" id="iglesia" name="iglesia">@ViewBag.IglesiaNombre</label>
+
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="parroquia" class="form-label">Parroquia</label>
+                        <label type="text" class="form-control" id="parroquia" name="parroquia">@ViewBag.ParroquiaNombre</label>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="sacerdote" class="form-label">Sacerdote</label>
+                        <label type="text" class="form-control" id="sacerdote" name="sacerdote">@ViewBag.SacerdoteNombre</label>
+                    </div>
+                </div>
+
+                <div class="row">
+
+
+                    <!-- Registro Civil -->
+
+                    <div class="row registro-civil-container">
+                        <h5>Registro Civil</h5>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilAno" class="form-label">Año de Registro Civil</label>
+                            <label type="text" class="form-control" id="RegistroCivilAno" name="registrocivilano">@Model.registrocivilano</label>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilTomo" class="form-label">Tomo de Registro Civil</label>
+                            <label type="text" class="form-control" id="RegistroCivilTomo" name="registrociviltomo">@Model.registrociviltomo</label>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilFolio" class="form-label">Folio de Registro Civil</label>
+                            <label type="text" class="form-control" id="RegistroCivilFolio" name="registrocivilfolio">@Model.registrocivilfolio</label>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilActa" class="form-label">Número de Acta de Registro Civil</label>
+                            <label type="text" class="form-control" id="RegistroCivilActa" name="registrocivilacta">@Model.registrocivilacta</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="RegistroCivilFecha" class="form-label">Fecha de Registro Civil</label>
+                            <label type="date" class="form-control" id="RegistroCivilFecha" name="registrocivilfecha">@Model.registrocivilfecha.ToString("yyyy-MM-dd")</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones adicionales</label>
+                            <label type="text" class="form-control" id="observaciones" name="observaciones">@Model.observaciones</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de eliminar -->
+                <div class="mb-3" id="elm">
+                    <label>¿Seguro que quieres eliminar?</label>
+                    <button type="submit" class="btn btn-danger" asp-controller="Antiguos"
+                            asp-action="DeleteConfirmed"
+                            asp-route-id="@Model.id">
+                        Eliminar
+                    </button>
+                    <label id="exito" class="text-success" style="display: none;">Acta Eliminada con exito</label>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function cargarMinistros() {
+        fetch('/ActaBautismo/GetMinistros')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Ministro');
+                ministroSelect.innerHTML = '<option value="">Seleccione un ministro</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarParroquias() {
+        fetch('/ActaBautismo/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Parroquia');
+                ministroSelect.innerHTML = '<option value="">Seleccione una Parroquia</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarIglesias() {
+        fetch('/ActaBautismo/GetIglesias')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Iglesia');
+                ministroSelect.innerHTML = '<option value="">Seleccione una iglesia</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarSacerdotes() {
+        fetch('/ActaBautismo/GetSacerdotes')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Sacerdote');
+                ministroSelect.innerHTML = '<option value="">Seleccione un sacerdote</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarFeligreses() {
+        fetch('/ActaBautismo/GetFeligreses')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Feligreses');
+                ministroSelect.innerHTML = '<option value="">Seleccione</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // cargarMinistros();
+        // cargarParroquias();
+        // cargarIglesias();
+        // cargarSacerdotes();
+        // cargarFeligreses();
+
+        fetch(`/ActaBautismo/Valores/${@Model.id}`)
+            .then(response => response.json())
+            .then(data => {
+                // Obtener el valor del ministro del JSON
+                const ministro = data.ministro;
+                const iglesia = data.iglesia;
+                const feligres = data.feligreses;
+
+                // Obtener el elemento select
+                console.log(ministro);
+                const selectElement = document.getElementById('ministro');
+                const selectElement2 = document.getElementById('iglesia');
+                const selectElement3 = document.getElementById('feligreses');
+                selectElement.value = ministro;
+                selectElement2.value = iglesia;
+                selectElement3.value = feligres;
+            })
+            .catch(error => console.error('Error:', error));
+
+
+    });
+
+
+    document.getElementById("acta-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito").style.display = "none";
+
+                if (data.success) {
+                    // Redirigir a la raíz o hacer otras acciones en caso de éxito
+
+                    document.getElementById("exito").style.display = "block";
+                    //location.reload();
+                    setTimeout(function () {
+                        console.log("Han pasado 5 segundos");
+                        window.location.href = "/Submenus/BautizadosView";
+                    }, 3000);
+
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito").innerText = error;
+                document.getElementById("exito").style.display = "block";
+            });
+
+
+    });
+</script>

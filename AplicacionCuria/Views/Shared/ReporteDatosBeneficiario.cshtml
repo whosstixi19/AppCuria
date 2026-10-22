@@ -1,0 +1,223 @@
+﻿@model AplicacionCuria.Models.AyudaSocial
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha de Admisión</title>
+    <style>
+    body {
+        font-family: Cambria, serif;
+        font-size: 12pt;
+        color: #000;
+        margin: 0;
+        padding: 30px 50px;
+    }
+
+    h1, h2 {
+        margin: 0;
+        font-family: Cambria, serif;
+    }
+
+    h1 {
+        font-size: 26pt;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    h2 {
+        font-size: 14pt;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .encabezado-linea {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .fecha-admision {
+        flex: 1;
+        font-size: 14pt;
+        padding-top: 15px;
+    }
+
+    .foto-wrapper {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .foto {
+        width: 130px;
+        height: auto;
+        border: 2px solid #000;
+        padding: 1px;
+    }
+
+    .encabezado-texto {
+        flex-grow: 1;
+    }
+
+    .bloque {
+        border: 1px solid #000;
+        padding: 12px 18px;
+        margin-top: 25px;
+    }
+
+    .subtitulo {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .tabla-bloque {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .tabla-bloque td {
+        padding: 4px 10px;
+        vertical-align: top;
+        width: 33%;
+        font-size: 12pt;
+    }
+
+    .tabla-bloque p {
+        margin: 4px 0;
+    }
+
+    .tabla-bloque strong {
+        display: inline-block;
+        min-width: 90px;
+    }
+
+    .footer {
+        margin-top: 25px;
+        text-align: center;
+        font-size: 10pt;
+    }
+</style>
+</head>
+<body>
+
+    <h1>PARROQUIA ECLESIASTICA EL VERGEL</h1>
+    <h2>FICHA DE ADMISIÓN</h2>
+
+    <table style="width: 100%; margin-bottom: 0px;">
+        <tr>
+            <td style="text-align: left; vertical-align: top; padding-top: 30px;">
+                <p style="font-size: 12pt; font-family: Cambria, serif;">
+                    <strong>FECHA DE ADMISIÓN:</strong>
+                    <span style="display: inline-block; border-bottom: 2px solid black; padding: 0 5px;">
+                        @DateTime.Now.ToString("dd-MMMM-yyyy")
+                    </span>
+                </p>
+            </td>
+            <td style="text-align: right; vertical-align: bottom; padding-bottom: 0px;">
+                @if (!string.IsNullOrEmpty(Model.FotoBase64))
+                {
+                    <img class="foto" src="data:image/jpeg;base64,@Model.FotoBase64" alt="Foto del beneficiario" style="margin-bottom: -10px;" />
+                }
+            </td>
+        </tr>
+    </table>
+
+    <div class="subtitulo">1.- DATOS DEL ENFERMO O FAMILIA</div>
+    <div class="bloque">
+        <table class="tabla-bloque">
+            <tr>
+                <td><p><strong>APELLIDOS:</strong> @Model.apellidos</p></td>
+                <td><p><strong>NOMBRES:</strong> @Model.nombre</p></td>
+                <td><p><strong>CEDULA:</strong> @Model.cedula</p></td>
+            </tr>
+            <tr>
+                <td><p><strong>EDAD:</strong> @Model.edad</p></td>
+                <td><p><strong>GENERO:</strong> @Model.genero</p></td>
+                <td><p><strong>ESTADO CIVIL:</strong> @Model.estadocivil</p></td>
+            </tr>
+            <tr>
+                <td><p><strong>INSTRUCCIÓN:</strong> @Model.instruccion</p></td>
+                <td><p><strong>RELIGIÓN:</strong> @Model.religion</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bloque">
+        <div class="subtitulo">LUGAR Y FECHA DE NACIMIENTO</div>
+        <table class="tabla-bloque">
+            <tr>
+                <td><p><strong>DD/MM/AA:</strong> @Model.fechanacimiento.ToString("dd 'DE' MMMM 'DE' yyyy")</p></td>
+                <td><p><strong>PROVINCIA:</strong> @Model.provincia</p></td>
+                <td><p><strong>CANTÓN:</strong> @Model.canton</p></td>
+            </tr>
+            <tr>
+                <td><p><strong>PARROQUIA:</strong> @Model.parroquia</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bloque">
+        <div class="subtitulo">DIRECCIÓN DOMICILIARIA ACTUAL</div>
+        <table class="tabla-bloque">
+            <tr>
+                <td><p><strong>CALLE PRINCIPAL:</strong> @Model.calleprincipal</p></td>
+                <td><p><strong>N°:</strong> @Model.numero</p></td>
+                <td><p><strong>CALLE SECUNDARIA:</strong> @Model.callesecundaria</p></td>
+            </tr>
+            <tr>
+                <td><p><strong>SECTOR:</strong> @Model.sector</p></td>
+                <td><p><strong>TELÉFONO:</strong> @Model.telefono</p></td>
+                <td><p><strong>REFERENCIA:</strong> @Model.referencia</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bloque">
+        <div class="subtitulo">DISCAPACIDAD</div>
+        <table class="tabla-bloque">
+            <tr>
+                <td><p><strong>DISCAPACIDAD:</strong> @Model.discapacidad</p></td>
+                <td><p><strong>POSEE CARNET:</strong> @Model.carnetdiscapacidad</p></td>
+                <td><p><strong>PORCENTAJE:</strong> @Model.porcentajediscapacidad</p></td>
+            </tr>
+            <tr>
+                <td><p><strong>TIPO DE DISCAPACIDAD:</strong> @Model.especificardiscapacidad</p></td>
+                <td><p><strong>RECIBE BDH:</strong> @Model.recibebdh</p></td>
+                <td><p><strong>JUBILACIÓN:</strong> @Model.jubilacion</p></td>
+            </tr>
+            <tr>
+                <td colspan="2"><p><strong>SI TRABAJA ESPECIFIQUE:</strong> @Model.trabaja</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bloque">
+        <div class="subtitulo">CON QUIÉN VIVE</div>
+        <table class="tabla-bloque">
+            <tr>
+                <td><p><strong>VIVE CON:</strong> @Model.conquienvive</p></td>
+                <td><p><strong>ESPECIFIQUE CON QUIÉN:</strong> @Model.especifica_con_quien</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bloque">
+        <div class="subtitulo">DATOS DE LA VIVIENDA</div>
+        <table class="tabla-bloque">
+            <tr>
+                <td><p><strong>LA VIVIENDA ES:</strong> @Model.viviendaes</p></td>
+                <td><p><strong>TIPO DE CONSTRUCCIÓN:</strong> @Model.tipoconstruccion</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        Ficha generada automáticamente por el sistema parroquial.
+    </div>
+
+</body>
+</html>

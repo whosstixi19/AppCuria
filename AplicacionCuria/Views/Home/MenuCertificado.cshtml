@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Navbar con Submenús";
+
+    // ViewData["ActiveMenu"] = "Bautizados";
+
+    // ViewData["ActiveMenu"] = "Confirmacion";
+
+    // ViewData["ActiveMenu"] = "PrimeraComunion"; // Cambiar según la vista activa
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        /* Estilos personalizados */
+        nav {
+            background-color: #f7f9fc;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            color: #343a40;
+            /* font-weight: bold; */
+            padding: 15px 20px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: #d4af37;
+        }
+
+        nav ul li ul {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f7f9fc;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0;
+        }
+
+        nav ul li:hover ul {
+            display: block;
+        }
+
+        nav ul li ul li {
+            width: 200px;
+        }
+
+        nav ul li ul li a {
+            display: block;
+            padding: 10px;
+            color: #343a40;
+        }
+
+        nav ul li ul li a:hover {
+            background-color: #d4af37;
+            color: #fff;
+        }
+
+        /* Estilo responsivo */
+        media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav ul li {
+                width: 100%;
+            }
+
+            nav ul li ul {
+                position: static;
+                box-shadow: none;
+            }
+        }
+
+        .menu-icon {
+            margin-right: 8px;
+        }
+
+        .christian-background {
+            background: url('https://example.com/church-background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body class="christian-background">
+    <h2>CERTIFICADOS</h2>
+    <nav class="navbar navbar-expand-md navbar-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a href="@Url.Action("PaseDeNivelView", "Submenus")" class="nav-link @(ViewData["ActiveMenu"] == "PaseDeNivel" ? "active" : "")">
+                    <i class="fas fa-cross menu-icon"></i> Pase de Nivel
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="PaseDeNivelView">
+                            <i class="fas fa-cross menu-icon"></i> Pase de Nivel
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("PrimeraComunionCView", "Submenus")" class="nav-link @(ViewData["ActiveMenu"] == "PrimeraComunion" ? "active" : "")">
+                    <i class="fas fa-bread-slice menu-icon"></i> Primera Comunión
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="PrimeraComunionCView">
+                            <i class="fas fa-bread-slice menu-icon"></i> Primera Comunión
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("ConfirmacionCView", "Submenus")" class="nav-link @(ViewData["ActiveMenu"] == "Confirmacion" ? "active" : "")">
+                    <i class="fas fa-dove menu-icon"></i> Confirmación
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="ConfirmacionCView">
+                            <i class="fas fa-dove menu-icon"></i> Confirmación
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("DispensasCView", "Submenus")" class="nav-link @(ViewData["ActiveMenu"] == "Dispensas" ? "active" : "")">
+                    <i class="fas fa-ring menu-icon"></i> Dispensas
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="DispensasCView">
+                            <i class="fas fa-ring menu-icon"></i> Dispensas
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("BautizosCView", "Submenus")" class="nav-link @(ViewData["ActiveMenu"] == "Bautizos" ? "active" : "")">
+                    <i class="fas fa-ring menu-icon"></i> Bautizos
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="BautizosCView">
+                            <i class="fas fa-ring menu-icon"></i> Bautizos
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("MatrimoniosCView", "Submenus")" class="nav-link @(ViewData["ActiveMenu"] == "Matrimonios" ? "active" : "")">
+                    <i class="fas fa-ring menu-icon"></i> Matrimonios
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="MatrimoniosCView">
+                            <i class="fas fa-ring menu-icon"></i> Matrimonios
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+        </ul>
+    </nav>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Para los íconos de FontAwesome -->
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var currentUrl = window.location.pathname;
+            var menuLinks = document.querySelectorAll("nav ul li a");
+
+            menuLinks.forEach(function (link) {
+                if (link.href === window.location.origin + currentUrl) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

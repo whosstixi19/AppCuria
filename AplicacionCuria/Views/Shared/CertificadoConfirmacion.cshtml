@@ -1,0 +1,137 @@
+﻿@model AplicacionCuria.Models.ConfirmacionImprimir
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado de Confirmación</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #FFFFFF;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            border: 10px solid #FFFFFF;
+            background-color: #FFFFFF;
+            box-shadow: 0px 0px 5px #FFFFFF;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 32px;
+            font-weight: bold;
+            color: #D62429;
+            margin-top: 10px;
+        }
+
+        .sub-header {
+            font-size: 30px;
+            color: #333;
+            margin: 10px 0 20px;
+        }
+
+        .content {
+            font-size: 30px;
+            color: #000;
+            line-height: 1.5;
+            margin: 0 15%;
+        }
+
+        .footer {
+            font-size: 26px;
+            margin-top: 30px;
+        }
+
+        .firma {
+            text-align: center;
+            margin-top: 40px;
+            min-height: 100px;
+        }
+
+        .img-firma {
+            max-width: 250px;
+            height: auto;
+        }
+
+        .mmmm {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+        }
+
+        .badge {
+            width: 160px;
+            height: auto;
+            margin-left: 50px;
+            margin-bottom: 50px;
+        }
+
+        .badgee {
+            width: 160px;
+            height: auto;
+            margin-right: 50px;
+            margin-bottom: 20px;
+        }
+
+        .fecha {
+            margin-top: 20px; /* Espacio entre SACERDOTE y la fecha */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Imagen del escudo -->
+        <div class="mmmm">
+            <img src="~/imagenes/escudo.png" alt="Escudo" class="badge" />
+            <img src="~/imagenes/confirmacion.jpg" alt="Escudo" class="badgee" />
+        </div>
+
+        <!-- Encabezado del certificado -->
+        <div class="header">Certificado de Confirmación</div>
+        <div class="sub-header">Este certificado es otorgado a</div>
+
+        <!-- Contenido del certificado -->
+        <div class="content">
+            <p><strong>Nombre del Alumno:</strong> @Model.Alumno.nombre @Model.Alumno.apellido</p>
+            <p>Por haber recibido el sacramento de la Confirmación y demostrar su compromiso con la fe católica.</p>
+        </div>
+
+        <!-- Pie de página con fecha y firma -->
+        <div class="footer">
+            <div class="firma">
+                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                {
+                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
+                }
+            </div>
+            <p>@Model.NombreSacerdote</p>
+            <p>SACERDOTE</p>
+            <p class="fecha">Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
+            <p>"Pero recibirán poder cuando el Espíritu Santo venga sobre ustedes; y serán mis testigos en Jerusalén, en toda Judea y Samaria, y hasta los confines de la tierra." </p>
+            <p><em>(Hechos 1:8)</em></p>
+        </div>
+    </div>
+</body>
+</html>

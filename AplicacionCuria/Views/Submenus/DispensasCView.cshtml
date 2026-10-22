@@ -1,0 +1,144 @@
+﻿
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
+        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
+        <span>Volver</span>
+    </a>    <h1 class="ms-3">Dispensas</h1>
+</div>
+
+<div class="container mt-4">
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <form id="formSolteria" method="post" asp-controller="Certificados" asp-action="ImprimirCertificadoSolteria">
+
+                <!-- DATOS DEL NOVIO/A -->
+                <h4>Datos del Novio/a</h4>
+                <p>
+                    Nombres y Apellidos del Novio/a: 
+                    <input type="text" name="nombreNovio" class="form-control" required />
+                </p>
+                <p>
+                    Domicilio: 
+                    <input type="text" name="domicilioNovio" class="form-control" required />
+                </p>
+                <p>
+                    Cédula: 
+                    <input type="text" name="cedulaNovio" class="form-control" required />
+                </p>
+                <p>
+                    Nombres y Apellidos de la Pareja: 
+                    <input type="text" name="nombrePareja" class="form-control" required />
+                </p>
+
+                <!-- DATOS DE LOS TESTIGOS -->
+                <h4>Datos adicionales del certificado</h4>
+                <p>Testigo 1: <input type="text" name="testigo1" class="form-control" /></p>
+                <p>Dirección: <input type="text" name="direccion1" class="form-control" /></p>
+                <p>Cédula: <input type="text" name="cedula1" class="form-control" /></p>
+                <p>Teléfono: <input type="text" name="telefono1" class="form-control" /></p>
+                <p>Testigo 2: <input type="text" name="testigo2" class="form-control" /></p>
+                <p>Dirección 2: <input type="text" name="direccion2" class="form-control" /></p>
+                <p>Cédula: <input type="text" name="cedula2" class="form-control" /></p>
+                <p>Teléfono: <input type="text" name="telefono2" class="form-control" /></p>
+
+                <!-- SELECTS -->
+                <p>
+                    Seleccionar Feligreses de:
+                    <select class="form-select" id="Parroquia" name="parroquia">
+                        <option value="">Seleccione Feligreses de:</option>
+                    </select>
+                </p>
+                <p>
+                    Seleccione Impedimento:
+                    <select class="form-select" id="Impedimento" name="impedimento" required>
+                        <option value="">Seleccione Impedimento</option>
+                        <option value="SI">SI</option>
+                        <option value="NO">NO</option>
+                    </select>
+                </p>
+
+                <p>
+                    Observación:
+                    <textarea class="form-control" name="observacion" rows="3"></textarea>
+                </p>
+
+                <input type="hidden" name="fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+
+                <div class="mb-3 d-flex gap-2 align-items-center">
+                    <button type="button" id="btnImprimirSolteria" class="btn btn-primary">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function cargarParroquias() {
+        fetch('/ActaBautismo/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Parroquias recibidas:', data); // Para depurar
+                let select = document.getElementById('Parroquia'); // CORREGIDO
+                select.innerHTML = '<option value="">Seleccione Feligreses de:</option>'; 
+
+                data.forEach(parroquia => {
+                    select.innerHTML += `<option value="${parroquia.id}">${parroquia.nombre}</option>`;
+                });
+            })
+            .catch(error => console.error('Error al cargar parroquias:', error));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarParroquias();
+    });
+    document.getElementById('btnImprimirSolteria').addEventListener('click', function () {
+        const formData = new FormData(document.getElementById('formSolteria'));
+        const params = new URLSearchParams(formData).toString();
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            fetch(`/Certificados/ImprimirCertificadoSolteria?${params}&guardar=${result.isConfirmed}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+</script>

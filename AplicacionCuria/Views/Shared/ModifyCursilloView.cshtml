@@ -1,0 +1,197 @@
+﻿@model AplicacionCuria.Models.CursilloPrebautismal
+
+
+
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="BautizadosView" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Modificar cursillo</h1>
+</div>
+
+
+<div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+        <div class="col-md-6">
+            <form asp-controller="CursilloPrebautismal" asp-action="Update" method="post" id="formularioCursillo">
+                <input type="hidden" name="id" value="@Model.id" />
+
+                <!-- Nombre del niño/niña -->
+                <div class="mb-3">
+                    <label for="nombrecompletonino" class="form-label">Nombre completo del niño/niña</label>
+                    <input type="text" class="form-control" id="nombrecompletonino" name="nombrecompletonino" value="@Model.nombrecompletonino" required>
+                </div>
+
+                <!-- Nombre de los padres -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="padre_id" class="form-label">Padre</label>
+                        <select class="form-select" id="padre_id" name="padre_id" required>
+                            <option value=""><em>Seleccione</em></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="madre_id" class="form-label">Madre</label>
+                        <select class="form-select" id="madre_id" name="madre_id" required>
+                            <option value=""><em>Seleccione</em></option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Nombres de los padrinos -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="padrino_id" class="form-label">Padrino</label>
+                        <select class="form-select" id="padrino_id" name="padrino_id" required>
+                            <option value=""><em>Seleccione</em></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="madrina_id" class="form-label">Madrina</label>
+                        <select class="form-select" id="madrina_id" name="madrina_id" required>
+                            <option value=""><em>Seleccione</em></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Información de contacto -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" name="telefono" value="@Model.telefono">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="celular" class="form-label">Celular</label>
+                        <input type="text" class="form-control" id="celular" name="celular" value="@Model.celular" required>
+                    </div>
+                </div>
+
+                <!-- Fecha del bautizo y cursillo -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
+                        <input type="date" class="form-control" id="fechabautizo" name="fechabautizo" value="@Model.fechabautizo.ToString("yyyy-MM-dd")" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fechacursillo" class="form-label">Fecha de Cursillo</label>
+                        <input type="date" class="form-control" id="fechacursillo" name="fechacursillo" value="@Model.fechacursillo.ToString("yyyy-MM-dd")" required>
+                    </div>
+                </div>
+
+                <!-- Quien inscribe -->
+                <div class="mb-3">
+                    <label for="quieninscribe_select" class="form-label">Quien inscribe</label>
+                    <select class="form-select" id="quieninscribe_select" name="quieninscribe_select" required>
+                        <option value=""><em>Seleccione</em></option>
+                    </select>
+                </div>
+
+                <!-- Estado del cursillo -->
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado del Cursillo</label>
+                    <select class="form-select" id="estado" name="estado" required>
+                        <option value="Cursando" selected="@(Model.estado == "Cursando")">Cursando</option>
+                        <option value="Aprobado" selected="@(Model.estado == "Aprobado")">Aprobado</option>
+                        <option value="Retirado" selected="@(Model.estado == "Retirado")">Retirado</option>
+                    </select>
+
+                </div>
+
+                <div class="mb-3">
+                    <label for="parroquia" class="form-label">Parroquia</label>
+                    <select class="form-select" id="parroquia" name="parroquia" required>
+                        <option value="">-- Seleccione una parroquia --</option>
+                    </select>
+                    <span class="text-danger" id="parroquiaError"></span>
+                </div>
+
+                <!-- Observaciones adicionales -->
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones adicionales</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones">@Model.observaciones</textarea>
+                    </div>
+
+                <!-- Botón de actualización -->
+                <div class="mb-3">
+                    <button type="submit"  class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function cargarParroquiasCursillo(selectedId = null) {
+        fetch('/CursilloPrebautismal/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('parroquia');
+                select.innerHTML = '<option value="">-- Seleccione una parroquia --</option>';
+                data.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = p.nombre;
+                    if (selectedId && p.id === selectedId) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar parroquias:', error));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        cargarParroquiasCursillo(@Model.parroquia);
+    });
+
+    function cargarFeligresesModificar(model) {
+        fetch('/Feligres/GetFeligreses')
+            .then(response => response.json())
+            .then(data => {
+                [
+                    { id: 'padre_id', value: model.nombrepadre },
+                    { id: 'madre_id', value: model.nombremadre },
+                    { id: 'padrino_id', value: model.nombrepadrino },
+                    { id: 'madrina_id', value: model.nombremadrina },
+                    { id: 'quieninscribe_select', value: model.quieninscribe }
+                ].forEach(field => {
+                    const select = document.getElementById(field.id);
+                    if (select) {
+                        select.innerHTML = '<option value=""><em>Seleccione</em></option>';
+                        data.forEach(f => {
+                            const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                            const option = document.createElement('option');
+                            option.value = f.cedula;
+                            option.textContent = nombreCompleto;
+                            if (f.cedula === field.value) {
+                                option.selected = true;
+                            }
+                            select.appendChild(option);
+                        });
+                    }
+                });
+            })
+            .catch(error => console.error('Error al cargar feligreses:', error));
+    }
+
+    function validarUnicosPadresPadrinos() {
+        const ids = ['padre_id', 'madre_id', 'padrino_id', 'madrina_id'];
+        ids.forEach(id => {
+            document.getElementById(id).addEventListener('change', function () {
+                const valores = ids.map(i => document.getElementById(i).value).filter(v => v);
+                const repetidos = valores.filter((v, i, arr) => arr.indexOf(v) !== i);
+                if (repetidos.length > 0) {
+                    alert('No puedes seleccionar el mismo feligrés en más de un campo.');
+                    this.value = '';
+                }
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarFeligresesModificar(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model)));
+        validarUnicosPadresPadrinos();
+    });
+
+</script>

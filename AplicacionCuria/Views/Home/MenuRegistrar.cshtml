@@ -1,0 +1,185 @@
+﻿@{
+    ViewData["Title"] = "Menú Registrar";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        nav {
+            background-color: #f7f9fc;
+            border-bottom: 2px solid #d4af37;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        nav ul li {
+            position: relative;
+        }
+        nav ul li a {
+            color: #343a40;
+            padding: 15px 20px;
+            text-decoration: none;
+        }
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: #d4af37;
+        }
+        nav ul li ul {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f7f9fc;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0;
+        }
+        nav ul li:hover ul {
+            display: block;
+        }
+        nav ul li ul li {
+            width: 200px;
+        }
+        nav ul li ul li a {
+            display: block;
+            padding: 10px;
+            color: #343a40;
+        }
+        nav ul li ul li a:hover {
+            background-color: #d4af37;
+            color: #fff;
+        }
+
+        .menu-icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a href="@Url.Action("FeligresesView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Feligreses" ? "active" : "")">
+                    <i class="fas fa-user menu-icon"></i> Feligreses
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="FeligresesView">
+                            <i class="fas fa-user menu-icon"></i> Submenú Feligreses
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("EncargadosView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Encargado" ? "active" : "")">
+                    <i class="fas fa-user menu-icon"></i> Encargado de evento
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="EncargadosView">
+                            <i class="fas fa-user menu-icon"></i> Submenú Encargado de eventos
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("SacerdoteView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Sacerdote" ? "active" : "")">
+                    <i class="fas fa-church menu-icon"></i> Sacerdote
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="SacerdoteView">
+                            <i class="fas fa-church menu-icon"></i> Submenú Sacerdote
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("ParroquiaView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Parroquia" ? "active" : "")">
+                    <i class="fas fa-cross menu-icon"></i> Parroquia
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="ParroquiaView">
+                            <i class="fas fa-cross menu-icon"></i> Submenú Parroquia
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("IglesiaView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Iglesia" ? "active" : "")">
+                    <i class="fas fa-building menu-icon"></i> Iglesia
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="IglesiaView">
+                            <i class="fas fa-building menu-icon"></i> Submenú Iglesia
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("MinistrosCatequistasView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Ministro" ? "active" : "")">
+                    <i class="fas fa-user-tie menu-icon"></i> Ministro/Catequista
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="MinistrosCatequistasView">
+                            <i class="fas fa-user-tie menu-icon"></i> Submenú Ministro/Catequista
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("PeriodosView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Periodo" ? "active" : "")">
+                    <i class="fas fa-calendar-alt menu-icon"></i> Periodo
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="PeriodosView">
+                            <i class="fas fa-calendar-alt menu-icon"></i> Submenú Periodo
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("MisaView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Misa" ? "active" : "")">
+                    <i class="fas fa-praying-hands menu-icon"></i> Misa
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="MisaView">
+                            <i class="fas fa-praying-hands menu-icon"></i> Submenú Misa
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("BarrioView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Barrio" ? "active" : "")">
+                    <i class="fas fa-map-marker-alt menu-icon"></i> Barrio
+                </a>
+                <ul>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="BarrioView">
+                            <i class="fas fa-map-marker-alt menu-icon"></i> Submenú Barrio
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+﻿
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
+        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
+        <span>Volver</span>
+    </a>    <h1 class="ms-3">Primera Comunión</h1>
+</div>
+
+<div>
+    <form id="buscar-alumno">
+        <h3>Búsqueda de Alumnos</h3>
+        <input type="hidden" id="alumnoId" name="alumnoid">
+        
+
+        <div class="mb-3 d-flex gap-2 align-items-center">
+            <button type="button" id="btnImprimirPrimeraComunion" class="btn btn-primary">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+        </div>
+        <div class="mt-3">
+            <div class="mb-3 d-flex gap-2 align-items-center">
+                <input type="text" class="form-control w-50" id="nombrecompleto" name="nombrecompleto"
+                    placeholder="Escribe un nombre...">
+
+                <button type="button" class="btn btn-primary" onclick="buscarPrimeraComunion()">
+                    <i class="fas fa-search me-1"></i> Buscar
+                </button>
+
+                <button type="button" class="btn btn-secondary" onclick="limpiarBusqueda()">
+                    Limpiar
+                </button>
+
+                <div class="form-check form-switch ms-3">
+                    <input type="checkbox" class="form-check-input" id="toggleLista" onchange="toggleListaCompleta()">
+                    <label class="form-check-label ms-2" for="toggleLista">
+                        Mostrar todos
+                    </label>
+                </div>
+            </div>
+            <h4>Resultados de la búsqueda:</h4>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cédula</th>
+                        <th>Telefono</th>
+                        <th>Fecha nacimiento</th>
+                        <th>Parroquia</th>
+
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody id="resultados">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var alumno in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (alumno.foto != null && alumno.foto.Length > 0)
+                                    {
+                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)" alt="Foto de @alumno.nombre" width="100" height="100" />
+                                    }
+                                    else
+                                    {
+                                        <span>Sin foto</span>
+                                    }
+                                </td>
+                                <td>@alumno.nombre</td>
+                                <td>@alumno.apellido</td>
+                                <td>@alumno.cedula</td>
+                                <td>@alumno.parroquia</td>
+                                <td>@alumno.telefono</td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">No se encontraron resultados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.getElementById('btnImprimirPrimeraComunion').addEventListener('click', function () {
+        const alumnoId = document.getElementById('alumnoId').value;
+
+        if (!alumnoId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Por favor selecciona un alumno antes de imprimir.',
+            });
+            return;
+        }
+
+        // Preguntar si quiere guardar el PDF
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            // Llamar al endpoint con el parámetro guardar
+            fetch(`/Certificados/ImprimirPrimeraComunion?alumnoid=${alumnoId}&guardar=${result.isConfirmed}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        // Descargar el PDF si el usuario quiere guardar
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+
+
+    function seleccionarAlumno(element) {
+        const alumnoId = element.getAttribute('data-id');
+        document.getElementById('alumnoId').value = alumnoId;
+
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');
+            btn.classList.add('btn-success');
+            btn.textContent = "Seleccionar";
+            btn.disabled = false;
+        });
+
+        element.classList.remove('btn-success');
+        element.classList.add('btn-dark');
+        element.textContent = "Seleccionado";
+        element.disabled = true;
+    }
+
+    function listarTodos() {
+        fetch('/Certificados/SearchPrimeraComunion')
+            .then(response => response.json())
+            .then(data => renderResultados(data))
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    function toggleListaCompleta() {
+        const toggle = document.getElementById('toggleLista');
+        if (toggle.checked) {
+            listarTodos();
+        } else {
+            limpiarBusqueda();
+        }
+    }
+
+    function buscarPrimeraComunion() {
+        const nombre = document.getElementById('nombrecompleto').value.trim();
+        const resultadosBody = document.getElementById('resultados');
+
+        if (nombre.length < 3) {
+            alert('Por favor, escribe al menos 3 caracteres para buscar.');
+            return;
+        }
+
+        fetch(`/Certificados/SearchPrimeraComunion?nombre=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => renderResultados(data))
+            .catch(error => {
+                resultadosBody.innerHTML = `<tr><td colspan="7">Error al buscar resultados.</td></tr>`;
+                console.error('Error:', error);
+            });
+    }
+
+    function limpiarBusqueda() {
+        document.getElementById('nombrecompleto').value = '';
+        document.getElementById('resultados').innerHTML = `
+            <tr><td colspan="7">No se encontraron resultados.</td></tr>`;
+    }
+
+    function renderResultados(data) {
+        const resultadosBody = document.getElementById('resultados');
+        resultadosBody.innerHTML = "";
+
+        if (data.length > 0) {
+            data.forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.apellido}</td>
+                        <td>${item.cedula}</td>
+                        <td>${item.telefono}</td>
+                        <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td>
+                        <td>${item.parroquia || "Sin asignar"}</td>
+                        <td>
+                            <a class="btn btn-success btn-seleccionar" data-id="${item.id}" 
+                            onclick="seleccionarAlumno(this)">Seleccionar</a>
+                        </td>
+                    </tr>`;
+                resultadosBody.innerHTML += row;
+            });
+        } else {
+            resultadosBody.innerHTML = "<tr><td colspan='7'>No se encontraron resultados.</td></tr>";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        //listarTodos(); // Cargar todos los registros por defecto
+    });
+
+</script>

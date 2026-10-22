@@ -1,0 +1,252 @@
+@{
+    ViewData["Title"] = "Gestión de Iglesias";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Iglesias</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form id="formIglesia">
+            <input type="hidden" id="id" name="id" value="0" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección</label>
+                <input class="form-control" id="direccion" name="direccion" maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="ciudad" class="form-label">Ciudad</label>
+                <input class="form-control" id="ciudad" name="ciudad" maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input class="form-control" id="telefono" name="telefono" maxlength="20" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="ministro_id" class="form-label">Ministro</label>
+                <select class="form-control" id="ministro_id" name="ministro_id">
+                    <option value="">Seleccione un ministro</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="parroquia_id" class="form-label">Parroquia</label>
+                <select class="form-control" id="parroquia_id" name="parroquia_id">
+                    <option value="">Seleccione una parroquia</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="denominacion" class="form-label">Denominación</label>
+                <input class="form-control" id="denominacion" name="denominacion" maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-control" id="estado" name="estado">
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button type="button" class="btn btn-secondary" id="btnLimpiarIglesia">Limpiar</button>
+        </form>
+        <div id="msgIglesia" class="mt-2"></div>
+    </div>
+    <div class="col-md-7">
+        <div class="mb-3">
+            <input type="text" id="busquedaIglesia" class="form-control" placeholder="Buscar por nombre..." />
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Ministro</th>
+                    <th>Parroquia</th>
+                    <th>Denominación</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaIglesias">
+                <!-- Se llena por JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(function () {
+            cargarMinistros();
+            cargarParroquias();
+            cargarIglesias();
+
+            $("#busquedaIglesia").on("input", function () {
+                buscarIglesias($(this).val());
+            });
+
+            $("#formIglesia").submit(function (e) {
+                e.preventDefault();
+                let id = $("#id").val();
+                let url = id == 0 ? "/Iglesia/Create" : "/Iglesia/Edit/" + id;
+                let data = {
+                    id: id,
+                    nombre: $("#nombre").val(),
+                    direccion: $("#direccion").val(),
+                    ciudad: $("#ciudad").val(),
+                    telefono: $("#telefono").val(),
+                    email: $("#email").val(),
+                    ministro_id: $("#ministro_id").val(),
+                    parroquia_id: $("#parroquia_id").val(),
+                    denominacion: $("#denominacion").val(),
+                    estado: $("#estado").val(),
+                    observaciones: $("#observaciones").val()
+                };
+                $.post(url, data, function (res) {
+                    if (res.success) {
+                        cargarIglesias();
+                        limpiarFormularioIglesia();
+                        mostrarMsgIglesia("Iglesia guardada correctamente.", true);
+                    } else {
+                        mostrarMsgIglesia(res.message || "Error al guardar.", false);
+                    }
+                });
+            });
+
+            $("#btnLimpiarIglesia").click(function () {
+                limpiarFormularioIglesia();
+                cargarMinistros();
+                cargarParroquias();
+            });
+        });
+
+        function cargarIglesias() {
+            $.get("/Iglesia/GetIglesias", function (data) {
+                renderTablaIglesias(data);
+            });
+        }
+
+        function buscarIglesias(nombre) {
+            if (!nombre) {
+                cargarIglesias();
+                return;
+            }
+            $.get("/Iglesia/SearchByName", { nombre: nombre }, function (data) {
+                renderTablaIglesias(data);
+            });
+        }
+
+        function cargarMinistros() {
+            $.get("/Iglesia/GetMinistrosDisponibles", function (data) {
+                let options = '<option value="">Seleccione un ministro</option>';
+                data.forEach(function (m) {
+                    options += `<option value="${m.id}">${m.nombre}</option>`;
+                });
+                $("#ministro_id").html(options);
+            });
+        }
+
+        function cargarParroquias() {
+            $.get("/Iglesia/GetParroquiasDisponibles", function (data) {
+                let options = '<option value="">Seleccione una parroquia</option>';
+                data.forEach(function (p) {
+                    options += `<option value="${p.id}">${p.nombre}</option>`;
+                });
+                $("#parroquia_id").html(options);
+            });
+        }
+
+        function renderTablaIglesias(data) {
+            let html = "";
+            data.forEach(function (i) {
+                html += `<tr>
+                    <td>${i.nombre}</td>
+                    <td>${i.direccion ?? ""}</td>
+                    <td>${i.ciudad ?? ""}</td>
+                    <td>${i.telefono ?? ""}</td>
+                    <td>${i.email ?? ""}</td>
+                    <td>${i.ministro_nombre ?? ""}</td>
+                    <td>${i.parroquia_nombre ?? ""}</td>
+                    <td>${i.denominacion ?? ""}</td>
+                    <td>${i.estado ?? ""}</td>
+                    <td>${i.observaciones ?? ""}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editarIglesia(${i.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarIglesia(${i.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+            $("#tablaIglesias").html(html);
+        }
+
+        function editarIglesia(id) {
+            $.get("/Iglesia/GetIglesias", function (data) {
+                let iglesia = data.find(i => i.id === id);
+                if (iglesia) {
+                    $("#id").val(iglesia.id);
+                    $("#nombre").val(iglesia.nombre);
+                    $("#direccion").val(iglesia.direccion);
+                    $("#ciudad").val(iglesia.ciudad);
+                    $("#telefono").val(iglesia.telefono);
+                    $("#email").val(iglesia.email);
+                    cargarMinistros();
+                    cargarParroquias();
+                    setTimeout(function () {
+                        $("#ministro_id").val(iglesia.ministro_id);
+                        $("#parroquia_id").val(iglesia.parroquia_id);
+                    }, 200);
+                    $("#denominacion").val(iglesia.denominacion);
+                    $("#estado").val(iglesia.estado);
+                    $("#observaciones").val(iglesia.observaciones);
+                }
+            });
+        }
+
+        function eliminarIglesia(id) {
+            if (confirm("¿Seguro que deseas eliminar esta iglesia?")) {
+                $.post("/Iglesia/DeleteConfirmed", { id: id }, function (res) {
+                    if (res.success) {
+                        cargarIglesias();
+                        mostrarMsgIglesia("Iglesia eliminada.", true);
+                    } else {
+                        mostrarMsgIglesia("No se pudo eliminar.", false);
+                    }
+                });
+            }
+        }
+
+        function limpiarFormularioIglesia() {
+            $("#id").val(0);
+            $("#nombre").val("");
+            $("#direccion").val("");
+            $("#ciudad").val("");
+            $("#telefono").val("");
+            $("#email").val("");
+            $("#ministro_id").val("");
+            $("#parroquia_id").val("");
+            $("#denominacion").val("");
+            $("#estado").val("ACTIVO");
+            $("#observaciones").val("");
+        }
+
+        function mostrarMsgIglesia(msg, exito) {
+            $("#msgIglesia").text(msg).removeClass().addClass(exito ? "text-success" : "text-danger");
+            setTimeout(() => { $("#msgIglesia").text(""); }, 3000);
+        }
+    </script>
+}

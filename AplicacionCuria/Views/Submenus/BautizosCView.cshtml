@@ -1,0 +1,507 @@
+﻿<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Bautizos</h1>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="bautizoTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="cursillo-tab" data-bs-toggle="tab" data-bs-target="#cursillo" type="button" role="tab" aria-controls="cursillo" aria-selected="true">
+            Cursillo Prebautismal
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="acta-tab" data-bs-toggle="tab" data-bs-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false">
+            Certificado de Bautismo
+        </button>
+    </li>
+</ul>
+
+<!-- Tab Contents -->
+<div class="tab-content" id="bautizoTabsContent">
+    <!-- Cursillo Prebautismal -->
+    <div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+        <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
+
+        <button type="button" id="btnImprimirBautismo" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimir Bautismo
+        </button>
+
+        <div class="mb-3">
+            <label class="form-label">Tipo de certificado:</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="tipoCertificado" id="certPadres" value="padres" checked>
+                <label class="form-check-label" for="certPadres">Padres</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="tipoCertificado" id="certPadrinos" value="padrinos">
+                <label class="form-check-label" for="certPadrinos">Padrinos</label>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <label for="sacerdoteId" class="form-label">Seleccionar Sacerdote:</label>
+            <select class="form-select w-50" id="sacerdoteId" name="sacerdoteId">
+                <option value="">-- Cargando sacerdotes... --</option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <div class="mb-3 d-flex gap-2 align-items-center">
+                <input type="text" class="form-control w-50" id="nombrecompletos" name="nombrecompletos" placeholder="Escribe un nombre de un niño/niña">
+                <input type="hidden" id="alumnoId" name="alumnoId">
+                <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" onclick="buscarCursillo()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" onclick="limpiarBusquedaCursillos()">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+
+                <div class="form-check form-switch ms-3">
+                    <input class="form-check-input" type="checkbox" id="chkToggleCursillos" onchange="toggleCursillos()">
+                    <label class="form-check-label ms-2" for="chkToggleCursillos">
+                        Mostrar 10 ultimos
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h3>Cursillos Aprobados:</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Fecha de Cursillo</th>
+                        <th>Padre</th>
+                        <th>Madre</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody id="resultadosBody">
+                    <!-- Cursillos cargados dinámicamente -->
+                </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <!-- Acta de Bautismo -->
+    <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-tab">
+        <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
+            <input type="hidden" id="alumnoid2" name="alumnoid2">
+            <button type="button" id="btnImprimirActaBautismo" class="btn btn-primary">
+                <i class="fas fa-print"></i> Imprimir Acta Bautismo
+            </button>
+
+            <div class="mt-3">
+                <label for="sacerdoteIdActa" class="form-label">Seleccionar Sacerdote:</label>
+                <select class="form-select w-50" id="sacerdoteIdActa" name="sacerdoteId">
+                    <option value="">-- Seleccione un sacerdote --</option>
+                </select>
+            </div>
+
+            <div class="mt-3">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="text" class="form-control w-50" id="nombrecompletos2" 
+                        name="nombrecompletos2" placeholder="Escribe un nombre del niño/niña">
+                    <input type="hidden" id="alumnoid2" name="alumnoid2">
+                    
+                    <!-- Botón de buscar -->
+                    <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" onclick="buscarActa2()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    
+                    <!-- Botón de limpiar -->
+                    <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" onclick="limpiarBusquedaActa()">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+
+                    <!-- Toggle Mostrar Todos -->
+                    <div class="form-check form-switch ms-3">
+                        <input class="form-check-input" type="checkbox" id="chkToggleActas" onchange="toggleActas()">
+                        <label class="form-check-label ms-2" for="chkToggleActas">
+                            Mostrar 10 ultimos
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h3>Resultados de la búsqueda:</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre Completo</th>
+                            <th>Fecha de Bautismo</th>
+                            <th>Iglesia</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="Res">
+                        <!-- Resultados de búsqueda cargados dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function seleccionarAlumno(element) {
+        const alumnoId = element.getAttribute('data-id');
+        document.getElementById('alumnoId').value = alumnoId;
+        console.log("Alumno seleccionado con ID:", alumnoId);
+
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');
+            btn.classList.add('btn-success');
+            btn.textContent = "Seleccionar";
+            btn.disabled = false;
+        });
+
+        element.classList.remove('btn-success');
+        element.classList.add('btn-dark');
+        element.textContent = "Seleccionado";
+        element.disabled = true;
+    }
+
+    function seleccionarActa(element) {
+        const alumnoId = element.getAttribute('data-id'); // Obtener el id del alumno
+        console.log(alumnoId);
+        document.getElementById('alumnoid2').value = alumnoId; // Guardarlo en el input hidden
+
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');   // Remover color verde oscuro
+            btn.classList.add('btn-success');   // Restaurar el color verde claro
+            btn.textContent = "Seleccionar";    // Restaurar texto
+            btn.disabled = false;               // Reactivar los botones deshabilitados
+        });
+
+        element.classList.remove('btn-success'); // Remover la clase verde claro
+        element.classList.add('btn-dark');       // Agregar clase verde oscuro (o btn-dark)
+        element.textContent = "Seleccionado";    // Cambiar el texto del botón
+        element.disabled = true;                 // Deshabilitar el botón para evitar múltiples selecciones
+
+    }
+
+
+    function buscarCursillo() {
+        const nombre = document.getElementById('nombrecompletos').value.trim();
+        const resultadosBody = document.getElementById('resultadosBody');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = `<tr><td colspan="5" class="text-center">Escriba al menos 3 caracteres.</td></tr>`;
+            return;
+        }
+
+        fetch(`/CursilloPrebautismal/SearchByNameAprobado?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => renderResultadosCursillos(data, resultadosBody))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function limpiarBusquedaCursillos() {
+        const input = document.getElementById('nombrecompletos');
+        input.value = '';
+        document.getElementById('resultadosBody').innerHTML =
+            "<tr><td colspan='5' class='text-center'>No se han realizado búsquedas.</td></tr>";
+    }
+
+    function ListCursillos() {
+        fetch('/CursilloPrebautismal/SearchAprobado')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Datos recibidos de SearchAprobado:", data);
+                const resultadosBody = document.getElementById("resultadosBody");
+
+                if (data.length > 0) {
+                    // Ordenar por fecha más reciente (ajusta el campo correcto si es diferente)
+                    data.sort((a, b) => new Date(b.fechacursillo) - new Date(a.fechacursillo));
+
+                    // Tomar solo los últimos 10 (o menos si hay menos registros)
+                    const ultimosRegistros = data.slice(0, 10);
+
+                    renderResultadosCursillos(ultimosRegistros, resultadosBody);
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda de cursillos:', error));
+    }
+
+    function toggleCursillos() {
+        const toggle = document.getElementById('chkToggleCursillos').checked;
+        const input = document.getElementById('nombrecompletos');
+
+        if (toggle) {
+            console.log("Toggle activado -> Listando todos los cursillos aprobados...");
+            input.disabled = true;
+            ListCursillos();
+        } else {
+            console.log("Toggle desactivado -> Limpiando...");
+            input.disabled = false;
+            limpiarBusquedaCursillos();
+        }
+    }
+
+    function renderResultadosCursillos(data, resultadosBody) {
+        resultadosBody.innerHTML = '';
+        if (data.length > 0) {
+            data.forEach(item => {
+                resultadosBody.innerHTML += `
+                    <tr>
+                        <td>${item.nombrecompletonino}</td>
+                        <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                        <td>${item.nombrepadre || ''}</td>
+                        <td>${item.nombremadre || ''}</td>
+                        <td>
+                            <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">
+                                Seleccionar
+                            </a>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            resultadosBody.innerHTML =
+                "<tr><td colspan='5' class='text-center'>No se encontraron resultados.</td></tr>";
+        }
+    }
+
+        // -----------------------------
+    // ACTA DE BAUTISMO
+    // -----------------------------
+    function buscarActa2() {
+        const nombre = document.getElementById('nombrecompletos2').value.trim();
+        const resultadosBody = document.getElementById('Res');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = `<tr><td colspan="3" class="text-center">Escriba al menos 3 caracteres.</td></tr>`;
+            return;
+        }
+
+        fetch(`/ActaBautismo/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => renderResultadosActas(data))
+            .catch(error => console.error('Error buscando actas:', error));
+    }
+
+    function limpiarBusquedaActa() {
+        document.getElementById('nombrecompletos2').value = '';
+        document.getElementById('Res').innerHTML =
+            "<tr><td colspan='3' class='text-center'>No se han realizado búsquedas.</td></tr>";
+    }
+
+    function ListActas() {
+        fetch('/ActaBautismo/SearchAllDetailed') 
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    // Orden descendente por fecha de registro
+                    data.sort((a, b) => new Date(b.fechabautizo) - new Date(a.fechabautizo));
+                    const ultimosRegistros = data.slice(0, 10);
+                    renderResultadosActas(ultimosRegistros);
+                } else {
+                    renderResultadosActas([]);
+                }
+            })
+            .catch(error => console.error('Error al listar actas:', error));
+    }
+
+
+    function toggleActas() {
+        const toggle = document.getElementById('chkToggleActas').checked;
+        const input = document.getElementById('nombrecompletos2');
+
+        if (toggle) {
+            console.log("Toggle activado -> Listando todas las actas...");
+            input.disabled = true;
+            ListActas();
+        } else {
+            console.log("Toggle desactivado -> Limpiando...");
+            input.disabled = false;
+            limpiarBusquedaActa();
+        }
+    }
+
+    function renderResultadosActas(data) {
+        const resultadosBody = document.getElementById('Res');
+        resultadosBody.innerHTML = '';
+        if (data.length > 0) {
+            data.forEach(item => {
+                resultadosBody.innerHTML += `
+                    <tr>
+                        <td>${item.nombrecompleto}</td>
+                        <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                        <td>${item.iglesia}</td>
+                        <td>
+                            <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">
+                                Seleccionar
+                            </a>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            resultadosBody.innerHTML =
+                "<tr><td colspan='3' class='text-center'>No se encontraron resultados.</td></tr>";
+        }
+    }
+
+
+    function cargarSacerdotes() {
+        fetch('/CursilloPrebautismal/GetSacerdotes')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('sacerdoteId');
+                select.innerHTML = '<option value="">-- Seleccione un sacerdote --</option>';
+                data.forEach(s => {
+                    select.innerHTML += `<option value="${s.id}">${s.nombre}</option>`;
+                });
+            })
+            .catch(error => console.error('Error al cargar sacerdotes:', error));
+    }
+
+    function cargarSacerdotesActa() {
+        fetch("/ActaBautismo/GetSacerdotesCert")
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("sacerdoteIdActa");
+                select.innerHTML = '<option value="">-- Seleccione un sacerdote --</option>';
+                data.forEach(s => {
+                    const option = document.createElement("option");
+                    option.value = s.id;
+                    option.textContent = s.nombre;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar sacerdotes:", error));
+    }
+
+    window.onload = function () {
+        cargarSacerdotes();
+        cargarSacerdotesActa()
+    };
+    document.getElementById('btnImprimirBautismo').addEventListener('click', function () {
+        const alumnoId = document.getElementById('alumnoId').value;
+        const sacerdoteId = document.getElementById('sacerdoteId').value; 
+
+        // Leer el tipo de certificado (padres/padrinos)
+        const tipoCertificado = document.querySelector('input[name="tipoCertificado"]:checked')?.value || 'padres';
+
+        if (!alumnoId || !sacerdoteId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Debe seleccionar un alumno y un sacerdote antes de imprimir.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+                allowOutsideClick: false
+            });
+
+            // Incluir el tipo de certificado en la URL
+            fetch(`/Certificados/ImprimirCertificadoBautismo?alumnoid=${alumnoId}&sacerdoteId=${sacerdoteId}&tipo=${tipoCertificado}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+
+    document.getElementById('btnImprimirActaBautismo').addEventListener('click', function () {
+        const alumnoId = document.getElementById('alumnoid2').value;
+        const sacerdoteId = document.getElementById('sacerdoteIdActa').value;
+
+        if (!alumnoId || !sacerdoteId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Por favor selecciona un alumno y un sacerdote antes de imprimir.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            fetch(`/Certificados/ImprimirCertificadoActaBautismo?alumnoid2=${alumnoId}&sacerdoteId=${sacerdoteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        if (result.isConfirmed && data.file) {
+                            // Descargar el archivo PDF
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+</script>

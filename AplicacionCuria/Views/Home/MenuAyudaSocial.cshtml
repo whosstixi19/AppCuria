@@ -1,0 +1,351 @@
+﻿<title>@ViewData["Title"] - Ayuda Social</title>
+@{
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    nav {
+        background-color: #f7f9fc;
+        border-bottom: 2px solid #d4af37;
+    }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+            nav ul li {
+                position: relative;
+            }
+
+                nav ul li a {
+                    color: #343a40;
+                    /* font-weight: bold; */
+                    padding: 15px 20px;
+                    text-decoration: none;
+                }
+
+                    nav ul li a:hover,
+                    nav ul li a.active {
+                        color: #d4af37;
+                    }
+
+                nav ul li ul {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    background-color: #f7f9fc;
+                    display: none;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    padding: 0;
+                }
+
+                nav ul li:hover ul {
+                    display: block;
+                }
+
+                nav ul li ul li {
+                    width: 200px;
+                }
+
+                    nav ul li ul li a {
+                        display: block;
+                        padding: 10px;
+                        color: #343a40;
+                    }
+
+                        nav ul li ul li a:hover {
+                            background-color: #d4af37;
+                            color: #fff;
+                        }
+
+    /* Estilo responsivo */
+    media (max-width: 768px) {
+        nav ul
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul li {
+        width: 100%;
+    }
+
+        nav ul li ul {
+            position: static;
+            box-shadow: none;
+        }
+
+    }
+
+    .menu-icon {
+        margin-right: 8px;
+    }
+
+    .christian-background {
+        background: url('https://example.com/church-background.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
+<h1 class="mt-3 mb-3 text-center">Registro de Ayuda Social</h1>
+
+@* <ul class="nav nav-tabs" id="formTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="datos-generales-tab" data-bs-toggle="tab" data-bs-target="#nombre-direccion" type="button" role="tab" aria-controls="nombre-direccion" aria-selected="true">
+            Datos Generales
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="croquis-tab" data-bs-toggle="tab" data-bs-target="#croquis" type="button" role="tab" aria-controls="croquis" aria-selected="false">
+            Croquis
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="representantes-tab" data-bs-toggle="tab" data-bs-target="#representantes" type="button" role="tab" aria-controls="representantes" aria-selected="false">
+            Representantes
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="historia-clinica-tab" data-bs-toggle="tab" data-bs-target="#historia-clinica" type="button" role="tab" aria-controls="historia-clinica" aria-selected="false">
+            Historia Clínica
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="visitas-tab" data-bs-toggle="tab" data-bs-target="#visitas" type="button" role="tab" aria-controls="visitas" aria-selected="false">
+            Visitas Domiciliarias
+        </button>
+    </li>
+</ul> *@
+
+<div class="tab-content mt-3" id="formTabsContent">
+    <form asp-action="Create" asp-controller="Ayuda" method="post" id="form-nombre-direccion" enctype="multipart/form-data">
+        <!-- Pestaña Datos Generales -->
+        <h3>Datos Generales</h3>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="foto" class="form-label">Foto</label>
+                <img style="padding-bottom:20px" alt="" width="150" height="150" id="vistaPrevia" />
+                <input type="file" class="form-control" id="foto" name="foto" onchange="mostrarVistaPrevia(event)" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="cedula" class="form-label">Cédula</label>
+                <input type="text" class="form-control" id="cedula" name="cedula">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="edad" class="form-label">Edad</label>
+                <input type="number" class="form-control" id="edad" name="edad" min="0" required>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="genero" class="form-label">Genero</label>
+                <input type="text" class="form-control" id="genero" name="genero">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="instruccion" class="form-label">Instrucción</label>
+                <input type="text" class="form-control" id="instruccion" name="instruccion">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="estadocivil" class="form-label">Estado civil</label>
+                <input type="text" class="form-control" id="estadocivil" name="estadocivil">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="religion" class="form-label">Religión</label>
+                <input type="text" class="form-control" id="religion" name="religion">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
+                <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required>
+            </div>
+
+            <h4>Dirección</h4>
+            <div class="col-md-4 mb-3">
+                <label for="provincia" class="form-label">Provincia</label>
+                <input type="text" class="form-control" id="provincia" name="provincia">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="canton" class="form-label">Cantón</label>
+                <input type="text" class="form-control" id="canton" name="canton">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="parroquia" class="form-label">Parroquia</label>
+                <input type="text" class="form-control" id="parroquia" name="parroquia">
+            </div>
+
+
+            <div class="col-md-4 mb-3">
+                <label for="calleprincipal" class="form-label">Calle Principal</label>
+                <input type="text" class="form-control" id="calleprincipal" name="calleprincipal">
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="numero" class="form-label">Número</label>
+                <input type="text" class="form-control" id="numero" name="numero">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="callesecundaria" class="form-label">Calle Secundaria</label>
+                <input type="text" class="form-control" id="callesecundaria" name="callesecundaria">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="sector" class="form-label">Sector</label>
+                <input type="text" class="form-control" id="sector" name="sector">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="text" class="form-control" id="telefono" name="telefono">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="referencia" class="form-label">Referencia</label>
+                <input type="text" class="form-control" id="referencia" name="referencia">
+            </div>
+
+            <h4>Discapacidad</h4>
+            <div class="col-md-3 mb-3">
+                <label for="discapacidad" class="form-label">¿Tiene discapacidad?</label>
+                <select class="form-control" id="discapacidad" name="discapacidad" onchange="toggleDiscapacidad()">
+                    <option value="false">No</option>
+                    <option value="true">Sí</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="especificardiscapacidad" class="form-label">Especifique la Discapacidad</label>
+                <input type="text" class="form-control" id="especificardiscapacidad" name="especificardiscapacidad" disabled>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="porcentajediscapacidad" class="form-label">Porcentaje</label>
+                <input type="number" class="form-control" id="porcentajediscapacidad" name="porcentajediscapacidad" min="0" max="100" disabled>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="carnetdiscapacidad" class="form-label">¿Posee Carnet?</label>
+                <select class="form-control" id="carnetdiscapacidad" name="carnetdiscapacidad" disabled>
+                    <option value="false">No</option>
+                    <option value="true">Sí</option>
+                </select>
+            </div>
+
+            <h4>Otros Datos</h4>
+            <div class="col-md-3 mb-3">
+                <label for="recibebdh" class="form-label">¿Recibe BDH?</label>
+                <select class="form-control" id="recibebdh" name="recibebdh">
+                    <option value="false">No</option>
+                    <option value="true">Sí</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="jubilacion" class="form-label">¿Está jubilado?</label>
+                <select class="form-control" id="jubilacion" name="jubilacion">
+                    <option value="false">No</option>
+                    <option value="true">Sí</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="trabaja" class="form-label">¿Dónde trabaja?</label>
+                <input type="text" class="form-control" id="trabaja" name="trabaja">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="conquienvive" class="form-label">¿Con quién vive?</label>
+                <input type="text" class="form-control" id="conquienvive" name="conquienvive">
+            </div>
+            <div class="col-md-12 mb-3p">
+                <label for="especifica_con_quien">Especifique con quién vive</label>
+                <input type="text" class="form-control" id="especifica_con_quien" name="especifica_con_quien">
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label for="tipoconstruccion" class="form-label">Tipo de construccion:</label>
+                <input type="text" class="form-control" id="tipoconstruccion" name="tipoconstruccion">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="viviendaes" class="form-label">La vivienda es:</label>
+                <input type="text" class="form-control" id="viviendaes" name="viviendaes">
+            </div>
+
+        </div>
+        <!-- Pestaña Croquis -->
+        <h3>Croquis de Ubicación</h3>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción del Croquis</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="5"></textarea>
+        </div>
+        @* <div class="mb-3">
+            <label for="imagenCroquis" class="form-label">Subir Imagen del Croquis</label>
+            <input type="file" class="form-control" id="imagenCroquis" name="imagenCroquis">
+        </div> *@
+
+        <!-- Pestaña Representantes -->
+        <h3>Datos de los Representantes</h3>
+        <div class="mb-3">
+            <label for="nombrerepresentante" class="form-label">Nombre del Representante</label>
+            <input type="text" class="form-control" id="nombrerepresentante" name="nombrerepresentante">
+        </div>
+        <div class="mb-3">
+            <label for="telefonorepresentante" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="telefonorepresentante" name="telefonorepresentante">
+        </div>
+        <div class="mb-3">
+            <label for="relacion" class="form-label">Relación con el Beneficiario</label>
+            <input type="text" class="form-control" id="relacion" name="relacion">
+        </div>
+
+
+        <!-- Pestaña Historia Clínica -->
+        <h3>Historia Clínica</h3>
+        <div class="mb-3">
+            <label for="antecedentesmedicos" class="form-label">Antecedentes Médicos</label>
+            <textarea class="form-control" id="antecedentesmedicos" name="antecedentesmedicos" rows="5"></textarea>
+        </div>
+
+
+        <!-- Pestaña Visitas Domiciliarias -->
+        <h3>Registro de Visitas Domiciliarias</h3>
+        <div class="mb-3">
+            <label for="fechaVisita" class="form-label">Fecha de la Visita</label>
+            <input type="date" class="form-control" id="fechaVisita" name="fechaVisita">
+        </div>
+        <div class="mb-3">
+            <label for="observaciones" class="form-label">Observaciones</label>
+            <textarea class="form-control" id="observaciones" name="observaciones" rows="5"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear solicitud</button>
+    </form>
+
+</div>
+
+
+<script>
+
+
+    function mostrarVistaPrevia(event) {
+        const archivo = event.target.files[0];
+        if (archivo) {
+            const lector = new FileReader();
+            lector.onload = function (e) {
+                document.getElementById('vistaPrevia').src = e.target.result;
+            };
+            lector.readAsDataURL(archivo);
+        }
+    }
+
+    function toggleDiscapacidad() {
+        const discapacidad = document.getElementById("discapacidad").value === "true";
+        document.getElementById("especificardiscapacidad").disabled = !discapacidad;
+        document.getElementById("porcentajediscapacidad").disabled = !discapacidad;
+        document.getElementById("carnetdiscapacidad").disabled = !discapacidad;
+    }
+
+
+
+</script>

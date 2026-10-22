@@ -1,0 +1,793 @@
+﻿<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Matrimonios</h1>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="bautizoTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="cursillo-tab" data-bs-toggle="tab" data-bs-target="#cursillo" type="button" role="tab" aria-controls="cursillo" aria-selected="true">
+            Cursillo Prematrimonial
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="acta-tab" data-bs-toggle="tab" data-bs-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false">
+            Certificado de Matrimonio
+        </button> 
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reporte-acta-tab" data-bs-toggle="tab" data-bs-target="#reporte-acta" type="button" role="tab" aria-controls="reporte-acta" aria-selected="false">
+            Reporte de Acta de Matrimonio
+        </button> 
+    </li>
+</ul>
+
+<!-- Tab Contents -->
+<div class="tab-content" id="bautizoTabsContent">
+    <!-- Cursillo Prebmatrimonial -->
+    <div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+        <form asp-action="Search" method="get" id="buscar-cursillo" asp-controller="CursilloPreMatrimonial">
+            <div class="mb-3 d-flex gap-2 align-items-center">
+                <input type="text" class="form-control w-50" id="nombrecompletos" name="nombrecompletos" placeholder="Escribe un nombre novio/novia">
+
+                <!-- Botón Buscar -->
+                <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" onclick="buscarCursillo()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+
+                <!-- Botón Limpiar -->
+                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" onclick="limpiarBusquedaCursillo()">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+
+                <!-- Toggle Mostrar Todos -->
+                <div class="form-check form-switch ms-3">
+                    <input class="form-check-input" type="checkbox" id="chkToggleCursillos" onchange="toggleCursillos()">
+                    <label class="form-check-label ms-2" for="chkToggleCursillos">Mostrar los ultimos 10 registros</label>
+                </div>
+            </div>
+
+            <input type="hidden" id="cursilloId" name="cursilloid">
+
+            <div class="mt-3">
+                <label for="sacerdoteIdCursillo" class="form-label">Seleccionar Sacerdote:</label>
+                <select class="form-select w-50" id="sacerdoteIdCursillo" name="sacerdoteId">
+                    <option value="">-- Seleccione un sacerdote --</option>
+                </select>
+            </div>
+
+            <div class="mt-3">
+                <button type="button" id="btnImprimirCursilloMatrimonio" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Imprimir Cursillo Matrimonio
+                </button>
+            </div>
+            <div>
+                <h3>Cursillos Aprobados:</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Novio</th>
+                            <th>Nombre de la Novia</th>
+                            <th>Fecha del cursillo</th>
+                            <th>Fecha del matrimonio</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultadosBody">
+                        <!-- Cursillos cargados dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <!-- Acta de Matrimonio -->
+    <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-tab">
+        <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
+
+            <!-- Fila de inputs -->
+            <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <label for="nombrecompletos2" class="form-label">Buscar Novio/Novia:</label>
+                    <input type="text" class="form-control" id="nombrecompletos2" placeholder="Escribe un nombre novio/novia">
+                    <input type="hidden" id="matid" name="matid">
+                </div>
+                <div class="col-md-4">
+                    <label for="sacerdoteIdMatrimonio" class="form-label">Sacerdote:</label>
+                    <select class="form-select" id="sacerdoteIdMatrimonio" name="sacerdoteId">
+                        <option value="">-- Seleccione un sacerdote --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="parroquiaIdMatrimonio" class="form-label">Parroquia:</label>
+                    <select class="form-select" id="parroquiaIdMatrimonio" name="parroquiaId">
+                        <option value="">-- Seleccione una parroquia --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Fila de botones alineados a la derecha -->
+            <div class="d-flex justify-content-start align-items-center mb-3" style="gap: 12px;">
+                <button type="button" class="btn btn-primary" onclick="buscarActa2()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+
+                <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaActa()">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+                <div class="form-check form-switch d-flex align-items-center ms-4 me-3">
+                    <input class="form-check-input" type="checkbox" id="chkToggleCursillos" onchange="toggleListarActas()">
+                    <label class="form-check-label ms-1" for="chkToggleCursillos">Mostrar 10 ulltimos registros</label>
+                </div>
+            </div>
+
+            <button type="button" id="btnImprimirMatrimonio" class="btn btn-primary">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+
+            <!-- Tabla -->
+            <div class="mb-3">
+                <h3>Resultados de la búsqueda:</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Novio</th>
+                            <th>Novia</th>
+                            <th>Fecha de matrimonio</th>
+                            <th>Fecha de registro</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="Res">
+                        <!-- Resultados cargados dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <!-- Nueva Sección: Reporte de Acta de Matrimonio -->
+    <div class="tab-pane fade" id="reporte-acta" role="tabpanel" aria-labelledby="reporte-acta-tab">
+        <form id="buscar-reporte-acta" asp-action="SearchReporte" asp-controller="ActaMatrimonio" method="get">
+
+            <!-- Campo de búsqueda por nombre -->
+            <div class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <label for="nombreReporte" class="form-label">Buscar por Novio/Novia:</label>
+                    <input type="text" class="form-control" id="nombreReporte" name="nombre" placeholder="Escribe un nombre de novio/a">
+                </div>
+                <div class="col-md-3">
+                    <label for="sacerdoteIdReporte" class="form-label">Sacerdote:</label>
+                    <select class="form-select" id="sacerdoteIdReporte" name="sacerdoteId">
+                        <option value="">-- Seleccione un sacerdote --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-start align-items-center mb-3" style="gap: 12px;">
+                <button type="button" class="btn btn-primary" onclick="buscarReporteActa()">
+                    <i class="fas fa-search"></i> Buscar Reporte
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaReporteActa()">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+                <button type="button" id="btnGenerarReporte" class="btn btn-success">
+                    <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+                </button>
+            </div>
+
+            <!-- Tabla de Reporte -->
+            <div class="mb-3">
+                <h3>Reporte de Actas de Matrimonio:</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Novio</th>
+                            <th>Novia</th>
+                            <th>Fecha Matrimonio</th>
+                            <th>Acción</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="ResReporte">
+                        <!-- Resultados cargados dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    function seleccionarAlumno(element) {
+        const alumnoId = element.getAttribute('data-id'); // Obtener el id del alumno
+        console.log(alumnoId);
+        document.getElementById('cursilloId').value = alumnoId; // Guardarlo en el input hidden
+
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');   // Remover color verde oscuro
+            btn.classList.add('btn-success');   // Restaurar el color verde claro
+            btn.textContent = "Seleccionar";    // Restaurar texto
+            btn.disabled = false;               // Reactivar los botones deshabilitados
+        });
+
+        element.classList.remove('btn-success'); // Remover la clase verde claro
+        element.classList.add('btn-dark');       // Agregar clase verde oscuro (o btn-dark)
+        element.textContent = "Seleccionado";    // Cambiar el texto del botón
+        element.disabled = true;                 // Deshabilitar el botón para evitar múltiples selecciones
+
+    }
+
+    function seleccionarActa(element) {
+        const alumnoId = element.getAttribute('data-id'); // Obtener el id del alumno
+        console.log(alumnoId);
+        document.getElementById('matid').value = alumnoId; // Guardarlo en el input hidden
+
+        document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+            btn.classList.remove('btn-dark');   // Remover color verde oscuro
+            btn.classList.add('btn-success');   // Restaurar el color verde claro
+            btn.textContent = "Seleccionar";    // Restaurar texto
+            btn.disabled = false;               // Reactivar los botones deshabilitados
+        });
+
+        element.classList.remove('btn-success'); // Remover la clase verde claro
+        element.classList.add('btn-dark');       // Agregar clase verde oscuro (o btn-dark)
+        element.textContent = "Seleccionado";    // Cambiar el texto del botón
+        element.disabled = true;                 // Deshabilitar el botón para evitar múltiples selecciones
+
+    }
+
+    // Buscar con mínimo 3 caracteres
+    function buscarCursillo() {
+        const nombre = document.getElementById('nombrecompletos').value;
+        const resultadosBody = document.getElementById('resultadosBody');
+
+        if (nombre.length < 3) {
+            alert("Debes escribir al menos 3 caracteres para buscar.");
+            return;
+        }
+
+        fetch(`/CursilloPreMatrimonial/SearchByNameAprobado?nombrecompleto=${nombre}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.nombrenovio}</td>
+                            <td>${item.nombrenovia}</td>
+                            <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                            <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                            <td><a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a></td>
+                        </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = `<tr><td colspan="5">No se encontraron resultados.</td></tr>`;
+                }
+            })
+            .catch(error => {
+                resultadosBody.innerHTML = `<tr><td colspan="5">Error al buscar resultados.</td></tr>`;
+                console.error('Error:', error);
+            });
+    }
+
+    // Limpiar búsqueda y tabla
+    function limpiarBusquedaCursillo() {
+        document.getElementById('nombrecompletos').value = '';
+        document.getElementById('resultadosBody').innerHTML = '';
+    }
+
+    // Mostrar todos los registros aprobados
+    function toggleCursillos() {
+        const toggle = document.getElementById('chkToggleCursillos').checked;
+        if (toggle) {
+            ListActasMatrimonio(); // Carga todos los cursillos aprobados
+        } else {
+            document.getElementById('resultadosBody').innerHTML = '';
+        }
+    }
+
+
+    function buscarActa() {
+        const nombre = document.getElementById('nombrecompletos').value;
+        const resultadosBody = document.getElementById('resultadosBody');
+
+        // Solo hacer la búsqueda si hay al menos un carácter
+        if (nombre.length > 0) {
+            fetch(`/CursilloPreMatrimonial/SearchByNameAprobado?nombrecompleto=${nombre}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultadosBody.innerHTML = ''; // Limpiar resultados anteriores
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const row = `<tr>
+                                               <td>${item.nombrenovio}</td>
+                                               <td>${item.nombrenovia}</td>
+                                               <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                               <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                               <td><a  class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a></td>
+                                                    </tr>
+                                            `;
+                            resultadosBody.innerHTML += row;
+                        });
+                    } else {
+                        resultadosBody.innerHTML = `<tr><td colspan="7">No se encontraron resultados.</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    resultadosBody.innerHTML = `<tr><td colspan="7">Error al buscar resultados.</td></tr>`;
+                    console.error('Error:', error);
+                });
+        } else {
+            // Mostrar mensaje por defecto si no hay búsqueda activa
+            fetch('/CursilloPreMatrimonial/SearchAprobado')
+                .then(response => response.json())
+                .then(data => {
+                    const resultadosBody = document.getElementById("resultadosBody");
+                    if (!resultadosBody) {
+                        console.error("Elemento con id 'resultadosBody' no encontrado.");
+                        return;
+                    }
+                    resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const row = `<tr >
+                                                   <td>${item.nombrenovio}</td>
+                                                   <td>${item.nombrenovia}</td>
+                                                   <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                                   <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                                   <td><a  class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a></td>
+                                                 </tr>`;
+                            resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                        });
+                    } else {
+                        resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                    }
+                })
+                .catch(error => console.error('Error en la búsqueda:', error));
+        }
+    }
+
+
+    function ListActasMatrimonio() {
+        fetch('/CursilloPreMatrimonial/SearchAprobado')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultadosBody");
+                if (!resultadosBody) {
+                    console.error("Elemento con id 'resultadosBody' no encontrado.");
+                    return;
+                }
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    // Ordenar por fecha de matrimonio de forma descendente (más reciente primero)
+                    data.sort((a, b) => new Date(b.fechamatrimonio) - new Date(a.fechamatrimonio));
+
+                    // Tomar solo los últimos 10 (o menos si hay menos de 10)
+                    const ultimosRegistros = data.slice(0, 10);
+
+                    ultimosRegistros.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombrenovio}</td>
+                                <td>${item.nombrenovia}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                <td>
+                                    <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a>
+                                </td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    ///////////////////////////////////
+    let mostrandoTodos = false;
+
+    function buscarActa2() {
+        const nombre = document.getElementById('nombrecompletos2').value.trim();
+        const resultadosBody = document.getElementById('Res');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = `<tr><td colspan="5" class="text-danger text-center">Escribe al menos 3 caracteres para buscar.</td></tr>`;
+            return;
+        }
+
+        fetch(`/ActaPreMatrimonial/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = '';
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(item => {
+                        resultadosBody.innerHTML += `
+                            <tr>
+                                <td>${item.nombrenovio}</td>
+                                <td>${item.nombrenovia}</td>
+                                <td>${formatFecha(item.fecha_matrimonio)}</td>
+                                <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
+                                <td><button class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">Seleccionar</button></td>
+                            </tr>`;
+                    });
+                } else {
+                    resultadosBody.innerHTML = `<tr><td colspan="5" class="text-center">No se encontraron resultados.</td></tr>`;
+                }
+            })
+            .catch(error => {
+                resultadosBody.innerHTML = `<tr><td colspan="5" class="text-danger text-center">Error al buscar resultados.</td></tr>`;
+                console.error('Error:', error);
+            });
+    }
+
+    function formatFecha(fecha) {
+        if (!fecha) return "Sin fecha";
+        const d = new Date(fecha);
+        return isNaN(d.getTime()) ? fecha : d.toLocaleDateString();
+    }
+
+    function limpiarBusquedaActa() {
+        document.getElementById('nombrecompletos2').value = '';
+        document.getElementById('Res').innerHTML = `<tr><td colspan="5" class="text-center">Sin resultados.</td></tr>`;
+    }
+
+    function toggleListarActas() {
+        const resultadosBody = document.getElementById('Res');
+        if (!mostrandoTodos) {
+            fetch('/ActaPreMatrimonial/Search')
+                .then(response => response.json())
+                .then(data => {
+                    resultadosBody.innerHTML = '';
+
+                    if (data.length > 0) {
+                        // Ordenar por fecha de registro
+                        // Ordenar por fecha de registro (descendente)
+                        data.sort((a, b) => new Date(b.fecharegistro) - new Date(a.fecharegistro));
+
+                        // Tomar solo los primeros 10 (ya son los más recientes)
+                        const ultimosRegistros = data.slice(0, 10);
+
+                        ultimosRegistros.forEach(item => {
+                            resultadosBody.innerHTML += `
+                                <tr>
+                                    <td>${item.nombrenovio}</td>
+                                    <td>${item.nombrenovia}</td>
+                                    <td>${formatFecha(item.fecha_matrimonio)}</td>
+                                    <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">
+                                            Seleccionar
+                                        </button>
+                                    </td>
+                                </tr>`;
+                        });
+                    } else {
+                        resultadosBody.innerHTML = `<tr><td colspan="5" class="text-center">No se encontraron registros.</td></tr>`;
+                    }
+                    mostrandoTodos = true;
+                });
+        } else {
+            limpiarBusquedaActa();
+            mostrandoTodos = false;
+        }
+    }
+
+    function cargarSacerdotesCursillo() {
+        fetch("/CursilloPreMatrimonial/GetSacerdotes")
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("sacerdoteIdCursillo");
+                select.innerHTML = '<option value="">-- Seleccione un sacerdote --</option>';
+                data.forEach(s => {
+                    const option = document.createElement("option");
+                    option.value = s.id;
+                    option.textContent = s.nombre;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar sacerdotes:", error));
+    }
+
+    function cargarSacerdotesMatrimonio() {
+        fetch("/CursilloPreMatrimonial/GetSacerdotes") // mismo endpoint
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("sacerdoteIdMatrimonio");
+                select.innerHTML = '<option value="">-- Seleccione un sacerdote --</option>';
+                data.forEach(s => {
+                    const option = document.createElement("option");
+                    option.value = s.id;
+                    option.textContent = s.nombre;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar sacerdotes:", error));
+    }
+
+    function cargarParroquiasMatrimonio() {
+        fetch("/CursilloPreMatrimonial/GetParroquias")
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("parroquiaIdMatrimonio");
+                select.innerHTML = '<option value="">-- Seleccione una parroquia --</option>';
+                data.forEach(p => {
+                    const option = document.createElement("option");
+                    option.value = p.id;
+                    option.textContent = p.nombre;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar parroquias:", error));
+    }
+
+    //////////////////////////////////////////////////////////////
+
+    // Buscar Reporte de Acta de Matrimonio
+    function buscarReporteActa() {
+        const nombre = document.getElementById('nombreReporte').value.trim();
+        const sacerdoteId = document.getElementById('sacerdoteIdReporte').value;
+
+        if (nombre.length < 3) {
+            alert('Por favor, escribe al menos 3 caracteres para buscar.');
+            return;
+        }
+
+        fetch(`/ActaPreMatrimonial/SearchReporte?nombre=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => renderResultadosReporte(data))
+            .catch(error => console.error('Error en la búsqueda del reporte:', error));
+    }
+
+    // Limpiar búsqueda de Reporte
+    function limpiarBusquedaReporteActa() {
+        document.getElementById('nombreReporte').value = '';
+        document.getElementById('sacerdoteIdReporte').value = '';
+        document.getElementById('ResReporte').innerHTML = "<tr><td colspan='5'>No se encontraron resultados.</td></tr>";
+    }
+
+    let actaSeleccionada = null; // variable global para almacenar el ID seleccionado
+
+    function seleccionarReporte(id) {
+        actaSeleccionada = id;
+        console.log("Acta seleccionada ID:", actaSeleccionada);
+    }
+
+    // Renderizar resultados del reporte
+    function renderResultadosReporte(data) {
+        const resultadosBody = document.getElementById('ResReporte');
+        resultadosBody.innerHTML = '';
+
+        if (data.length > 0) {
+            data.forEach(item => {
+                resultadosBody.innerHTML += `
+                    <tr>
+                        <td>${item.novio}</td>
+                        <td>${item.novia}</td>
+                        <td>${new Date(item.fechaMatrimonio).toLocaleDateString()}</td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-sm" onclick="seleccionarReporte(${item.id})">
+                                Seleccionar
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            resultadosBody.innerHTML = "<tr><td colspan='5'>No se encontraron resultados.</td></tr>";
+        }
+    }
+
+    document.getElementById('btnGenerarReporte').addEventListener('click', function () {
+        const sacerdoteId = document.getElementById('sacerdoteIdReporte').value;
+
+        if (!actaSeleccionada || !sacerdoteId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Debe seleccionar un acta y un sacerdote antes de generar el reporte.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del reporte en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, generar y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Generando reporte...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            fetch(`/Certificados/ImprimirReportePDF?id=${actaSeleccionada}&sacerdoteId=${sacerdoteId}`)
+                .then(response => {
+                    console.log("Estado respuesta:", response.status);
+                    return response.json(); // <- Usa JSON directo
+                })
+                .then(data => {
+                    console.log("Respuesta servidor:", data);
+
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Reporte generado!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+
+    function cargarSacerdotes() {
+        fetch('/ActaMatrimonial/GetSacerdotes')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('sacerdoteIdReporte');
+                select.innerHTML = '<option value="">-- Seleccione un sacerdote --</option>';
+                data.forEach(s => {
+                    select.innerHTML += `<option value="${s.id}">${s.nombre}</option>`;
+                });
+            })
+            .catch(error => console.error('Error cargando sacerdotes:', error));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        window.onload = function () {
+            //ListActasMatrimonio();
+            //ListActasMatrimonio2();
+            cargarSacerdotesCursillo()
+            cargarSacerdotesMatrimonio()
+            cargarParroquiasMatrimonio()
+            cargarSacerdotes()
+        }
+    });
+    document.getElementById('btnImprimirCursilloMatrimonio').addEventListener('click', function () {
+        const cursilloId = document.getElementById('cursilloId').value;
+        const sacerdoteId = document.getElementById('sacerdoteIdCursillo').value;
+
+        if (!cursilloId || !sacerdoteId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Debe seleccionar un cursillo de matrimonio y un sacerdote antes de imprimir.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            fetch(`/Certificados/ImprimirCertificadoCursilloMatrimonio?cursilloid=${cursilloId}&sacerdoteId=${sacerdoteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+    document.getElementById('btnImprimirMatrimonio').addEventListener('click', function () {
+        const matid = document.getElementById('matid').value;
+        const sacerdoteId = document.getElementById('sacerdoteIdMatrimonio').value;
+        const parroquiaId = document.getElementById('parroquiaIdMatrimonio').value;
+
+        if (!matid || !sacerdoteId || !parroquiaId) {
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Atención!',
+                text: 'Debe seleccionar el matrimonio, el sacerdote y la parroquia antes de imprimir.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Deseas guardar una copia del certificado en PDF?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, imprimir y guardar',
+            cancelButtonText: 'Solo imprimir',
+        }).then((result) => {
+            Swal.fire({
+                title: 'Enviando certificado...',
+                text: 'Por favor espera mientras se envía a la impresora.',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false
+            });
+
+            fetch(`/Certificados/ImprimirCertificadoMatrimonio?matid=${matid}&sacerdoteId=${sacerdoteId}&parroquiaId=${parroquiaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Impresión iniciada!',
+                            text: data.message,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        if (result.isConfirmed && data.file) {
+                            window.location.href = `/Certificados/DescargarPdf?fileName=${data.file}`;
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message,
+                    });
+                });
+        });
+    });
+
+</script>

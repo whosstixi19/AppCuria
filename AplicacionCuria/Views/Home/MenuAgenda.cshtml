@@ -1,0 +1,251 @@
+﻿<div class="tab-pane fade show active" id="registro-agenda" role="tabpanel" aria-labelledby="registro-agenda-tab">
+    <div class="row">
+        <!-- Formulario de Registro de Agenda a la izquierda -->
+        <div class="col-lg-4">
+            <form asp-action="Create" asp-controller="Agenda" method="post" id="crearagenda">
+                <h3>Registro de Agenda</h3>
+
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="tipo_evento" class="form-label">Tipo de Evento</label>
+                    <select class="form-control" id="tipo_evento" name="tipo_evento">
+                        <option value="Bautizo">Bautizo</option>
+                        <option value="Matrimonio">Matrimonio</option>
+                        <option value="Misa Especial">Misa Especial</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaagenda" class="form-label">Fecha</label>
+                    <input type="date" class="form-control" id="fechaagenda" name="fechaagenda" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="hora" class="form-label">Hora</label>
+                    <input type="time" class="form-control" id="hora" name="hora" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="lugar" class="form-label">Lugar</label>
+                    <input type="text" class="form-control" id="lugar" name="lugar" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="responsables" class="form-label">Seleccionar Responsables</label>
+                    <select class="form-control" id="responsables" name="responsables" multiple>
+                        <!-- Las opciones se cargarán dinámicamente -->
+                    </select>
+                    <small class="text-muted">Usa Ctrl (o Cmd en Mac) para seleccionar varias personas</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-control" id="estado" name="estado">
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="notificar" class="form-label">¿Enviar Recordatorio?</label>
+                    <select class="form-control" id="notificar" name="notificar">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="recordatorio_anticipacion" class="form-label">Días de Anticipación</label>
+                    <input type="number" class="form-control" id="recordatorio_anticipacion" name="recordatorio_anticipacion" value="1" min="0" max="30">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <label id="exito" class="text-success" style="display: none;">Agenda Registrada</label>
+            </form>
+        </div>
+
+        <!-- Listado de Agendas a la derecha -->
+        <div class="col-lg-8">
+            <form id="buscar-agenda" onsubmit="event.preventDefault(); List();">
+                <h3>Búsqueda de Agendas</h3>
+                <div class="mb-3">
+                    <label for="descripcionbusqueda" class="form-label">Descripción</label>
+                    <input type="text" class="form-control" id="descripcionbusqueda" name="descripcionbusqueda" onkeyup="List()" placeholder="Escribe una descripción...">
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+                <div class="mt-3">
+                    <h4>Resultados de la búsqueda:</h4>
+                    <div style="overflow-x:auto;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Lugar</th>
+                                    <th>Descripción</th>
+                                    <th>Responsable</th>
+                                    <th>Estado</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosAgendas">
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var agenda in Model)
+                                    {
+                                        <tr>
+                                            <td>@agenda.fechaagenda.ToShortDateString()</td>
+                                            <td>@agenda.hora</td>
+                                            <td>@agenda.lugar</td>
+                                            <td>@agenda.descripcion</td>
+                                            <td>@agenda.responsables_ids</td>
+                                            <td>@agenda.estado</td>
+                                            <td>
+                                                <a asp-action="Modify" asp-controller="Agenda" asp-route-id="@agenda.id" class="btn btn-warning">Modificar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="Delete" asp-controller="Agenda" asp-route-id="@agenda.id" class="btn btn-danger">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8">No se encontraron resultados.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function List() {
+        const nombre = document.getElementById('descripcionbusqueda').value;
+        const resultadosBody = document.getElementById('resultadosAgendas');
+
+        // Función para convertir hora 24h a 12h con AM/PM
+        const formatoHora12Horas = (hora24) => {
+            if (!hora24) return '';
+            const partes = hora24.split(':');
+            let horas = parseInt(partes[0]);
+            const minutos = partes[1];
+            const sufijo = horas >= 12 ? 'p. m.' : 'a. m.';
+            horas = horas % 12 || 12;
+            return `${horas}:${minutos} ${sufijo}`;
+        };
+
+        const renderRows = (data) => {
+            resultadosBody.innerHTML = "";
+            if (data.length > 0) {
+                data.forEach(item => {
+                    const row = `<tr>
+                        <td>${new Date(item.fechaagenda).toLocaleDateString()}</td>
+                        <td>${formatoHora12Horas(item.hora) ?? ''}</td>
+                        <td>${item.lugar ?? ''}</td>
+                        <td>${item.descripcion ?? ''}</td>
+                        <td>${item.responsables || ''}</td>
+                        <td>${item.estado ?? ''}</td>
+                        <td><a href="/Agenda/ModifyAgendaView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                        <td><a href="/Agenda/DeleteAgendaView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                    </tr>`;
+                    resultadosBody.innerHTML += row;
+                });
+            } else {
+                resultadosBody.innerHTML = "<tr><td colspan='8'>No se encontraron resultados.</td></tr>";
+            }
+        };
+
+        const url = nombre.length > 0
+            ? `/Agenda/SearchByName?nombrecompleto=${nombre}`
+            : '/Agenda/GetAgendas';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => renderRows(data))
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+
+
+    document.getElementById("crearagenda").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        // Obtener responsables seleccionados
+        const responsablesSeleccionados = Array.from(document.getElementById("responsables").selectedOptions)
+                                            .map(opt => parseInt(opt.value));
+
+        formData.append("responsables_ids", JSON.stringify(responsablesSeleccionados));
+        console.log("Responsables JSON:", JSON.stringify(responsablesSeleccionados));
+
+        // Enviar formulario con fetch
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Respuesta del servidor:", data);
+            document.getElementById("exito").style.display = "none";
+            if (data.success) {
+                document.getElementById("exito").style.display = "block";
+                setTimeout(function () {
+                    List();
+                }, 2000);
+            } else {
+                alert("Error en el servidor: " + (data.message || "No se guardó."));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("exito").innerText = error;
+            document.getElementById("exito").style.display = "block";
+        });
+    });
+
+
+
+    function cargarListaPersonas() {
+        fetch('/Agenda/GetAllPersonas')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("responsables");
+                select.innerHTML = "";
+
+                if (data.length === 0) {
+                    select.innerHTML = "<option disabled>No hay personas registradas</option>";
+                } else {
+                    data.forEach(p => {
+                        select.innerHTML += `<option value="${p.id}">${p.nombre} (${p.email})</option>`;
+                    });
+                }
+            })
+            .catch(error => console.error("Error al cargar personas:", error));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        window.onload = function () {
+            List();
+            cargarListaPersonas();
+        }
+    });
+</script>

@@ -1,0 +1,189 @@
+﻿@model AplicacionCuria.Models.MatrimoniosAntiguos
+
+
+
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MatrimoniosView" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Eliminar</h1>
+</div>
+
+<div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+        <div class="col-md-6">
+            <form asp-action="DeleteConfirmed" asp-controller="ActasAntiguas" asp-route-id="@Model.id" method="post">
+                <h2>Matrimonio Antiguo</h2>
+                <div class="row">
+                    <!-- Columna para datos del Novio -->
+                    <div class="col-md-6">
+
+                        <h5>Datos del Novio</h5>
+                        <div class="mb-3">
+                            @*                         <label for="NombreNovio">Nombre del Novio:</label>
+                            *@
+                            <label type="text" id="NombreNovio" name="nombrenovio" class="form-control" placeholder="Nombre del Novio" required>@Model.nombrenovio</label>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
+                            *@
+                            <label type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo del Novio" class="form-control">@Model.lugarbautizonovio</label>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="PadreNovio">Padre del Novio:</label>
+                            *@
+                            <label type="text" id="PadreNovio" placeholder="Padre del Novio" name="padrenovio" class="form-control">@Model.cedulapadrenovio</label>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="MadreNovio">:</label>
+                            *@
+                            <label type="text" id="MadreNovio" name="madrenovio" placeholder="Madre del Novio" class="form-control">@Model.cedulamadrenovio</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaNacimientoNovio">Fecha de Nacimiento del Novio:</label>
+                            <label type="text" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control">@Model.fechanacimientonovio.ToString("yyyy-MM-dd")</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaBautizoNovio">Fecha de Bautizo del Novio:</label>
+                            <label type="text" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control">@Model.fechabautizonovio.ToString("yyyy-MM-dd")</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Datos de la Novia</h4>
+                        <div class="mb-3">
+                            @*                         <label for="NombreNovia">Nombre de la Novia:</label>
+                            *@
+                            <label type="text" id="NombreNovia" name="nombrenovia" class="form-control" placeholder="Nombre de la Novia" required>@Model.nombrenovia</label>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="LugarBautizoNovia">Lugar de Bautizo de la Novia:</label>
+                            *@
+                            <label type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo de la Novia" name="lugarbautizonovia" class="form-control">@Model.lugarbautizonovia</label>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="PadreNovia">Padre de la Novia:</label>
+                            *@
+
+                            <label type="text" id="PadreNovia" placeholder="Padre de la Novia" name="padrenovia" class="form-control">@Model.cedulapadrenovia</label>
+                        </div>
+                        <div class="mb-3">
+                            @*                         <label for="MadreNovia">Madre de la Novia:</label>
+                            *@
+                            <label type="text" id="MadreNovia" placeholder="Madre de la Novia" name="madrenovia" class="form-control">@Model.cedulamadrenovia</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaNacimientoNovia">Fecha de Nacimiento de la Novia:</label>
+                            <label type="text" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control">@Model.fechanacimientonovia.ToString("yyyy-MM-dd")</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FechaBautizoNovia">Fecha de Bautizo de la Novia:</label>
+                            <label type="text" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control">@Model.fechabautizonovia.ToString("yyyy-MM-dd")</label>
+                        </div>
+                    </div>
+                    <h5>Información del Matrimonio</h5>
+                    <div class="mb-3">
+                        <label for="FechaMatrimonio">Fecha del Matrimonio:</label>
+                        <label type="text" id="FechaMatrimonio" name="fechamatrimonio" class="form-control" required>@Model.fechamatrimonio.ToString("yyyy-MM-dd")</label>
+                    </div>
+                    @* <div class="mb-3">
+                    <label for="LugarMatrimonio">Lugar del Matrimonio:</label>
+                    <label type="text" id="LugarMatrimonio" name="lugarmatrimonio" class="form-control" />
+                    </div> *@
+                    @* <div class="mb-3">
+                    <label for="Celebrante">Celebrante del Matrimonio:</label>
+                    <label type="text" id="Celebrante" name="Celebrante" class="form-control" />
+                    </div> *@
+
+                    <div class="mb-3">
+                        <label for="Ministro">Ministro:</label>
+                        <input type="text" id="Ministro" class="form-control" readonly value="@ViewBag.MinistroNombre" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Iglesia">Iglesia:</label>
+                        <input type="text" id="Iglesia" class="form-control" readonly value="@ViewBag.IglesiaNombre" />
+                    </div>
+
+                    <h4>Registro Civil</h4>
+                    <div class="mb-3">
+                        <label for="FechaRegistroCivil">Fecha del Registro Civil:</label>
+                        <label type="text" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control">@Model.fecharegistrocivil.ToString("yyyy-MM-dd")</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="LugarRegistroCivil">Lugar del Registro Civil:</label>
+                        <label type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control">@Model.lugarregistrocivil</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="NumeroActaRegistroCivil">Número de Acta del Registro Civil:</label>
+                        <label type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control">@Model.numeroactaregistrocivil</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Testigo1">Testigo 1:</label>
+                        <label type="text" id="Testigo1" name="testigo1" class="form-control">@Model.cedulatestigo1</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Testigo2">Testigo 2:</label>
+                        <label type="text" id="Testigo2" name="testigo2" class="form-control">@Model.cedulatestigo2</label>
+                    </div>
+
+                    <h4>Registro Eclesiástico</h4>
+                    <div class="mb-3">
+                        <label for="Tomo">Tomo:</label>
+                        <label type="text" id="Tomo" name="tomo" class="form-control">@Model.tomo</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Pagina">Página:</label>
+                        <label type="text" id="Pagina" name="pagina" class="form-control">@Model.pagina</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Acta">Número de Acta:</label>
+                        <label type="text" id="Acta" name="acta" class="form-control">@Model.numeroactaregistrocivil</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FechaRegistroParroquial">Fecha de Registro:</label>
+                        <label type="text" id="FechaRegistroParroquial" name="fecharegistro" class="form-control">@Model.fecharegistro.ToString("yyyy-MM-dd")</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Observaciones">Observaciones:</label>
+                        <label type="text" id="Observaciones" name="observaciones" class="form-control">@Model.observaciones</label>
+                    </div>
+                </div>
+
+                <button type="button" id="btnEliminar" class="btn btn-danger">Eliminar</button>
+                <div id="mensajeExito" class="alert alert-success mt-3" style="display: none;">
+                    ¡Acta eliminada correctamente!
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("btnEliminar").addEventListener("click", async () => {
+        const id = @Model.id;
+
+        const response = await fetch(`/ActasAntiguas/DeleteConfirmed/${id}`, {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            // Mostrar mensaje de éxito
+            const mensaje = document.getElementById("mensajeExito");
+            mensaje.style.display = "block";
+
+            // Vaciar todos los inputs tipo text en el formulario
+            document.querySelectorAll("input.form-control").forEach(input => {
+                input.value = "";
+            });
+
+            // Esperar 3 segundos y redirigir
+            setTimeout(() => {
+                window.location.href = "/Home/MatrimoniosView";
+            }, 3000);
+        } else {
+            alert("Error al eliminar el acta.");
+        }
+    });
+</script>

@@ -1,0 +1,175 @@
+@{
+    ViewData["Title"] = "Gestión de Encargados de Evento";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Encargados de Evento</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form id="formEncargado" autocomplete="off">
+            <input type="hidden" id="id" name="id" value="0" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input class="form-control" id="nombre" name="nombre" required maxlength="100" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo</label>
+                <input type="email" class="form-control" id="email" name="email" required maxlength="150" />
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input class="form-control" id="telefono" name="telefono" maxlength="20" />
+            </div>
+            <div class="mb-3">
+                <label for="rol" class="form-label">Rol</label>
+                <input class="form-control" id="rol" name="rol" maxlength="50" />
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button type="button" class="btn btn-secondary" id="btnNuevo">Limpiar</button>
+        </form>
+        <div id="msgEncargado" class="mt-2"></div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="mb-3 d-flex">
+            <input type="text" id="busquedaEncargado" class="form-control me-2" placeholder="Buscar por nombre..." />
+            <button type="button" class="btn btn-primary me-2" id="btnBuscarEncargado">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnLimpiarEncargado">
+                Limpiar
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaEncargados">
+                    <!-- Llenado por JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarEncargados();
+
+            // Evento para registrar encargado
+            document.getElementById("formEncargado").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const encargado = {
+                    nombre: document.getElementById("nombre").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    telefono: document.getElementById("telefono").value.trim(),
+                    rol: document.getElementById("rol").value.trim()
+                };
+
+                fetch("/Encargados/Create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(encargado)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const msg = document.getElementById("msgEncargado");
+                    if (data.success) {
+                        msg.innerHTML = `<span class="text-success">Encargado registrado correctamente.</span>`;
+                        limpiarFormulario();
+                        cargarEncargados();
+                    } else {
+                        msg.innerHTML = `<span class="text-danger">${data.message || "Error al registrar."}</span>`;
+                    }
+                });
+            });
+
+            // Buscar encargado por nombre
+            document.getElementById("btnBuscarEncargado").addEventListener("click", buscarEncargados);
+            document.getElementById("btnLimpiarEncargado").addEventListener("click", function () {
+                document.getElementById("busquedaEncargado").value = "";
+                cargarEncargados();
+            });
+        });
+
+        function cargarEncargados() {
+            fetch("/Encargados/GetEncargados")
+                .then(res => res.json())
+                .then(renderTablaEncargados);
+        }
+
+        function buscarEncargados() {
+            const nombre = document.getElementById("busquedaEncargado").value.trim();
+            if (!nombre) {
+                cargarEncargados();
+                return;
+            }
+            fetch(`/Encargados/SearchByName?nombre=${encodeURIComponent(nombre)}`)
+                .then(res => res.json())
+                .then(renderTablaEncargados);
+        }
+
+        function renderTablaEncargados(data) {
+            const tbody = document.getElementById("tablaEncargados");
+            tbody.innerHTML = "";
+            if (data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='5'>No se encontraron encargados.</td></tr>";
+                return;
+            }
+            data.forEach(e => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${e.nombre}</td>
+                        <td>${e.email}</td>
+                        <td>${e.telefono ?? ""}</td>
+                        <td>${e.rol ?? ""}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="eliminarEncargado(${e.id})">Eliminar</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function eliminarEncargado(id) {
+            if (!confirm("¿Deseas eliminar este encargado?")) return;
+
+            fetch(`/Encargados/DeleteConfirmed?id=${id}`, {
+                method: "POST"
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error del servidor: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    cargarEncargados();
+                } else {
+                    alert(data.message || "No se pudo eliminar.");
+                }
+            })
+            .catch(err => {
+                alert("Error: " + err.message);
+            });
+        }
+
+        function limpiarFormulario() {
+            document.getElementById("id").value = 0;
+            document.getElementById("nombre").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("telefono").value = "";
+            document.getElementById("rol").value = "";
+        }
+    </script>
+}
+

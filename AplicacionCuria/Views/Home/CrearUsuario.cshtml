@@ -1,0 +1,113 @@
+@model AplicacionCuria.Models.UsuarioRegisterRequest
+
+@{
+    ViewData["Title"] = "Crear Nuevo Usuario";
+    var usuarios = ViewBag.Usuarios as List<AplicacionCuria.Models.Usuario> ?? new List<AplicacionCuria.Models.Usuario>();
+}
+
+<!-- Mensajes de feedback -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        Corrija los errores del formulario e intente nuevamente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>@(Model != null && Model.Id > 0 ? "Editar Usuario" : "Crear Nuevo Usuario")</h2>
+        <form asp-action="CrearUsuario" method="post">
+            @if (Model != null && Model.Id > 0)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
+
+            <div class="form-group mb-2">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Nombre"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Apellido"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Rol"></label>
+                <select asp-for="Rol" class="form-control">
+                    <option value="">Seleccione un rol</option>
+                    <option value="admin">Administrador</option>
+                    <option value="personal">Personal</option>
+                </select>
+                <span asp-validation-for="Rol" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                @(Model != null && Model.Id > 0 ? "Actualizar Usuario" : "Crear Usuario")
+            </button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Usuarios Registrados</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Correo</th>
+                    <th>Nombre</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in usuarios)
+                {
+                    <tr>
+                        <td>@user.correo</td>
+                        <td>@($"{user.nombre} {user.apellido}")</td>
+                        <td>@user.rol</td>
+                        <td>
+                            <div class="d-flex flex-column gap-1">
+                                <a asp-action="EditarUsuario" asp-route-id="@user.id" class="btn btn-sm btn-warning w-100">Editar</a>
+                                <a asp-action="EliminarUsuario" asp-route-id="@user.id" class="btn btn-sm btn-danger w-100">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

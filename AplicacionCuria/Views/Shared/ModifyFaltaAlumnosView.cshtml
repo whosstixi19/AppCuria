@@ -1,0 +1,35 @@
+﻿@model AplicacionCuria.Models.Falta
+
+@{
+    ViewData["Title"] = "Modificar Falta";
+}
+
+<h2>Modificar Falta</h2>
+
+<form asp-action="Edit" asp-controller="Faltas" asp-route-id="@Model.id" method="post">
+    <input type="hidden" asp-for="id" />
+    <input type="hidden" asp-for="alumno_id" />
+
+    <div class="mb-3">
+        <label>Nombre del Alumno</label>
+        <input type="text" class="form-control" value="@ViewBag.NombreAlumno" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha de la Falta</label>
+        <input type="date" class="form-control" asp-for="fechafalta" />
+    </div>
+
+    <div class="mb-3">
+        <label>Observación</label>
+        <textarea class="form-control" asp-for="observacion"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="MenuCatequesis" asp-controller="Home" class="btn btn-secondary">Cancelar</a>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,63 @@
+﻿<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+
+    <div class="col-md-6">
+        <div class="d-flex align-items-center mb-3">
+            <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MatrimoniosView" aria-label="Regresar al menú de sacramentos">
+                <i class="fas fa-arrow-left me-1"></i>
+                <span>Volver</span>
+            </a>
+            <h1 class="ms-3">Consanguinidad</h1>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <form method="post" asp-controller="Matrimonio" asp-action="ImprimirConsanguinidad">
+                    <p>
+                        Reverendo:<input type="text" name="reverendo" class="form-control" />
+                    </p>
+                    <p>
+                        El novio:<input type="text" name="Novio" class="form-control" />
+                    </p>
+                    <p>
+                        La novia:<input type="text" name="Novia" class="form-control" />
+                    </p>
+                    <p>
+                        Feligreses de la Parroquia:
+                        <select class="form-select" id="Feligres" name="feligres" required>
+                            <option >Seleccione una Feligreses</option>
+                            @foreach (var feligres in ViewBag.Parroquias)
+                            {
+                                <option value="@feligres.nombre">@feligres.nombre</option>
+                            }
+                        </select>
+                    </p>
+                    <p>
+                        Parroquia:
+                        <select class="form-select" id="Parroquia" name="parroquia" required>
+                            <option >Seleccione una Parroquia</option>
+                            @foreach (var feligres in ViewBag.Parroquias)
+                            {
+                                <option value="@feligres.nombre">@feligres.nombre</option>
+                            }
+                        </select>
+                    </p>
+                    
+                    
+                @*     <p>
+                        Grado de parentesco:<input type="text" name="GradoParentesco" class="form-control" />
+                    </p>
+
+                    <p>
+                        Causales:
+                        <input type="text" name="Causal1" class="form-control" placeholder="Causal 1" />
+                    </p> *@
+                    <input type="date" name="fecha" value="@DateTime.Now.ToString("dd/MMMM/yyyy")" hidden/>
+
+                    <button type="submit" asp-action="ImprimirConsanguinidad" asp-controller="Matrimonio" asp-all-route-data="Model" class="btn btn-primary">Imprimir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

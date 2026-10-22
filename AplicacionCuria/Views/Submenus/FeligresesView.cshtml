@@ -1,0 +1,453 @@
+@{
+    ViewData["Title"] = "Gestión de Feligreses";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Feligreses</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form id="formFeligres" autocomplete="off">
+            <input type="hidden" id="id" name="id" value="0" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input class="form-control" id="apellido" name="apellido" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="cedula" class="form-label">Cédula</label>
+                <input class="form-control" id="cedula" name="cedula" required maxlength="20" />
+            </div>
+            <div class="mb-3">
+                <label for="fechanacimiento" class="form-label">Fecha de nacimiento</label>
+                <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required />
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección (domicilio)</label>
+                <input class="form-control" id="direccion" name="direccion" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input class="form-control" id="telefono" name="telefono" required maxlength="20" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-control" id="estado" name="estado" required>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" required>Sin Observaciones</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button type="button" class="btn btn-secondary" id="btnNuevo">Limpiar</button>
+        </form>
+        <div id="msgFeligres" class="mt-2"></div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="mb-3 d-flex">
+            <input type="text" id="busquedaFeligres" class="form-control me-2" placeholder="Buscar por nombre..." />
+            <button type="button" class="btn btn-primary me-2" id="btnBuscarFeligres">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnLimpiarFeligres">
+                Limpiar
+            </button>
+        </div>
+        <div class="table-responsive" style="overflow-x: scroll;">
+            <table class="table table-bordered table-sm" style="min-width:1400px;">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cédula</th>
+                        <th>Fecha Nacimiento</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaFeligreses">
+                    <!-- Se llena por JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Feligrés -->
+<div class="modal fade" id="modalEditarFeligres" tabindex="-1" aria-labelledby="modalEditarFeligresLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEditarFeligres" autocomplete="off">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarFeligresLabel">Editar Feligrés</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="edit_id" name="id" />
+          <div class="mb-3">
+            <label for="edit_nombre" class="form-label">Nombre</label>
+            <input class="form-control" id="edit_nombre" name="nombre" required maxlength="255" />
+          </div>
+          <div class="mb-3">
+            <label for="edit_apellido" class="form-label">Apellido</label>
+            <input class="form-control" id="edit_apellido" name="apellido" required maxlength="255" />
+          </div>
+          <div class="mb-3">
+            <label for="edit_cedula" class="form-label">Cédula</label>
+            <input class="form-control" id="edit_cedula" name="cedula" required maxlength="20" />
+          </div>
+          <div class="mb-3">
+            <label for="edit_fechanacimiento" class="form-label">Fecha de nacimiento</label>
+            <input type="date" class="form-control" id="edit_fechanacimiento" name="fechanacimiento" required />
+          </div>
+          <div class="mb-3">
+            <label for="edit_direccion" class="form-label">Dirección (domicilio)</label>
+            <input class="form-control" id="edit_direccion" name="direccion" required maxlength="255" />
+          </div>
+          <div class="mb-3">
+            <label for="edit_telefono" class="form-label">Teléfono</label>
+            <input class="form-control" id="edit_telefono" name="telefono" required maxlength="20" />
+          </div>
+          <div class="mb-3">
+            <label for="edit_email" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="edit_email" name="email" required maxlength="255" />
+          </div>
+          <div class="mb-3">
+            <label for="edit_estado" class="form-label">Estado</label>
+            <select class="form-control" id="edit_estado" name="estado" required>
+              <option value="ACTIVO">ACTIVO</option>
+              <option value="INACTIVO">INACTIVO</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="edit_observaciones" class="form-label">Observaciones</label>
+            <textarea class="form-control" id="edit_observaciones" name="observaciones" required>Sin Observaciones</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.table-responsive {
+    overflow-x: scroll !important;
+}
+.table-responsive::-webkit-scrollbar {
+    height: 12px;
+}
+.table-responsive table {
+    min-width: 1000px;
+}
+.table-sm th, .table-sm td {
+    padding: 0.3rem !important;
+    font-size: 0.92rem;
+}
+.table-sm {
+    font-size: 0.92rem;
+}
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarUltimosFeligreses();
+
+            document.getElementById("btnBuscarFeligres").addEventListener("click", function () {
+                buscarFeligreses();
+            });
+
+            document.getElementById("busquedaFeligres").addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    buscarFeligreses();
+                }
+            });
+
+            document.getElementById("btnLimpiarFeligres").addEventListener("click", function () {
+                document.getElementById("busquedaFeligres").value = "";
+                cargarUltimosFeligreses();
+            });
+
+            document.getElementById("btnNuevo").addEventListener("click", function () {
+                limpiarFormulario();
+            });
+
+            // Observaciones por defecto en ambos forms
+            const observaciones = document.getElementById('observaciones');
+            observaciones.addEventListener('focus', function () {
+                if (this.value === 'Sin Observaciones') {
+                    this.value = '';
+                }
+            });
+            observaciones.addEventListener('blur', function () {
+                if (this.value.trim() === '') {
+                    this.value = 'Sin Observaciones';
+                }
+            });
+
+            const editObservaciones = document.getElementById('edit_observaciones');
+            editObservaciones.addEventListener('focus', function () {
+                if (this.value === 'Sin Observaciones') {
+                    this.value = '';
+                }
+            });
+            editObservaciones.addEventListener('blur', function () {
+                if (this.value.trim() === '') {
+                    this.value = 'Sin Observaciones';
+                }
+            });
+
+            // Guardar cambios desde el modal
+            document.getElementById("formEditarFeligres").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const obs = document.getElementById("edit_observaciones");
+                if (obs.value.trim() === "") obs.value = "Sin Observaciones";
+                if (!validarCamposEditar()) {
+                    mostrarMsg("Todos los campos son obligatorios.", false);
+                    return;
+                }
+                const id = document.getElementById("edit_id").value;
+                const feligres = {
+                    id: id,
+                    nombre: document.getElementById("edit_nombre").value,
+                    apellido: document.getElementById("edit_apellido").value,
+                    cedula: document.getElementById("edit_cedula").value,
+                    fechanacimiento: document.getElementById("edit_fechanacimiento").value,
+                    direccion: document.getElementById("edit_direccion").value,
+                    telefono: document.getElementById("edit_telefono").value,
+                    email: document.getElementById("edit_email").value,
+                    estado: document.getElementById("edit_estado").value,
+                    observaciones: document.getElementById("edit_observaciones").value
+                };
+
+                fetch(`/Feligres/Edit?id=${id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(feligres)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarUltimosFeligreses();
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarFeligres'));
+                        modal.hide();
+                        mostrarMsg("Feligrés modificado con éxito.", true);
+                    } else {
+                        mostrarMsg(data.message || "Error al modificar feligrés.", false);
+                    }
+                });
+            });
+
+            // Guardar nuevo feligrés
+            document.getElementById("formFeligres").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const obs = document.getElementById("observaciones");
+                if (obs.value.trim() === "") obs.value = "Sin Observaciones";
+                if (!validarCamposCrear()) {
+                    mostrarMsg("Todos los campos son obligatorios.", false);
+                    return;
+                }
+                const feligres = {
+                    nombre: document.getElementById("nombre").value,
+                    apellido: document.getElementById("apellido").value,
+                    cedula: document.getElementById("cedula").value,
+                    fechanacimiento: document.getElementById("fechanacimiento").value,
+                    direccion: document.getElementById("direccion").value,
+                    telefono: document.getElementById("telefono").value,
+                    email: document.getElementById("email").value,
+                    estado: document.getElementById("estado").value,
+                    observaciones: document.getElementById("observaciones").value
+                };
+
+                fetch("/Feligres/Create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(feligres)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarUltimosFeligreses();
+                        limpiarFormulario();
+                        mostrarMsg("Feligrés creado con éxito.", true);
+                    } else {
+                        mostrarMsg(data.message || "Error al crear feligrés.", false);
+                    }
+                });
+            });
+        });
+
+        function cargarUltimosFeligreses() {
+            fetch("/Feligres/GetLastFull?count=10")
+                .then(res => res.json())
+                .then(renderTablaFeligreses);
+        }
+
+        function buscarFeligreses() {
+            const nombre = document.getElementById("busquedaFeligres").value.trim();
+            if (!nombre) {
+                cargarUltimosFeligreses();
+                return;
+            }
+            fetch(`/Feligres/SearchByName?nombre=${encodeURIComponent(nombre)}`)
+                .then(res => res.json())
+                .then(renderTablaFeligreses);
+        }
+
+        function renderTablaFeligreses(data) {
+            const tbody = document.getElementById("tablaFeligreses");
+            tbody.innerHTML = "";
+            if (data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='10'>No se encontraron resultados.</td></tr>";
+                return;
+            }
+            data.forEach(f => {
+                tbody.innerHTML += `<tr>
+                    <td>${f.nombre ?? ""}</td>
+                    <td>${f.apellido ?? ""}</td>
+                    <td>${f.cedula ?? ""}</td>
+                    <td>${f.fechanacimiento ? new Date(f.fechanacimiento).toLocaleDateString() : ""}</td>
+                    <td>${f.direccion ?? ""}</td>
+                    <td>${f.telefono ?? ""}</td>
+                    <td>${f.email ?? ""}</td>
+                    <td>${f.estado ?? ""}</td>
+                    <td>${f.observaciones ?? ""}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editarFeligres(${f.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarFeligres(${f.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function editarFeligres(id) {
+            fetch(`/Feligres/GetFeligreses`)
+                .then(res => res.json())
+                .then(data => {
+                    const f = data.find(f => f.id === id);
+                    if (f) {
+                        document.getElementById("edit_id").value = f.id;
+                        document.getElementById("edit_nombre").value = f.nombre ?? "";
+                        document.getElementById("edit_apellido").value = f.apellido ?? "";
+                        document.getElementById("edit_cedula").value = f.cedula ?? "";
+                        document.getElementById("edit_fechanacimiento").value = f.fechanacimiento ? f.fechanacimiento.split('T')[0] : "";
+                        document.getElementById("edit_direccion").value = f.direccion ?? "";
+                        document.getElementById("edit_telefono").value = f.telefono ?? "";
+                        document.getElementById("edit_email").value = f.email ?? "";
+                        document.getElementById("edit_estado").value = f.estado ?? "ACTIVO";
+                        document.getElementById("edit_observaciones").value = f.observaciones ?? "Sin Observaciones";
+                        var modal = new bootstrap.Modal(document.getElementById('modalEditarFeligres'));
+                        modal.show();
+                    }
+                });
+        }
+
+        function eliminarFeligres(id) {
+            if (confirm("¿Seguro que deseas eliminar este feligrés?")) {
+                fetch("/Feligres/DeleteConfirmed", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarUltimosFeligreses();
+                        mostrarMsg("Feligrés eliminado.", true);
+                    } else {
+                        mostrarMsg("No se pudo eliminar.", false);
+                    }
+                });
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById("id").value = 0;
+            document.getElementById("nombre").value = "";
+            document.getElementById("apellido").value = "";
+            document.getElementById("cedula").value = "";
+            document.getElementById("fechanacimiento").value = "";
+            document.getElementById("direccion").value = "";
+            document.getElementById("telefono").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("estado").value = "ACTIVO";
+            document.getElementById("observaciones").value = "Sin Observaciones";
+        }
+
+        function mostrarMsg(msg, exito) {
+            const msgDiv = document.getElementById("msgFeligres");
+            msgDiv.textContent = msg;
+            msgDiv.className = exito ? "text-success" : "text-danger";
+            setTimeout(() => { msgDiv.textContent = ""; }, 4000);
+        }
+
+        function validarCamposCrear() {
+            const nombre = document.getElementById("nombre").value.trim();
+            const apellido = document.getElementById("apellido").value.trim();
+            const cedula = document.getElementById("cedula").value.trim();
+            const fechanacimiento = document.getElementById("fechanacimiento").value.trim();
+            const direccion = document.getElementById("direccion").value.trim();
+            const telefono = document.getElementById("telefono").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const estado = document.getElementById("estado").value.trim();
+            const observaciones = document.getElementById("observaciones").value.trim();
+
+            return (
+                nombre &&
+                apellido &&
+                cedula &&
+                fechanacimiento &&
+                direccion &&
+                telefono &&
+                email &&
+                estado &&
+                (observaciones || observaciones === "Sin Observaciones")
+            );
+        }
+
+        function validarCamposEditar() {
+            const nombre = document.getElementById("edit_nombre").value.trim();
+            const apellido = document.getElementById("edit_apellido").value.trim();
+            const cedula = document.getElementById("edit_cedula").value.trim();
+            const fechanacimiento = document.getElementById("edit_fechanacimiento").value.trim();
+            const direccion = document.getElementById("edit_direccion").value.trim();
+            const telefono = document.getElementById("edit_telefono").value.trim();
+            const email = document.getElementById("edit_email").value.trim();
+            const estado = document.getElementById("edit_estado").value.trim();
+            const observaciones = document.getElementById("edit_observaciones").value.trim();
+
+            return (
+                nombre &&
+                apellido &&
+                cedula &&
+                fechanacimiento &&
+                direccion &&
+                telefono &&
+                email &&
+                estado &&
+                (observaciones || observaciones === "Sin Observaciones")
+            );
+        }
+    </script>   
+}

@@ -1,0 +1,185 @@
+﻿@model AplicacionCuria.Models.MixtaReligion
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curia Arquidiocesana de Cuenca</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-size: 22px;
+        }
+
+        h3, h2 {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        p {
+            margin: 10px 0;
+            line-height: 1.7;
+        }
+
+        .line-text {
+            display: inline-flex; /* Permite que el texto y la línea estén en la misma línea */
+            align-items: center; /* Alinea verticalmente */
+        }
+
+        .line {
+            display: inline-block; /* Asegura que se comporte como un bloque en línea */
+            width: 887px; /* Longitud de la línea */
+            height: 1px; /* Grosor de la línea */
+            background-color: black; /* Color de la línea */
+            margin-left: 5px; /* Espacio entre el texto y la línea */
+        }
+
+        .footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 19px;
+        }
+
+            .footer p {
+                margin: 0;
+                text-align: center;
+            }
+
+            .footer .line {
+                border: none;
+                border-bottom: 5px solid #000;
+                width: 300px;
+                margin: 10px auto;
+            }
+
+        img {
+            max-width: 140px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .line-container {
+            margin-bottom: 10px;
+        }
+
+
+        .signature {
+            width: 250px;
+            text-align: center;
+        }
+
+        .paragraph-with-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .paragraph-with-line p {
+                margin: 0;
+            }
+
+            .paragraph-with-line .line {
+                width: 100%;
+                margin-left: 10px;
+                margin-right: 10px;
+                border-bottom: 1px solid black;
+            }
+
+
+        .firmas {
+            align-items: center;
+            margin-top: 100px;
+            columns: 2;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="text-center">
+            <img src="~/imagenes/escudo.png" alt="Escudo" />
+            <h3>CURIA ARQUIDIOCESANA DE CUENCA</h3>
+            <p>Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
+        </div>
+        <div class="row">
+            <p>
+                Ministro parroquial de: <b>@Model.parroquia</b>
+            </p>
+            <p>
+                Al Vicario General de la Arquidiócesis, Rvdo.
+            </p>
+            <p>
+                El novio: <b>@Model.novio</b>
+            </p>
+            <p>
+
+                La novia: <b>@Model.novia</b>
+            </p>
+            <p>
+                Feligreses de la Parroquia: <b>@Model.feligres</b>
+            </p>
+            <p>
+                Desean contraer matrimonio eclesiástico, pero las informaciones seguidas al efecto, resultan que dispensa por tener:
+            </p>
+            <h2 class="text-center">RELIGION MIXTA</h2>
+            <div class="text-center">
+                <p>
+                    <span>Fe del novio:</span>
+                    <b >@Model.fenovio</b>
+                </p>
+                <p>
+                    <span>Fe del novia:</span>
+                    <b>@Model.fenovia</b>
+                </p>
+            </div>
+            
+                Para obtener la dispensa de este impedimento, alegan las causales siguientes:
+            </p>
+            <p>
+            <p>______________________________________________________________________________________________</p>
+            <p>______________________________________________________________________________________________</p>
+            <p>______________________________________________________________________________________________</p>
+            <p>______________________________________________________________________________________________</p>
+            </p>
+            <p>
+                Cerciorado el Párroco que suscribe de la verdad de las causales, le suplica a usted,
+                se sirva conceder el permiso que solicita, por ser para el bien de estos feligreses.
+                Dios guarde a usted.
+            </p>
+            <h3>DESPACHESE</h3>
+        </div>
+
+        <div class="firmas">
+            <div class="col-2 text-center">
+                <p>________________________ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ________________________</p>
+                <p>‎ ‎‎ ‎ ‎  PARROCO ‎ ‎ ‎ ‎ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ VICARIO GENERAL</p>
+            </div>
+        </div>
+        <div class="footer text-center">
+            <b>DISPENSA DE MATRIMONIOS MIXTOS:</b>
+            <p>Cuando el matrimonio es entre dos personas bautizadas, una de las cuales haya sudo bautizada en la Iglesia Catolica</p>
+            <p> o recibida en ella, despues del bautismo y no se haya apartado de ella mediante un acto formal y otra adscrita a una Iglesia o Comunidad Eclesial que no se halle en comunion plena con la Iglesia Catolica. Canon 1124</p>
+  
+            <p>Bolívar 7-64 y Luis Cordero</p>
+            <p>Teléfonos: (593-7) 2842824; 2847234; 2847235; 2831651; 2843915; 2831060</p>
+            <p>Fax (593-7) 2844436</p>
+            <p>Apartado 01.01.0046</p>
+            <p>e-mail: cura@iglesiadecuenca.ec</p>
+            <p>Web Side: www.iglesiadecuenca.ec</p>
+            <p>CUENCA - ECUADOR</p>
+        </div>
+    </div>
+
+</body>
+</html>

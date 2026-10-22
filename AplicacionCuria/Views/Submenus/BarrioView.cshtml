@@ -1,0 +1,236 @@
+@{
+    ViewData["Title"] = "Gestión de Barrios";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Barrios</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form id="formBarrio" autocomplete="off">
+            <input type="hidden" id="id" name="id" value="0" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="ministro_id" class="form-label">Ministro</label>
+                <select class="form-control" id="ministro_id" name="ministro_id" required>
+                    <!-- Opciones dinámicas desde la BD -->
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="iglesia_id" class="form-label">Iglesia</label>
+                <select class="form-control" id="iglesia_id" name="iglesia_id" required>
+                    <!-- Opciones dinámicas desde la BD -->
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="misa_id" class="form-label">Misa</label>
+                <select class="form-control" id="misa_id" name="misa_id" required>
+                    <!-- Opciones dinámicas desde la BD -->
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-control" id="estado" name="estado" required>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" required>Sin Observaciones</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button type="button" class="btn btn-secondary" id="btnNuevo">Limpiar</button>
+        </form>
+        <div id="msgBarrio" class="mt-2"></div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Ministro</th>
+                        <th>Iglesia</th>
+                        <th>Misa</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBarrios">
+                    <!-- Se llena por JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarBarrios();
+            cargarMinistros();
+            cargarIglesias();
+            cargarMisas();
+
+            document.getElementById("formBarrio").addEventListener("submit", function(e) {
+                e.preventDefault();
+                if (!validarCamposBarrio()) {
+                    mostrarMsg("Todos los campos son obligatorios.", false);
+                    return;
+                }
+                const barrio = {
+                    nombre: document.getElementById("nombre").value,
+                    ministro_id: parseInt(document.getElementById("ministro_id").value),
+                    iglesia_id: parseInt(document.getElementById("iglesia_id").value),
+                    misa_id: parseInt(document.getElementById("misa_id").value),
+                    estado: document.getElementById("estado").value,
+                    observaciones: document.getElementById("observaciones").value
+                };
+
+                fetch("/Barrio/Create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(barrio)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarBarrios();
+                        limpiarFormulario();
+                        mostrarMsg("Barrio creado con éxito.", true);
+                    } else {
+                        mostrarMsg(data.message || "Error al crear barrio.", false);
+                    }
+                });
+            });
+
+            document.getElementById("btnNuevo").addEventListener("click", function () {
+                limpiarFormulario();
+            });
+        });
+
+        function cargarBarrios() {
+            fetch("/Barrio/GetBarrios")
+                .then(res => res.json())
+                .then(renderTablaBarrios);
+        }
+
+        function renderTablaBarrios(data) {
+            const tbody = document.getElementById("tablaBarrios");
+            tbody.innerHTML = "";
+            if (data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='7'>No se encontraron resultados.</td></tr>";
+                return;
+            }
+            data.forEach(b => {
+                tbody.innerHTML += `<tr>
+                    <td>${b.nombre ?? ""}</td>
+                    <td>${b.ministro_id ?? ""}</td>
+                    <td>${b.iglesia_id ?? ""}</td>
+                    <td>${b.misa_id ?? ""}</td>
+                    <td>${b.estado ?? ""}</td>
+                    <td>${b.observaciones ?? ""}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarBarrio(${b.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function eliminarBarrio(id) {
+            if (confirm("¿Seguro que deseas eliminar este barrio?")) {
+                fetch("/Barrio/DeleteConfirmed", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarBarrios();
+                        mostrarMsg("Barrio eliminado.", true);
+                    } else {
+                        mostrarMsg("No se pudo eliminar.", false);
+                    }
+                });
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById("id").value = 0;
+            document.getElementById("nombre").value = "";
+            document.getElementById("ministro_id").value = "";
+            document.getElementById("iglesia_id").value = "";
+            document.getElementById("misa_id").value = "";
+            document.getElementById("estado").value = "ACTIVO";
+            document.getElementById("observaciones").value = "Sin Observaciones";
+        }
+
+        function mostrarMsg(msg, exito) {
+            const msgDiv = document.getElementById("msgBarrio");
+            msgDiv.textContent = msg;
+            msgDiv.className = exito ? "text-success" : "text-danger";
+            setTimeout(() => { msgDiv.textContent = ""; }, 4000);
+        }
+
+        function validarCamposBarrio() {
+            const nombre = document.getElementById("nombre").value.trim();
+            const ministro_id = document.getElementById("ministro_id").value.trim();
+            const iglesia_id = document.getElementById("iglesia_id").value.trim();
+            const misa_id = document.getElementById("misa_id").value.trim();
+            const estado = document.getElementById("estado").value.trim();
+            const observaciones = document.getElementById("observaciones").value.trim();
+
+            return (
+                nombre &&
+                ministro_id &&
+                iglesia_id &&
+                misa_id &&
+                estado &&
+                (observaciones || observaciones === "Sin Observaciones")
+            );
+        }
+
+        function cargarMinistros() {
+            fetch("/Ministros/GetMinistros")
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById("ministro_id");
+                    select.innerHTML = '<option value="">Seleccione...</option>';
+                    data.forEach(m => {
+                        select.innerHTML += `<option value="${m.id}">${m.nombre} ${m.apellido}</option>`;
+                    });
+                });
+        }
+
+        function cargarIglesias() {
+            fetch("/Iglesia/GetIglesias")
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById("iglesia_id");
+                    select.innerHTML = '<option value="">Seleccione...</option>';
+                    data.forEach(i => {
+                        select.innerHTML += `<option value="${i.id}">${i.nombre}</option>`;
+                    });
+                });
+        }
+
+        function cargarMisas() {
+            fetch("/Misas/GetMisas")
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById("misa_id");
+                    select.innerHTML = '<option value="">Seleccione...</option>';
+                    data.forEach(m => {
+                        select.innerHTML += `<option value="${m.id}">${m.nombre}</option>`;
+                    });
+                });
+        }
+    </script>
+}

@@ -1,0 +1,298 @@
+﻿<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home"
+        asp-action="MenuSacramentos">
+        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Confirmación</h1>
+</div>
+<div class="tab-pane fade show active">
+
+    <div class="row">
+        <!-- Formulario de creación a la izquierda -->
+        <div class="col-md-6">
+            <form asp-action="Create" id="plantilla-com" asp-controller="Confirmacion" method="post">
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <!-- Apellido -->
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                </div>
+                <!-- Fecha de Nacimiento -->
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" required>
+                </div>
+                <!-- Cédula -->
+                <div class="form-group">
+                    <label for="cedula">Cédula</label>
+                    <input type="text" class="form-control" id="cedula" name="cedula" required>
+                </div>
+                <!-- Dirección -->
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion" required>
+                </div>
+                <!-- Teléfono -->
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                </div>
+                <!-- Fecha de Confirmación -->
+                <div class="form-group">
+                    <label for="fechaconfirmacion">Fecha de Confirmacion</label>
+                    <input type="date" class="form-control" id="fechaconfirmacion" name="fechaconfirmacion" required>
+                </div>
+                <!-- Parroquia -->
+                <div class="form-group">
+                    <label for="Parroquia" class="form-label">Parroquia</label>
+                    <select class="form-select" id="parroquia_id" name="parroquia_id" required>
+                        <option value="">Seleccione una Parroquia</option>
+                    </select>
+                </div>
+                <!-- Sacerdote -->
+                <div class="form-group">
+                    <label for="Sacerdote" class="form-label">Sacerdote</label>
+                    <select class="form-select" id="sacerdote_id" name="sacerdote_id" required>
+                        <option value="">Seleccione un Sacerdote</option>
+                    </select>
+                </div>
+                <!-- Observaciones -->
+                <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones" required>Sin Observaciones</textarea>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <label id="exito" class="text-success" style="display: none;">Confirmación Registrada</label>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="Search" method="get" id="buscar-acta" asp-controller="Confirmacion">
+                <div class="mb-3">
+                    <label for="nombrecompletonino" class="form-label">Nombre completo del niño/niña</label>
+                    <input type="text" class="form-control" id="nombrecompleto" name="nombrecompleto"
+                        placeholder="Escribe un nombre...">
+                </div>
+                <div class="d-flex gap-2 mb-2">
+                    <button type="button" class="btn btn-info" onclick="Buscar()">Buscar</button>
+                    <button type="button" class="btn btn-secondary" onclick="LimpiarBusqueda()">Limpiar</button>
+                </div>
+                <div class="mb-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Teléfono</th>
+                                <th>Fecha de Nacimiento</th>
+                                <th>Parroquia</th>
+                                <th>Modificar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultados">
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.nombre</td>
+                                        <td>@item.apellido</td>
+                                        <td>@item.telefono</td>
+                                        <td>@item.fechanacimiento.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.parroquia</td>
+                                        <td>
+                                            <a asp-action="ModifyConfirmacionView" asp-controller="Confirmacion"
+                                                asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                        </td>
+                                        <td>
+                                            <a asp-action="DeleteConfirmacionView" asp-controller="Confirmacion"
+                                                asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    document.getElementById("plantilla-com").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito").style.display = "none";
+                if (data.success) {
+                    document.getElementById("exito").style.display = "block";
+                    document.getElementById("plantilla-com").reset(); // 🔄 limpiar campos
+                    setTimeout(() => {
+                        document.getElementById("exito").style.display = "none";
+                    }, 3000);
+                    setTimeout(() => {
+                    }, 2000);
+                }
+                else {
+                    document.getElementById("exito").className = "text-danger";
+                    if (Array.isArray(data.errors)) {
+                        document.getElementById("exito").textContent = data.errors.join(", ");
+                    } else {
+                        document.getElementById("exito").textContent = data.errors || "Error desconocido.";
+                    }
+                    document.getElementById("exito").style.display = "block"
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito").innerText = error;
+                document.getElementById("exito").style.display = "block";
+            });
+    });
+    function cargarParroquias() {
+        fetch('/Confirmacion/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                let parroquiaSelect = document.getElementById('parroquia_id');
+                parroquiaSelect.innerHTML = '<option value="">Seleccione una Parroquia</option>';
+                data.forEach(parroquia => {
+                    parroquiaSelect.innerHTML += `<option value="${parroquia.id}">${parroquia.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarSacerdotes() {
+        fetch('/Confirmacion/GetSacerdotes')
+            .then(response => response.json())
+            .then(data => {
+                let sacerdoteSelect = document.getElementById('sacerdote_id');
+                sacerdoteSelect.innerHTML = '<option value="">Seleccione un Sacerdote</option>';
+                data.forEach(sacerdote => {
+                    sacerdoteSelect.innerHTML += `<option value="${sacerdote.id}">${sacerdote.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+
+    function List() {
+        fetch('/Confirmacion/GetListado')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultados");
+                if (!resultadosBody) {
+                    console.error("Elemento con id 'resultadosBody' no encontrado.");
+                    return;
+                }
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.nombre}</td>
+                            <td>${item.apellido}</td>
+                            <td>${item.telefono}</td>
+                            <td>${item.fechanacimiento}</td>
+                            <td>${item.parroquia}</td>
+                            <td><a href="/Confirmacion/ModifyConfirmacionView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                            <td><a href="/Confirmacion/DeleteConfirmacionView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                        </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    function Buscar(event) {
+        if (event) event.preventDefault(); // Evita el submit tradicional si viene de un formulario
+
+        const nombre = document.getElementById('nombrecompleto').value;
+        const resultadosBody = document.getElementById('resultados');
+
+        if (nombre.length >= 3) {
+            fetch(`/Confirmacion/GetListado?nombrecompleto=${nombre}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultadosBody.innerHTML = '';
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const row = `<tr>
+                                <td>${item.nombre}</td>
+                                <td>${item.apellido}</td>
+                                <td>${item.telefono}</td>
+                                <td>${item.fechanacimiento}</td>
+                                <td>${item.parroquia}</td>
+                                <td><a href="/Confirmacion/ModifyConfirmacionView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/Confirmacion/DeleteConfirmacionView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            </tr>`;
+                            resultadosBody.innerHTML += row;
+                        });
+                    } else {
+                        resultadosBody.innerHTML = `<tr><td colspan="7">No se encontraron resultados.</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultadosBody.innerHTML = `<tr><td colspan="7">Error en la búsqueda.</td></tr>`;
+                });
+        } else {
+            resultadosBody.innerHTML = `<tr><td colspan="7">Ingrese al menos 3 letras para buscar.</td></tr>`;
+        }
+    }
+
+    // Intercepta el submit del formulario para que Enter funcione igual que el botón
+    document.getElementById('buscar-acta').addEventListener('submit', Buscar);
+
+    function LimpiarBusqueda() {
+        // Limpiar el campo de búsqueda
+        document.getElementById('nombrecompleto').value = '';
+
+        // Volver a cargar los 8 últimos registros
+        List();
+    }
+
+    // Observaciones por defecto en Confirmación
+    document.getElementById('observaciones').addEventListener('focus', function () {
+        if (this.value === 'Sin Observaciones') {
+            this.value = '';
+        }
+    });
+    document.getElementById('observaciones').addEventListener('blur', function () {
+        if (this.value.trim() === '') {
+            this.value = 'Sin Observaciones';
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarParroquias();
+        cargarSacerdotes();
+        List();
+
+        window.onload = function () {
+        }
+    });
+
+</script>

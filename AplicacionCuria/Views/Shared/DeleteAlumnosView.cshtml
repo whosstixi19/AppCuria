@@ -1,0 +1,107 @@
+﻿@model AplicacionCuria.Models.AlumnoCatequesis
+
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCatequesis" aria-label="Regresar al menú de sacramentos">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Eliminar Alumno</h1>
+            </div>
+            <form asp-action="DeleteConfirmed" asp-controller="AlumnosCatequesis" asp-route-id="@Model.id" method="post" enctype="multipart/form-data">
+                <h3>Registro de Alumno</h3>
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Foto</label>
+                    <img src="@(Model.foto != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Model.foto)}" : "/images/placeholder.png")"
+                         style="padding-bottom:20px" alt="Foto del alumno" width="150" height="150" id="vistaPrevia" />
+
+                </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <label type="text" class="form-control" id="nombre" name="nombre">@Model.nombre</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <label type="text" class="form-control" id="apellido" name="apellido">@Model.apellido</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <label type="date" class="form-control" id="fechanacimiento" name="fechanacimiento">@Model.fechanacimiento.ToString("yyyy-MM-dd")</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
+                    <label type="date" class="form-control" id="fechabautizo" name="fechabautizo">@Model.fechabautizo.ToString("yyyy-MM-dd")</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="cedula" class="form-label">Cédula</label>
+                    <label type="text" class="form-control" id="cedula" name="cedula">@Model.cedula</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <label type="text" class="form-control" id="direccion" name="direccion">@Model.direccion</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <label type="text" class="form-control" id="telefono" name="telefono">@Model.telefono</label>
+                </div>
+
+
+
+                <div class="mb-3">
+                    <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                    <label type="text" class="form-control" id="nacionalidad" name="nacionalidad">@Model.nacionalidad</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estadocivil" class="form-label">Estado Civil</label>
+                    <label type="text" class="form-control" id="estadocivil" name="estadocivil">@Model.estadocivil</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="correo" class="form-label">Correo Electrónico</label>
+                    <label type="email" class="form-control" id="correo" name="correo">@Model.correo</label>
+                </div>
+
+                <h4>Datos del Representante</h4>
+
+                <div class="mb-3">
+                    <label for="nombrerepresentante" class="form-label">Nombre del Representante</label>
+                    <label type="text" class="form-control" id="nombrerepresentante" name="nombrerepresentante">@Model.nombrerepresentante</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefonorepresentante" class="form-label">Teléfono del Representante</label>
+                    <label type="text" class="form-control" id="telefonorepresentante" name="telefonorepresentante">@Model.telefonorepresentante</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="relacionconelestudiante" class="form-label">Relación con el Estudiante</label>
+                    <label type="text" class="form-control" id="relacionconelestudiante" name="relacionconelestudiante">@Model.relacionconelestudiante</label>
+                </div>
+
+                <!-- Más campos aquí según el modelo AlumnoCatequesis -->
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+ 
+    
+</script>

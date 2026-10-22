@@ -1,0 +1,210 @@
+@{
+    ViewData["Title"] = "Gestión de Parroquias";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Parroquias</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form id="formParroquia">
+            <input type="hidden" id="id" name="id" value="0" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección</label>
+                <textarea class="form-control" id="direccion" name="direccion"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input class="form-control" id="telefono" name="telefono" maxlength="20" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" maxlength="255" />
+            </div>
+            <div class="mb-3">
+                <label for="sacerdote_id" class="form-label">Sacerdote</label>
+                <select class="form-control" id="sacerdote_id" name="sacerdote_id">
+                    <option value="">Seleccione un sacerdote</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-control" id="estado" name="estado">
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button type="button" class="btn btn-secondary" id="btnNuevo">Limpiar</button>
+        </form>
+        <div id="msgParroquia" class="mt-2"></div>
+    </div>
+    <div class="col-md-7">
+        <div class="mb-3">
+            <input type="text" id="busquedaParroquia" class="form-control" placeholder="Buscar por nombre..." />
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Sacerdote</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaParroquias">
+                <!-- Se llena por JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(function () {
+            cargarSacerdotes();
+            cargarParroquias();
+
+            $("#busquedaParroquia").on("input", function () {
+                buscarParroquias($(this).val());
+            });
+
+            $("#formParroquia").submit(function (e) {
+                e.preventDefault();
+                let id = $("#id").val();
+                let url = id == 0 ? "/Parroquias/Create" : "/Parroquias/Edit/" + id;
+                let data = {
+                    id: id,
+                    nombre: $("#nombre").val(),
+                    direccion: $("#direccion").val(),
+                    telefono: $("#telefono").val(),
+                    email: $("#email").val(),
+                    sacerdote_id: $("#sacerdote_id").val(),
+                    estado: $("#estado").val(),
+                    observaciones: $("#observaciones").val()
+                };
+                $.post(url, data, function (res) {
+                    if (res.success) {
+                        cargarParroquias();
+                        limpiarFormulario();
+                        mostrarMsg("Parroquia guardada correctamente.", true);
+                    } else {
+                        mostrarMsg(res.message || "Error al guardar.", false);
+                    }
+                });
+            });
+
+            $("#btnNuevo").click(function () {
+                limpiarFormulario();
+                cargarSacerdotes();
+            });
+        });
+
+        function cargarParroquias() {
+            $.get("/Parroquias/GetParroquias", function (data) {
+                renderTabla(data);
+            });
+        }
+
+        function buscarParroquias(nombre) {
+            if (!nombre) {
+                cargarParroquias();
+                return;
+            }
+            $.get("/Parroquias/SearchByName", { nombre: nombre }, function (data) {
+                renderTabla(data);
+            });
+        }
+
+        function cargarSacerdotes() {
+            $.get("/Parroquias/GetSacerdotesDisponibles", function (data) {
+                let options = '<option value="">Seleccione un sacerdote</option>';
+                data.forEach(function (s) {
+                    options += `<option value="${s.id}">${s.nombre}</option>`;
+                });
+                $("#sacerdote_id").html(options);
+            });
+        }
+
+        function renderTabla(data) {
+            let html = "";
+            data.forEach(function (p) {
+                html += `<tr>
+                    <td>${p.nombre}</td>
+                    <td>${p.direccion ?? ""}</td>
+                    <td>${p.telefono ?? ""}</td>
+                    <td>${p.email ?? ""}</td>
+                    <td>${p.sacerdote_nombre ?? ""}</td>
+                    <td>${p.estado ?? ""}</td>
+                    <td>${p.observaciones ?? ""}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editarParroquia(${p.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarParroquia(${p.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+            $("#tablaParroquias").html(html);
+        }
+
+        function editarParroquia(id) {
+            $.get("/Parroquias/GetParroquias", function (data) {
+                let parroquia = data.find(p => p.id === id);
+                if (parroquia) {
+                    $("#id").val(parroquia.id);
+                    $("#nombre").val(parroquia.nombre);
+                    $("#direccion").val(parroquia.direccion);
+                    $("#telefono").val(parroquia.telefono);
+                    $("#email").val(parroquia.email);
+                    cargarSacerdotes();
+                    setTimeout(function () {
+                        $("#sacerdote_id").val(parroquia.sacerdote_id);
+                    }, 200);
+                    $("#estado").val(parroquia.estado);
+                    $("#observaciones").val(parroquia.observaciones);
+                }
+            });
+        }
+
+        function eliminarParroquia(id) {
+            if (confirm("¿Seguro que deseas eliminar esta parroquia?")) {
+                $.post("/Parroquias/DeleteConfirmed", { id: id }, function (res) {
+                    if (res.success) {
+                        cargarParroquias();
+                        mostrarMsg("Parroquia eliminada.", true);
+                    } else {
+                        mostrarMsg("No se pudo eliminar.", false);
+                    }
+                });
+            }
+        }
+
+        function limpiarFormulario() {
+            $("#id").val(0);
+            $("#nombre").val("");
+            $("#direccion").val("");
+            $("#telefono").val("");
+            $("#email").val("");
+            $("#sacerdote_id").val("");
+            $("#estado").val("ACTIVO");
+            $("#observaciones").val("");
+        }
+
+        function mostrarMsg(msg, exito) {
+            $("#msgParroquia").text(msg).removeClass().addClass(exito ? "text-success" : "text-danger");
+            setTimeout(() => { $("#msgParroquia").text(""); }, 3000);
+        }
+    </script>
+}

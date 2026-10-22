@@ -1,0 +1,51 @@
+@model IEnumerable<AplicacionCuria.Models.Periodo>
+
+@{
+    ViewData["Title"] = "Listado de Periodos";
+    Layout = "_Layout";
+}
+
+<h2>Listado de Periodos</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Modificar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.nombre</td>
+                    <td>@item.fecha_inicio.ToString("dd/MM/yyyy")</td>
+                    <td>@item.fecha_fin.ToString("dd/MM/yyyy")</td>
+                    <td>@item.estado</td>
+                    <td>@item.observaciones</td>
+                    <td>
+                        <a asp-action="ModifyPeriodoView" asp-controller="Periodos" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                    </td>
+                    <td>
+                        <form asp-action="DeleteConfirmed" asp-controller="Periodos" asp-route-id="@item.id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Seguro que deseas eliminar este periodo?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">No se encontraron periodos.</td>
+            </tr>
+        }
+    </tbody>
+</table>

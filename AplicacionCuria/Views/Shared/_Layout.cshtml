@@ -1,0 +1,194 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ECLESOFT</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AplicacionCuria.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="#">ECLESOFT <span class="text-muted">2.0</span></a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <!-- Grupo 1: Secciones principales -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                    <i class="fas fa-home"></i> Inicio
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuSacramentos">
+                                    <i class="fas fa-cross"></i> Sacramentos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuCatequesis">
+                                    <i class="fas fa-book"></i> Catequesis
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuCertificado">
+                                    <i class="fas fa-certificate"></i> Certificados
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuAgenda">
+                                    <i class="fas fa-calendar"></i> Agenda
+                                </a>
+                            </li>
+
+                            <!-- Grupo 2: Soporte -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuAyudaSocial">
+                                    <i class="fas fa-hands-helping"></i> Ayuda Social
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuAyuda">
+                                    <i class="fas fa-question-circle"></i> Ayuda
+                                </a>
+                            </li>
+
+                            <!-- Grupo 3: Admin -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuRegistrar">
+                                    <i class="fas fa-user-plus"></i> Registrar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="MenuPagos">
+                                    <i class="fas fa-credit-card"></i> Pagos
+                                </a>
+                            </li>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Usuarios" asp-action="CrearUsuario">
+                                        <i class="fas fa-user-cog"></i> Crear Usuario
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <!-- Usuario actual y logout -->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex align-items-center">
+                            <span class="me-2 fw-semibold text-dark">
+                                👤 @User.Identity.Name
+                            </span>
+                            <form asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Cerrar sesión</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+            
+                @* @if (!User.Identity.IsAuthenticated)
+                {
+                    <div id="loginDiv" class="col-md-6">
+                        <h1 class="display-4 text-center">Iniciar Sesión</h1>
+                        <form id="loginForm" asp-action="Login" method="post">
+                            <div class="form-group">
+                                <label for="correo">Correo:</label>
+                                <input type="email" class="form-control" id="correo" name="Correo" placeholder="Ingresa tu correo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pass">Contraseña:</label>
+                                <input type="password" class="form-control" id="pass" name="Pass" placeholder="Ingresa tu contraseña" required>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                            </div>
+                        </form>
+                        
+                        <!-- Label para mostrar el mensaje de error -->
+                        <label id="errorLabel" class="text-danger" style="display: none;">Credenciales incorrectas</label>
+                    </div>
+
+                }
+                else
+                {
+                    <form asp-action="Logout" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                    </form>
+                } *@
+            @* <script>
+                document.getElementById("loginForm").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Evitar el envío del formulario por defecto
+
+                    var formData = new FormData(this);
+
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Ocultar el label de error al enviar el formulario
+                            document.getElementById("errorLabel").style.display = "none";
+
+                            if (data.success) {
+                                // Redirigir a la raíz o hacer otras acciones en caso de éxito
+                                //window.location.href = "/";
+                                location.reload();
+                            } else {
+                                // Mostrar el label de error si las credenciales son incorrectas
+                                document.getElementById("errorLabel").style.display = "block";
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Opcional: Mostrar un mensaje de error genérico
+                            document.getElementById("errorLabel").innerText = error;
+                            document.getElementById("errorLabel").style.display = "block";
+                        });
+                });
+            </script> *@
+
+        </main>
+    </div>
+
+    @* <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Curia - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+        
+    </footer> *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+@*     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+ *@    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

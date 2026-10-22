@@ -1,0 +1,180 @@
+﻿@model AplicacionCuria.Models.MatrimonioViewModel
+
+    <title>@ViewData["Title"] - Registro de Matrimonio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-submit {
+            text-align: center;
+        }
+
+    nav {
+        background-color: #f7f9fc;
+        border-bottom: 2px solid #d4af37;
+    }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+            nav ul li {
+                position: relative;
+            }
+
+                nav ul li a {
+                    color: #343a40;
+                    /* font-weight: bold; */
+                    padding: 15px 20px;
+                    text-decoration: none;
+                }
+
+                    nav ul li a:hover,
+                    nav ul li a.active {
+                        color: #d4af37;
+                    }
+
+                nav ul li ul {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    background-color: #f7f9fc;
+                    display: none;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    padding: 0;
+                }
+
+                nav ul li:hover ul {
+                    display: block;
+                }
+
+                nav ul li ul li {
+                    width: 200px;
+                }
+
+                    nav ul li ul li a {
+                        display: block;
+                        padding: 10px;
+                        color: #343a40;
+                    }
+
+                        nav ul li ul li a:hover {
+                            background-color: #d4af37;
+                            color: #fff;
+                        }
+
+    /* Estilo responsivo */
+    media (max-width: 768px) {
+        nav ul
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul li {
+        width: 100%;
+    }
+
+        nav ul li ul {
+            position: static;
+            box-shadow: none;
+        }
+
+    }
+
+    .menu-icon {
+        margin-right: 8px;
+    }
+
+    .christian-background {
+        background: url('https://example.com/church-background.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+    </style>
+    <div class="container">
+        <h2>Acta de Registro de Matrimonio</h2>
+        <form asp-action="GuardarMatrimonio" method="post">
+            @* Datos del Esposo *@
+            <div class="form-group">
+                <label for="NombreEsposo">Nombre del Esposo</label>
+                <input type="text" asp-for="NombreEsposo" class="form-control" placeholder="Nombre completo del esposo" />
+                <span asp-validation-for="NombreEsposo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="DniEsposo">Cédula o Pasaporte del Esposo</label>
+                <input type="text" asp-for="DniEsposo" class="form-control" placeholder="Cédula o pasaporte del esposo" />
+                <span asp-validation-for="DniEsposo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="FechaNacimientoEsposo">Fecha de Nacimiento del Esposo</label>
+                <input type="date" asp-for="FechaNacimientoEsposo" class="form-control" />
+                <span asp-validation-for="FechaNacimientoEsposo" class="text-danger"></span>
+            </div>
+
+            @* Datos de la Esposa *@
+            <div class="form-group">
+                <label for="NombreEsposa">Nombre de la Esposa</label>
+                <input type="text" asp-for="NombreEsposa" class="form-control" placeholder="Nombre completo de la esposa" />
+                <span asp-validation-for="NombreEsposa" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="DniEsposa">Cédula o Pasaporte de la Esposa</label>
+                <input type="text" asp-for="DniEsposa" class="form-control" placeholder="Cédula o pasaporte de la esposa" />
+                <span asp-validation-for="DniEsposa" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="FechaNacimientoEsposa">Fecha de Nacimiento de la Esposa</label>
+                <input type="date" asp-for="FechaNacimientoEsposa" class="form-control" />
+                <span asp-validation-for="FechaNacimientoEsposa" class="text-danger"></span>
+            </div>
+
+            @* Información del Matrimonio *@
+            <div class="form-group">
+                <label for="FechaMatrimonio">Fecha del Matrimonio</label>
+                <input type="date" asp-for="FechaMatrimonio" class="form-control" />
+                <span asp-validation-for="FechaMatrimonio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="LugarMatrimonio">Lugar del Matrimonio</label>
+                <input type="text" asp-for="LugarMatrimonio" class="form-control" placeholder="Lugar del matrimonio" />
+                <span asp-validation-for="LugarMatrimonio" class="text-danger"></span>
+            </div>
+
+            @* Testigos *@
+            <div class="form-group">
+                <label for="Testigo1">Nombre del Testigo 1</label>
+                <input type="text" asp-for="Testigo1" class="form-control" placeholder="Nombre del primer testigo" />
+                <span asp-validation-for="Testigo1" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Testigo2">Nombre del Testigo 2</label>
+                <input type="text" asp-for="Testigo2" class="form-control" placeholder="Nombre del segundo testigo" />
+                <span asp-validation-for="Testigo2" class="text-danger"></span>
+            </div>
+
+            @* Botón de enviar *@
+            <div class="btn-submit">
+                <button type="submit" class="btn btn-primary">Registrar Matrimonio</button>
+            </div>
+        </form>
+    </div>

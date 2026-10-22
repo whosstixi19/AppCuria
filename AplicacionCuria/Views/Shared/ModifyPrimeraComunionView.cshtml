@@ -1,0 +1,134 @@
+﻿@model AplicacionCuria.Models.PrimeraComunion
+
+
+
+
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="PrimeraComunionView" aria-label="Regresar al menú de sacramentos">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Modificar Primera Comunion</h1>
+            </div>
+            <form asp-controller="PrimeraComunion" asp-action="Edit" method="post" id="acta-form">
+                <input type="hidden" name="id" value="@Model.id" /> <!-- Enviar ID al controlador -->
+                <!-- Nombre completo -->
+                <div class="mb-3">
+                    <label for="Nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="Nombre" name="nombre" value="@Model.nombre" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="Apellido" name="apellido" value="@Model.apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechanacimiento" value="@Model.fechanacimiento.ToString("yyyy-MM-dd")" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Cedula" class="form-label">Cedula</label>
+                    <input type="text" class="form-control" id="Cedula" name="cedula" value="@Model.cedula" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="Direccion" name="direccion" value="@Model.direccion" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Telefono" class="form-label">Telefono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" value="@Model.telefono" required>
+                </div>
+
+                 <div class="mb-3">
+                    <label for="fechaPrimeraComunion" class="form-label">Fecha de Primera Comunion</label>
+                    <input type="date" class="form-control" id="fechaPrimeraComunion" name="fechaprimeracomunion" value="@Model.fechaprimeracomunion.ToString("yyyy-MM-dd")" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Parroquia" class="form-label">Parroquia</label>
+                        <select class="form-select" id="Parroquia" name="parroquia_id" required>
+                            <option value="">Seleccione una Parroquia</option>
+                            @foreach (var parroquia in ViewBag.Parroquias)
+                            {
+                                <option value="@parroquia.id" selected="@(Model.parroquia_id == parroquia.id ? "selected" : null)">
+                                    @parroquia.nombre
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Sacerdote" class="form-label">Sacerdote</label>
+                        <select class="form-select" id="Sacerdote" name="sacerdote_id" required>
+                            <option value="">Seleccione un Sacerdote</option>
+                            @foreach (var sacerdote in ViewBag.Sacerdotes)
+                            {
+                                <option value="@sacerdote.id" selected="@(Model.sacerdote_id == sacerdote.id ? "selected" : null)">
+                                    @sacerdote.nombre
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="Observaciones" name="observaciones" rows="3" required>@Model.observaciones</textarea>
+                </div>
+                <!-- Botón de actualización -->
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                    <label id="exito" class="text-success" style="display: none;">Primera comunion Actualizada</label>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("acta-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("exito").style.display = "none";
+
+            if (data.success) {
+                document.getElementById("exito").style.display = "block";
+                setTimeout(function () {
+                    console.log("Han pasado 5 segundos");
+                    window.location.href = "/Home/MenuSacramentos";
+                }, 5000);
+            } else {
+                // Mostrar errores devueltos por el servidor (si los hay)
+                if (data.errors) {
+                    alert("Errores:\n" + (Array.isArray(data.errors) ? data.errors.join("\n") : data.errors));
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("exito").innerText = "Ocurrió un error al enviar el formulario.";
+            document.getElementById("exito").style.display = "block";
+        });
+    });
+</script>

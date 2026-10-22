@@ -1,0 +1,87 @@
+﻿@model AplicacionCuria.Models.Agenda
+
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuAgenda" aria-label="Regresar al menú de agenda">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Modificar Alumno</h1>
+            </div>
+            <form asp-action="Edit" asp-controller="Agenda" asp-route-id="@Model.id" method="post" id="formulario">
+                
+                <div class="mb-3">
+                    <label for="fechaagenda" class="form-label">Fecha que se agendo</label>
+                    <input type="date" class="form-control" id="fechaagenda" name="fechaagenda" value="@Model.fechaagenda.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="mb-3">
+                    <label for="hora" class="form-label">Hora</label>
+                    <input type="time" class="form-control" id="hora" name="hora" value="@Model.hora">
+                </div>
+
+                <div class="mb-3">
+                    <label for="lugar" class="form-label">Lugar</label>
+                    <input type="text" class="form-control" id="lugar" name="lugar" value="@Model.lugar">
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <input type="text" class="form-control" id="descripcion" name="descripcion" value="@Model.descripcion">
+                </div>
+
+                <!-- Más campos aquí según el modelo AlumnoCatequesis -->
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                    <label id="exito" class="text-success" style="display: none;">Agenda Actualizada</label>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.getElementById("formulario").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito").style.display = "none";
+
+                if (data.success) {
+                    // Redirigir a la raíz o hacer otras acciones en caso de éxito
+
+                    document.getElementById("exito").style.display = "block";
+                    //location.reload();
+                    setTimeout(function () {
+                        console.log("Han pasado 5 segundos");
+                        window.location.href = "/Home/MenuAgenda";
+                    }, 5000);
+
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito").innerText = error;
+                document.getElementById("exito").style.display = "block";
+            });
+
+
+    });
+</script>

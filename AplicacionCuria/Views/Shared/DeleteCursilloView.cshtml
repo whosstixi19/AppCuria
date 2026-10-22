@@ -1,0 +1,130 @@
+﻿@model AplicacionCuria.Models.CursilloPrebautismal
+
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="BautizadosView" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Eliminar cursillo</h1>
+</div>
+
+
+<div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+        <div class="col-md-6">
+            <form asp-controller="CursilloPrebautismal" asp-action="DeleteConfirmed" method="post"  id="formularioCursillo">
+                <label type="hidden" name="id" value="@Model.id" /> <!-- Asegúrate de enviar el ID al controlador -->
+                <!-- Nombre del niño/niña -->
+                <div class="mb-3">
+                    <label for="nombrecompletonino" class="form-label">Nombre completo del niño/niña</label>
+                    <label type="text" class="form-control" id="nombrecompletonino" name="nombrecompletonino">@Model.nombrecompletonino</label>
+                </div>
+
+                <!-- Nombre de los padres -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombrepadre" class="form-label">Cedula del padre</label>
+                        <label type="text" class="form-control" id="nombrepadre" name="nombrepadre">@Model.nombrepadre</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="nombremadre" class="form-label">Cedula de la madre</label>
+                        <label type="text" class="form-control" id="nombremadre" name="nombremadre">@Model.nombremadre</label>
+                    </div>
+                </div>
+
+                <!-- Nombre de los padrinos -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombrepadrino" class="form-label">Cedula del padrino</label>
+                        <label type="text" class="form-control" id="nombrepadrino" name="nombrepadrino">@Model.nombrepadrino</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="nombremadrina" class="form-label">Cedula de la madrina</label>
+                        <label type="text" class="form-control" id="nombremadrina" name="nombremadrina">@Model.nombremadrina</label>
+                    </div>
+                </div>
+
+                <!-- Información de contacto -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <label type="text" class="form-control" id="telefono" name="telefono">@Model.telefono</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="celular" class="form-label">Celular</label>
+                        <label type="text" class="form-control" id="celular" name="celular">@Model.celular</label>
+                    </div>
+                </div>
+
+                <!-- Fecha del bautizo y cursillo -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
+                        <label type="date" class="form-control" id="fechabautizo" name="fechabautizo">@Model.fechabautizo.ToString("yyyy-MM-dd")</label>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fechacursillo" class="form-label">Fecha de Cursillo</label>
+                        <label type="date" class="form-control" id="fechacursillo" name="fechacursillo">@Model.fechacursillo.ToString("yyyy-MM-dd")</label>
+                    </div>
+                </div>
+
+                <!-- Quien inscribe -->
+                <div class="mb-3">
+                    <label for="quieninscribe" class="form-label">Quien inscribe</label>
+                    <label class="form-control" id="quieninscribe" name="quieninscribe">@Model.quieninscribe</label>
+                </div>
+
+                <!-- Estado del cursillo -->
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado del Cursillo</label>
+                    <label type="text" class="form-control">@Model.estado</label>
+                   
+
+                </div>
+
+                <!-- Botón de eliminar -->
+                <div class="mb-3" id="elm">
+                    <label>¿Seguro que quieres eliminar?</label>
+                    <button type="submit" class="btn btn-danger" asp-controller="CursilloPrebautismal"
+                            asp-action="DeleteConfirmed"
+                            asp-route-id="@Model.id">Eliminar</button>
+                    <label id="exito" class="text-success" style="display: none;">Cursillo Eliminado con exito</label>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@* 
+<script>
+    document.querySelector('.btn.btn-danger').addEventListener('click', function (event) {
+        event.preventDefault();  // Evita el comportamiento predeterminado del botón de envío
+
+        // Obtener el id de la ruta desde el botón
+        const id = this.getAttribute('asp-route-id');
+
+        // Hacer una llamada a la acción DeleteConfirmed usando fetch
+        fetch(`/CursilloPrebautismal/DeleteConfirmed`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value // Para manejar CSRF si lo tienes habilitado
+            },
+            body: JSON.stringify({ id: id })  // Enviar el ID en el cuerpo de la solicitud
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.Success) {
+                    // Mostrar mensaje de éxito
+                    document.getElementById('exito').style.display = 'block';
+                } else {
+                    alert("Error al eliminar el Cursillo");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error en el servidor");
+            });
+    });
+</script> *@

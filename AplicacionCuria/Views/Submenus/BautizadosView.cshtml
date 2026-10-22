@@ -1,0 +1,1839 @@
+﻿
+@{
+    ViewData["Title"] = "Registro de Bautizo";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuSacramentos" aria-label="Regresar al menú de sacramentos">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Registro de Bautizos</h1>
+</div>
+
+<!-- Sistema de pestañas -->
+<ul class="nav nav-tabs" id="formTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+
+<!-- Sistema de pestañas -->
+<ul class="nav nav-tabs" id="formTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="cursillo-tab" data-bs-toggle="tab" data-bs-target="#cursillo" type="button" role="tab" aria-controls="cursillo" aria-selected="false" >
+            Cursillo Prebautismal
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="acta-tab" data-bs-toggle="tab" data-bs-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false" >
+            Acta de Bautismo
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="antiguos-tab" data-bs-toggle="tab" data-bs-target="#antiguos" type="button" role="tab" aria-controls="antiguos" aria-selected="false" >
+            Antiguos
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="formTabsContent">
+    <!-- Cursillo Prebautismal Form -->
+    <div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
+        <div class="row">
+            <h2>Formulario de Cursillos</h2>
+            <!-- Formulario de creación a la izquierda -->
+            <div class="col-md-6">
+                <form asp-controller="CursilloPrebautismal" asp-action="Create" method="post" id="formularioCursillo">
+                    <!-- Nombre del niño/niña -->
+                    <div class="mb-3">
+                        <label for="nombrecompletonino" class="form-label">Nombre completo del niño/niña</label>
+                        <input type="text" class="form-control" id="nombrecompletonino" name="nombrecompletonino" required>
+                    </div>
+
+                    <!-- Nombre de los padres -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="padre_nombre" class="form-label">Padre</label>
+                            <input class="form-control" list="padres_datalist" id="padre_nombre" placeholder="Buscar y seleccionar padre..." autocomplete="off" required>
+                            <datalist id="padres_datalist"></datalist>
+                            <input type="hidden" id="padre_id" name="nombrepadre">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="madre_nombre" class="form-label">Madre</label>
+                            <input class="form-control" list="madres_datalist" id="madre_nombre" placeholder="Buscar y seleccionar madre..." autocomplete="off" required>
+                            <datalist id="madres_datalist"></datalist>
+                            <input type="hidden" id="madre_id" name="nombremadre">
+                        </div>
+                    </div>
+
+                    <!-- Nombres de los padrinos -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="padrino_nombre" class="form-label">Padrino</label>
+                            <input class="form-control" list="padrinos_datalist" id="padrino_nombre" placeholder="Buscar y seleccionar padrino..." autocomplete="off" required>
+                            <datalist id="padrinos_datalist"></datalist>
+                            <input type="hidden" id="padrino_id" name="nombrepadrino">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="madrina_nombre" class="form-label">Madrina</label>
+                            <input class="form-control" list="madrinas_datalist" id="madrina_nombre" placeholder="Buscar y seleccionar madrina..." autocomplete="off" required>
+                            <datalist id="madrinas_datalist"></datalist>
+                            <input type="hidden" id="madrina_id" name="nombremadrina">
+                        </div>
+                    </div>
+
+                    <!-- Información de contacto -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" name="telefono" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="celular" class="form-label">Celular</label>
+                            <input type="text" class="form-control" id="celular" name="celular" required>
+                        </div>
+                    </div>
+
+                    <!-- Fecha del bautizo y cursillo -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
+                            <input type="date" class="form-control" id="fechabautizo" name="fechabautizo" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fechacursillo" class="form-label">Fecha de Cursillo</label>
+                            <input type="date" class="form-control" id="fechacursillo" name="fechacursillo" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="quieninscribe_nombre" class="form-label">Quien inscribe</label>
+                        <input class="form-control" list="quieninscribe_datalist" id="quieninscribe_nombre" placeholder="Buscar y seleccionar..." autocomplete="off" required>
+                        <datalist id="quieninscribe_datalist"></datalist>
+                        <input type="hidden" id="quieninscribe_id" name="quieninscribe">
+                    </div>
+
+                    <!-- Estado del cursillo -->
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado del Cursillo</label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="Cursando">Cursando</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Retirado">Retirado</option>
+                        </select>
+                    </div>
+
+                    <!-- Parroquia -->
+                    <div class="mb-3">
+                        <label for="parroquia" class="form-label">Parroquia</label>
+                        <select class="form-select" id="parroquia" name="parroquia" required>
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+
+                    <!-- Observaciones adicionales -->
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones adicionales</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones">Sin Observaciones</textarea>
+                    </div>
+
+                    <!-- Botón de registro -->
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <label id="exito" class="text-success" style="display: none;">Cursillo Registrado</label>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Botón feligreses y formulario de búsqueda a la derecha -->
+            
+                <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalFeligres">
+                            <i class="fas fa-user-plus"></i> Registrar Feligres
+                        </button>
+                    </div>
+
+                    <!-- Modal de registro de feligrés -->
+                    <div class="modal fade" id="modalFeligres" tabindex="-1" aria-labelledby="modalFeligresLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="formFeligres" class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalFeligresLabel">Registrar Feligres</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-2">
+                                        <label for="feligres_nombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="feligres_nombre" name="nombre" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_apellido" class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" id="feligres_apellido" name="apellido" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_cedula" class="form-label">Cédula</label>
+                                        <input type="text" class="form-control" id="feligres_cedula" name="cedula" required>
+                                     </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_fechanacimiento" class="form-label">Fecha de nacimiento</label>
+                                        <input type="date" class="form-control" id="feligres_fechanacimiento" name="fechanacimiento" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_direccion" class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" id="feligres_direccion" name="direccion" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_telefono" class="form-label">Teléfono</label>
+                                        <input type="text" class="form-control" id="feligres_telefono" name="telefono" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="feligres_email" name="email" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="feligres_observaciones" class="form-label">Observaciones</label>
+                                        <input type="text" class="form-control" id="feligres_observaciones" name="observaciones" value="Sin Observacion" required>
+                                    </div>
+                                    <input type="hidden" name="estado" value="ACTIVO">
+                                    <div id="feligres_error" class="text-danger" style="display:none;"></div>
+                                    <div id="feligres_exito" class="text-success" style="display:none;"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Registrar</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                <h2>Busqueda de Registros</h2>
+                <form asp-action="Search" method="get" id="buscar-cursillo" asp-controller="CursilloPrebautismal">
+                <div class="mb-3">
+                    <label for="nombrecompleto" class="form-label">Nombre completo del niño/niña</label>
+                    <div class="d-flex">
+                        <input type="text" class="form-control me-2" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
+                        <button type="button" class="btn btn-primary me-2" onclick="buscarCursillo()">Buscar</button>
+                        <button type="button" class="btn btn-secondary" onclick="limpiarCursillo()">Limpiar</button>
+                    </div>
+                </div>
+                    @* <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div> *@
+                    <div class="mb-3">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Teléfono</th>
+                                        <th>Fecha de Cursillo</th>
+                                        <th>Estado</th>
+                                        <th>Modificar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultadosCursillo">
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.nombrecompletonino</td>
+                                            <td>@item.telefono</td>
+                                            <td>@item.fechacursillo.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.estado</td>
+                                            <td>
+                                                <a asp-action="ModifyCursilloView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteCursilloView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                }
+                                </tbody>
+                            </table>
+                        
+                    </div>
+                </form>
+             </div>
+        </div>
+    </div>
+
+    <!-- Acta de Bautismo Form -->
+    <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-tab" >
+        <div class="row">
+            <!-- Formulario de creación de Acta a la izquierda -->
+            <div class="col-md-12 col-lg-6">
+                <h2>Formulario de Actas de Bautismo</h2>
+                <form asp-action="Create" method="post" id="acta-form" asp-controller="ActaBautismo">
+                    <input type="hidden" id="CursilloId" name="cursillo_id" value="0"/>
+                    
+
+                    <!-- Nombre completo -->
+                    <div class="mb-3">
+                        <label for="NombreCompleto" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="NombreCompleto" name="nombrecompleto" required>
+                    </div>
+
+                    <!-- Lugar de nacimiento -->
+                    <div class="mb-3">
+                        <label for="LugarNacimiento" class="form-label">Lugar de nacimiento</label>
+                        <input type="text" class="form-control" id="LugarNacimiento" name="lugarnacimiento" required>
+                    </div>
+
+                    <!-- Cédula y sexo -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Cedula" class="form-label">Cédula</label>
+                            <input type="text" class="form-control" id="Cedula" name="cedula">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Sexo" class="form-label">Sexo</label>
+                            <select class="form-select" id="Sexo" name="sexo" required>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Fechas -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                            <input type="date" class="form-control" id="FechaNacimiento" name="fechanacimiento" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="FechaBautizo" class="form-label">Fecha de bautizo</label>
+                            <input type="date" class="form-control" id="FechaBautizo" name="fechabautizo" required>
+                        </div>
+                    </div>
+
+                    <!-- Información adicional (padres y padrinos) -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadre" class="form-label">Cedula del padre</label>
+                            <input type="text" class="form-control" id="cedulapadre" name="cedulapadre">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulamadre" class="form-label">Cedula de la madre</label>
+                            <input type="text" class="form-control" id="cedulamadre" name="cedulamadre">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino1" class="form-label">Cedula del Padrino 1</label>
+                            <input type="text" class="form-control" id="cedulapadrino1" name="cedulapadrino1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino2" class="form-label">Cedula del Padrino 2</label>
+                            <input type="text" class="form-control" id="cedulapadrino2" name="cedulapadrino2">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino3" class="form-label">Cedula del Padrino 3</label>
+                            <input type="text" class="form-control" id="cedulapadrino3" name="cedulapadrino3" placeholder="(opcional)">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino4" class="form-label">Cedula del Padrino 4</label>
+                            <input type="text" class="form-control" id="cedulapadrino4" name="cedulapadrino4" placeholder="(opcional)">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino5" class="form-label">Cedula del Padrino 5</label>
+                            <input type="text" class="form-control" id="cedulapadrino5" name="cedulapadrino5" placeholder="(opcional)">
+                        </div>
+                    </div>
+
+                    <!-- Datos del acta -->
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="Tomo" class="form-label">Tomo</label>
+                            <input type="text" class="form-control" id="Tomo" name="tomo">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="Pagina" class="form-label">Pagina</label>
+                            <input type="text" class="form-control" id="Pagina" name="pagina">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="Acta" class="form-label">Acta</label>
+                            <input type="text" class="form-control" id="Acta" name="acta">
+                        </div>
+                    </div>
+
+                    <!-- Listados desplegables -->
+                     <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Ministro" class="form-label">Ministro</label>
+                            <select class="form-select" id="Ministro" name="ministro_id">
+                                <option value="">Seleccione un Ministro</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="Sacerdote" class="form-label">Sacerdote</label>
+                            <select class="form-select" id="Sacerdote" name="sacerdote_id" required>
+                                <option value="">Seleccione un Sacerdote</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @* <div class="col-md-6 mb-3">
+                            <label for="Parroquia" class="form-label">Parroquia</label>
+                            <select class="form-select" id="Parroquia" name="parroquia">
+                                <option value="">Seleccione una Parroquia</option>
+                            </select>
+                        </div> *@
+                        <div class="col-md-6 mb-3">
+                            <label for="Iglesia" class="form-label">Iglesia</label>
+                            <select class="form-select" id="Iglesia" name="iglesia_id">
+                                <option value="">Seleccione una Iglesia</option>
+                            </select>
+                        </div>
+                        @* <div class="col-md-6 mb-3">
+                            <label for="Pagina" class="form-label">Página del acta</label>
+                            <input type="text" class="form-control" id="Pagina" name="pagina">
+                        </div> *@
+
+                        <!-- Información sobre los feligreses -->
+                        <div class="col-md-6 mb-3">
+                            <label for="Parroquia" class="form-label">Parroquia</label>
+                            <select class="form-select" id="Parroquia" name="parroquia_id" required>
+                                <option value="">Seleccione una Parroquia</option>
+                            </select>
+                        </div>
+                    </div> 
+                    <div class="row registro-civil-container">
+                        <h5>Registro Civil</h5>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilAno" class="form-label">Año de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilAno" name="registrocivilano">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilTomo" class="form-label">Tomo de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilTomo" name="registrociviltomo">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilFolio" class="form-label">Folio de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilFolio" name="registrocivilfolio">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilActa" class="form-label">Número de Acta de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilActa" name="registrocivilacta">
+                        </div>
+                        <div class="mb-3">
+                            <label for="RegistroCivilFecha" class="form-label">Fecha de Registro Civil</label>
+                            <input type="date" class="form-control" id="RegistroCivilFecha" name="registrocivilfecha">
+                        </div>
+                    </div>
+                    <style>
+                        .registro-civil-container {
+                            border: 2px solid #ECA64C; /* Color del borde */
+                            border-radius: 10px; /* Bordes redondeados */
+                            padding: 15px; /* Espaciado interno */
+                            margin-top: 20px; /* Espacio superior */
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+                        }
+
+                            .registro-civil-container .form-label {
+                                font-weight: bold; /* Etiquetas en negrita */
+                            }
+
+                            .registro-civil-container input {
+                                border-radius: 5px; /* Bordes redondeados para los inputs */
+                            }
+
+                    </style>
+                    
+
+                    <!-- Observaciones adicionales -->
+                    <div class="mb-3">
+                        <label for="Observaciones" class="form-label">Observaciones adicionales</label>
+                        <textarea class="form-control" id="Observaciones" name="observaciones">Sin Observaciones</textarea>
+                    </div>
+
+                    <!-- Botones de acciones -->
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <label id="exito2" class="text-success" style="display: none;">Acta Registrada</label>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-12 col-lg-6">
+                <h4>Seleccionar Cursillo Prebautismal</h4>
+                <input type="text" class="form-control mb-2" id="buscar-cursillo-input" placeholder="Buscar por nombre del niño...">
+                <div class="d-flex gap-2 mb-2">
+                    <button type="button" class="btn btn-primary" onclick="buscarCursilloenActa()">Buscar</button>
+                    <button type="button" class="btn btn-secondary" onclick="limpiarCursilloenActa()">Limpiar</button>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Niño</th>
+                            <th>Fecha Cursillo</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cursillos-body">
+                        <tr><td colspan="3">Sin resultados.</td></tr>
+                    </tbody>
+                </table>
+
+            <!-- Columna para búsqueda -->
+                <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
+                <h2>Busqueda de Registros</h2>    
+                <div class="mb-3">
+                    <label for="nombrecompletos" class="form-label">Nombre del niño/niña</label>
+                    <input type="text" class="form-control" id="nombrecompletos" name="nombrecompletos" placeholder="Escribe un nombre...">
+                    <div id="errorNombre" class="text-danger mt-1" style="display: none;"></div>
+                </div>
+                <div class="mb-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="limpiarBusqueda()">
+                        Limpiar
+                    </button>
+                </div>
+                   @*  <div class="mb-3">
+                        <button type="submit" class="btn btn-primary" value="cursillo">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div> *@
+                    <div class="mb-3">
+                        <h3>Resultados de la búsqueda:</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nombre Completo</th>
+                                    <th>Fecha de bautismo</th>
+                                    <th>Iglesia</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <!-- Asegúrate de que el tbody siempre está en el DOM -->
+                            <tbody id="resultadosBody">
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.nombrecompleto</td>
+                                            <td>@item.fechabautizo.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.iglesia</td>
+                                            <td>
+                                                <a asp-action="ModifyActaBautismoView" asp-controller="ActaBautismo" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteActaBautismoView" asp-controller="ActaBautismo" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="7">No se encontraron resultados.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+         </div>
+    </div>
+
+    <!-- Antiguos Form -->
+    <div class="tab-pane fade" id="antiguos" role="tabpanel" aria-labelledby="antiguos-tab">
+        <div class="row">
+            <!-- Formulario de creación de Acta a la izquierda -->
+            <div class="col-md-12 col-lg-6">
+                <h2>Formulario de Bautizos Antiguos</h2>
+                <form asp-action="Create" method="post" id="acta-antigua" asp-controller="Antiguos">
+                    <!-- Nombre completo -->
+                    <div class="mb-3">
+                        <label for="NombreCompletoant" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="NombreCompletoant" name="nombrecompleto" required>
+                    </div>
+                    <!-- Lugar de nacimiento -->
+                    <div class="mb-3">
+                        <label for="LugarNacimientoant" class="form-label">Lugar de nacimiento</label>
+                        <input type="text" class="form-control" id="LugarNacimientoant" name="lugarnacimiento" required>
+                    </div>
+
+                    <!-- Cédula y sexo -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Cedulaant" class="form-label">Cédula</label>
+                            <input type="text" class="form-control" id="Cedulaant" name="cedula" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Sexoant" class="form-label">Sexo</label>
+                            <select class="form-select" id="Sexoant" name="sexo" required>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Fechas -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="FechaNacimientoant" class="form-label">Fecha de nacimiento</label>
+                            <input type="date" class="form-control" id="FechaNacimientoant" name="fechanacimiento" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="FechaBautizoant" class="form-label">Fecha de bautizo</label>
+                            <input type="date" class="form-control" id="FechaBautizoant" name="fechabautizo" required>
+                        </div>
+                    </div>
+                    <!-- Información adicional (padres y padrinos) -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="NombrePadreant" class="form-label">Nombre del padre</label>
+                            <input type="text" class="form-control" id="NombrePadreant" name="nombrepadre" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="NombreMadreant" class="form-label">Nombre de la madre</label>
+                            <input type="text" class="form-control" id="NombreMadreant" name="nombremadre" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino1" class="form-label">Cedula del Padrino 1</label>
+                            <input type="text" class="form-control" id="cedulapadrino1" name="cedulapadrino1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino2" class="form-label">Cedula del Padrino 2</label>
+                            <input type="text" class="form-control" id="cedulapadrino2" name="cedulapadrino2" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino3" class="form-label">Cedula del Padrino 3</label>
+                            <input type="text" class="form-control" id="cedulapadrino3" name="cedulapadrino3" placeholder="(opcional)">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino4" class="form-label">Cedula del Padrino 4</label>
+                            <input type="text" class="form-control" id="cedulapadrino4" name="cedulapadrino4" placeholder="(opcional)">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cedulapadrino5" class="form-label">Cedula del Padrino 5</label>
+                            <input type="text" class="form-control" id="cedulapadrino5" name="cedulapadrino5" placeholder="(opcional)">
+                        </div>
+                    </div>
+                    <!-- Datos del acta -->
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="Tomoant" class="form-label">Tomo</label>
+                            <input type="text" class="form-control" id="Tomoant" name="tomo" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="Paginaant" class="form-label">Pagina</label>
+                            <input type="text" class="form-control" id="Paginaant" name="pagina" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="Actaant" class="form-label">Acta</label>
+                            <input type="text" class="form-control" id="Actaant" name="acta" required>
+                        </div>
+                    </div>
+
+                    <!-- Listados desplegables -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Ministroant" class="form-label">Ministro</label>
+                            <select class="form-select" id="Ministroant" name="ministro_id" required>
+                                <option value="">Seleccione un Ministro</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="Sacerdoteant" class="form-label">Sacerdote</label>
+                            <select class="form-select" id="Sacerdoteant" name="sacerdote_id" required>
+                                <option value="">Seleccione un Sacerdote</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="Iglesiaant" class="form-label">Iglesia</label>
+                            <select class="form-select" id="Iglesiaant" name="iglesia_id" required>
+                                <option value="">Seleccione una Iglesia</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="Parroquiaant" class="form-label">Parroquia</label>
+                            <select class="form-select" id="Parroquiaant" name="parroquia_id" required>
+                                <option value="">Seleccione una Parroquia</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="row registro-civil-container">
+                        <h5>Registro Civil</h5>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilAnoant" class="form-label">Año de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilAnoant" name="registrocivilano" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilTomoant" class="form-label">Tomo de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilTomoant" name="registrociviltomo" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilFolioant" class="form-label">Folio de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilFolioant" name="registrocivilfolio" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="RegistroCivilActaant" class="form-label">Número de Acta de Registro Civil</label>
+                            <input type="text" class="form-control" id="RegistroCivilActaant" name="registrocivilacta" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="RegistroCivilFechaant" class="form-label">Fecha de Registro Civil</label>
+                            <input type="date" class="form-control" id="RegistroCivilFechaant" name="registrocivilfecha" required>
+                        </div>
+                    </div>
+                   
+
+                    <!-- Observaciones adicionales -->
+                    <div class="mb-3">
+                        <label for="Observacionesant" class="form-label">Observaciones adicionales</label>
+                        <textarea class="form-control" id="Observacionesant" name="observaciones"></textarea>
+                    </div>
+
+                    <!-- Botones de acciones -->
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <label id="exito3" class="text-success" style="display: none;">Acta antigua Registrada</label>
+
+                    </div>
+                </form>
+            </div>
+            <!-- Columna para búsqueda -->
+            <div class="col-md-12 col-lg-6">
+                <form asp-action="Search" method="get" id="buscar-actaantigua" asp-controller="Antiguos">
+                    <div class="mb-3">
+                        <label for="nombrecompletoant" class="form-label">Nombre del niño/niña</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="nombrecompletoant" placeholder="Escribe un nombre...">
+                            <button type="button" class="btn btn-primary" onclick="buscarActaAntigua()">Buscar</button>
+                            <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaAntigua()">Limpiar</button>
+                        </div>
+                        <span id="mensaje-error-busqueda" class="text-danger" style="display: none;"></span>
+                    </div>
+                   
+                    <div class="mb-3">
+                        <h3>Resultados de la búsqueda:</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nombre Completo</th>
+                                    <th>Fecha de bautismo</th>
+                                    <th>Iglesia</th>
+                                    <th>Modificar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <!-- Asegúrate de que el tbody siempre está en el DOM -->
+                            <tbody id="resultadosAntiguos">
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.nombrecompleto</td>
+                                            <td>@item.fechabautizo.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.iglesia</td>
+                                            <td>
+                                                <a asp-action="ModifyAntiguosView" asp-controller="Antiguos" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                            </td>
+                                            <td>
+                                                <a asp-action="DeleteAntiguosView" asp-controller="Antiguos" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="7">No se encontraron resultados.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    document.getElementById("formularioCursillo").addEventListener("submit", function (event) {
+
+        event.preventDefault();
+        // Validaciones personalizadas antes de enviar
+        const estado = document.getElementById('estado').value;
+        const observaciones = document.getElementById('observaciones').value.trim();
+        const quienInscribe = document.getElementById('quieninscribe_id').value;
+
+        let errores = [];
+        if (!quienInscribe) errores.push("El campo 'Quien inscribe' es obligatorio.");
+        if (!estado) errores.push("El campo 'Estado del Cursillo' es obligatorio.");
+
+        if (errores.length > 0) {
+            const mensajeExito = document.getElementById("exito");
+            mensajeExito.className = "text-danger";
+            mensajeExito.textContent = errores.join(" ");
+            mensajeExito.style.display = "block";
+            return;
+        }
+
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Ocultar el label de error al enviar el formulario
+            document.getElementById("exito").style.display = "none";
+
+            if (data.success) {
+                // Mostrar mensaje de éxito por 4 segundos
+                const mensajeExito = document.getElementById("exito");
+                mensajeExito.className = "text-success";
+                mensajeExito.textContent = "Cursillo Prebautismal Generado con Éxito";
+                mensajeExito.style.display = "block";
+
+                // Limpiar formulario
+                document.getElementById("formularioCursillo").reset();
+                cargarCursillosRecientes();
+
+                // Ocultar mensaje después de 4 segundos
+                setTimeout(function () {
+                    mensajeExito.style.display = "none";
+                }, 4000);
+
+            } else {
+                document.getElementById("exito").className = "text-danger";
+                if (Array.isArray(data.errors)) {
+                    document.getElementById("exito").textContent = data.errors.join(", ");
+                } else {
+                    document.getElementById("exito").textContent = data.errors || "Error desconocido.";
+                }
+                document.getElementById("exito").style.display = "block";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("exito").innerText = error;
+            document.getElementById("exito").style.display = "block";
+        });
+    });
+
+    document.getElementById("buscar-acta").addEventListener("submit", function(event) {
+        event.preventDefault();
+         buscarActa(event);
+    });
+
+    document.getElementById('observaciones').addEventListener('focus', function () {
+        if (this.value === 'Sin Observaciones') {
+            this.value = '';
+        }
+    });
+    observaciones.addEventListener('blur', function () {
+        if (this.value.trim() === '') {
+            this.value = 'Sin Observaciones';
+        }
+    });
+
+    document.getElementById("acta-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito2").style.display = "none";
+
+                if (data.success) {
+                    document.getElementById("exito2").className = "text-success";
+                    document.getElementById("exito2").textContent = "Acta de bautismo registrada.";
+                    document.getElementById("exito2").style.display = "block";
+
+                    document.getElementById("acta-form").reset(); 
+                    limpiarCursilloenActa();
+
+                    // Ocultar mensaje después de 3 segundos
+                    setTimeout(function () {
+                        document.getElementById("exito2").style.display = "none";
+                    }, 3000);
+
+                } else {
+                    document.getElementById("exito2").className = "text-danger";
+                    if (Array.isArray(data.errors)) {
+                        document.getElementById("exito2").textContent = data.errors.join(", ");
+                    } else {
+                        document.getElementById("exito2").textContent = data.errors || "Error desconocido.";
+                    }                    
+                    document.getElementById("exito2").style.display = "block";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("exito2").innerText = error;
+                document.getElementById("exito2").style.display = "block";
+            });
+    });
+
+    document.getElementById("acta-antigua").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Ocultar el label de error al enviar el formulario
+                document.getElementById("exito3").style.display = "none";
+
+            if (data.success) {
+                const mensaje = document.getElementById("exito3");
+
+                mensaje.className = "text-success";
+                mensaje.textContent = "Registro exitoso";
+                mensaje.style.display = "block";
+
+                // Limpiar formulario
+                document.getElementById("acta-antigua").reset();
+
+                // Ocultar mensaje después de 3 segundos
+                setTimeout(function () {
+                    mensaje.style.display = "none";
+                }, 3000);
+
+                // (Opcional) realizar otras acciones después de 5 segundos
+                setTimeout(function () {
+                    console.log("Han pasado 5 segundos");
+                    // window.location.href = "/Home/MenuSacramentos";
+                    // ListActasBautismo();
+                    // ListActasAntiguas();
+                }, 5000);
+                } else {
+                    document.getElementById("exito3").className = "text-danger";
+                    if (Array.isArray(data.errors)) {
+                        document.getElementById("exito3").textContent = data.errors.join(", ");
+                    } else {
+                        document.getElementById("exito3").textContent = data.errors || "Error desconocido.";
+                    }                    
+                    document.getElementById("exito3").style.display = "block"
+                }
+            })
+            .catch(errors => {
+                console.error('Error:', errors);
+                // Opcional: Mostrar un mensaje de error genérico
+                document.getElementById("exito3").innerText = errors;
+                document.getElementById("exito3").style.display = "block";
+            });
+
+
+    });
+    
+    ////////
+    function cargarMinistros() {
+        fetch('/ActaBautismo/GetMinistros')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Ministro');
+                let ministroSelectant = document.getElementById('Ministroant');
+                ministroSelect.innerHTML = '<option value="">Seleccione un ministro</option>'; // Limpiar opciones previas
+                ministroSelectant.innerHTML = '<option value="">Seleccione un ministro</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                    ministroSelectant.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarParroquias() {
+        fetch('/ActaBautismo/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                const parroquiaNormal = document.getElementById('Parroquia');
+                const parroquiaAntigua = document.getElementById('Parroquiaant');
+
+                if (parroquiaNormal) {
+                    parroquiaNormal.innerHTML = '<option value="">Seleccione una Parroquia</option>';
+                    data.forEach(p => {
+                        parroquiaNormal.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                    });
+                }
+
+                if (parroquiaAntigua) {
+                    parroquiaAntigua.innerHTML = '<option value="">Seleccione una Parroquia</option>';
+                    data.forEach(p => {
+                        parroquiaAntigua.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                    });
+                }
+            })
+            .catch(error => console.error('Error al cargar parroquias:', error));
+    }
+
+    function cargarParroquiasActaBautismo() {
+    fetch('/ActaBautismo/GetParroquias')
+        .then(response => response.json())
+        .then(data => {
+            const parroquiaNormal = document.getElementById('Parroquia');
+            const parroquiaAntigua = document.getElementById('Parroquiaant');
+
+            if (parroquiaNormal) {
+                parroquiaNormal.innerHTML = '<option value="">Seleccione una Parroquia</option>';
+                data.forEach(p => {
+                    parroquiaNormal.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                });
+            }
+
+            if (parroquiaAntigua) {
+                parroquiaAntigua.innerHTML = '<option value="">Seleccione una Parroquia</option>';
+                data.forEach(p => {
+                    parroquiaAntigua.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                });
+            }
+        })
+        .catch(error => console.error('Error al cargar parroquias:', error));
+    }
+
+    function cargarParroquiasCursillo() {
+        fetch('/CursilloPrebautismal/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('parroquia');
+                select.innerHTML = '<option value=""><em>Seleccione</em></option>';
+                data.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                });
+            })
+            .catch(error => console.error('Error al cargar parroquias:', error));
+    }
+
+
+    function cargarIglesias() {
+        fetch('/ActaBautismo/GetIglesias')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Iglesia');
+                let ministroSelectant = document.getElementById('Iglesiaant');
+
+                ministroSelect.innerHTML = '<option value="">Seleccione una iglesia</option>'; // Limpiar opciones previas
+                ministroSelectant.innerHTML = '<option value="">Seleccione una iglesia</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                    ministroSelectant.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarSacerdotes() {
+        fetch('/ActaBautismo/GetSacerdotes')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Sacerdote');
+                let ministroSelectAnt = document.getElementById('Sacerdoteant');
+
+                if (ministroSelect) {
+                    ministroSelect.innerHTML = '<option value="">Seleccione un sacerdote</option>';
+                    data.forEach(ministro => {
+                        ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                    });
+                }
+
+                if (ministroSelectAnt) {
+                    ministroSelectAnt.innerHTML = '<option value="">Seleccione un sacerdote</option>';
+                    data.forEach(ministro => {
+                        ministroSelectAnt.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                    });
+                }
+            })
+            .catch(error => console.log('Error:', error));
+    }
+
+    function ListActasBautismo() {
+        fetch('/ActaBautismo/ListActasBautismo')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultadosBody");
+                if (!resultadosBody) {
+                    console.error("Elemento con id 'resultadosBody' no encontrado.");
+                    return;
+                }
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                                        <td>${item.nombrecompleto}</td>
+                                        <td>${new Date(item.fechabautizo).toLocaleDateString()}</td> <!-- Formatea la fecha en JavaScript -->
+                                        <td>${item.iglesia}</td>
+                                        <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                        <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                    </tr>`;
+                        resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    function ListCursilloPreBautismo() {
+        fetch('/CursilloPrebautismal/Search')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultadosCursillo");
+                if (!resultadosBody) {
+                    console.error("Elemento con id 'resultadosBody' no encontrado.");
+                    return;
+                }
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr >
+                                                <td>${item.nombrecompletonino}</td>
+                                                <td>${item.telefono}</td>
+                                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                                <td>${item.estado}</td>
+                                                <td><a href="/CursilloPrebautismal/ModifyCursilloView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                                <td><a href="/CursilloPrebautismal/DeleteCursilloView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                        </tr>`;
+                        resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+    function ListActasAntiguas() {
+        fetch('/Antiguos/ListActasAntiguas')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultadosAntiguos");
+                if (!resultadosBody) {
+                    console.error("Elemento con id 'resultadosBody' no encontrado.");
+                    return;
+                }
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                                            <td>${item.nombrecompleto}</td>
+                                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td> <!-- Formatea la fecha en JavaScript -->
+                                            <td>${item.iglesia}</td>
+                                            <td><a href="/Antiguos/ModifyAntiguosView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                            <td><a href="/Antiguos/DeleteAntiguosView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                        </tr>`;
+                        resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    function buscarCursillo() {
+        const nombre = document.getElementById('nombrecompleto').value.trim();
+        const resultadosBody = document.getElementById('resultadosCursillo');
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = "<tr><td colspan='6'>Ingresa al menos 3 caracteres para buscar.</td></tr>";
+            return;
+        }
+
+        fetch(`/CursilloPrebautismal/SearchByName?nombrecompleto=${nombre}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = '';
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombrecompletonino}</td>
+                                <td>${item.telefono}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${item.estado}</td>
+                                <td><a href="/CursilloPrebautismal/ModifyCursilloView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/CursilloPrebautismal/DeleteCursilloView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = `<tr><td colspan="6">No se encontraron resultados.</td></tr>`;
+                }
+            })
+            .catch(error => {
+                resultadosBody.innerHTML = `<tr><td colspan="6">Error al buscar resultados.</td></tr>`;
+                console.error('Error:', error);
+            });
+    }
+
+    function limpiarCursillo() {
+        document.getElementById('nombrecompleto').value = '';
+        cargarCursillosRecientes(); 
+    }
+
+
+    function buscarActa(event) {
+        if (event) event.preventDefault(); // Evita el submit tradicional si viene de un formulario
+
+        const nombre = document.getElementById('nombrecompletos').value.trim();
+        const resultadosBody = document.getElementById('resultadosBody');
+        const errorDiv = document.getElementById('errorNombre');
+
+        if (nombre.length >= 3) {
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            fetch(`/ActaBautismo/SearchByName?nombrecompleto=${nombre}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultadosBody.innerHTML = '';
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const row = `<tr>
+                                <td>${item.nombrecompleto}</td>
+                                <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                                <td>${item.iglesia}</td>
+                                <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            </tr>`;
+                            resultadosBody.innerHTML += row;
+                        });
+                    } else {
+                        resultadosBody.innerHTML = `<tr><td colspan="5">No se encontraron resultados.</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    resultadosBody.innerHTML = `<tr><td colspan="5">Error al buscar resultados.</td></tr>`;
+                    console.error('Error:', error);
+                });
+        } else {
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = 'Ingresa al menos 3 caracteres para realizar la búsqueda.';
+            resultadosBody.innerHTML = '';
+        }
+    }
+
+    document.getElementById('buscar-acta').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            buscarActa(event);
+        }
+    });
+
+    function limpiarBusqueda() {
+        document.getElementById('nombrecompletos').value = '';
+        document.getElementById('errorNombre').style.display = 'none';
+        document.getElementById('errorNombre').textContent = '';
+        cargarPrimerosActasBautismo(); 
+    }
+
+    function buscarCursilloenActa() {
+        const nombre = document.getElementById('buscar-cursillo-input').value.trim();
+        const tablaBody = document.getElementById('tabla-cursillos-body');
+
+        if (nombre.length < 3) {
+            tablaBody.innerHTML = `<tr><td colspan="3" class="text-danger">Ingresa al menos 3 caracteres.</td></tr>`;
+            return;
+        }
+
+        fetch(`/ActaBautismo/BuscarCursillosAprobados?nombre=${encodeURIComponent(nombre)}`)
+            .then(res => res.json())
+            .then(data => {
+                tablaBody.innerHTML = "";
+
+                if (data.length === 0) {
+                    tablaBody.innerHTML = `<tr><td colspan="3">No se encontraron cursillos aprobados.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(cursillo => {
+                    const fila = `<tr>
+                        <td>${cursillo.nombrecompletonino}</td>
+                        <td>${new Date(cursillo.fechacursillo).toLocaleDateString()}</td>
+                        <td><button type="button" class="btn btn-success" onclick="seleccionarCursillo(${cursillo.id}, '${cursillo.nombrecompletonino}')">Seleccionar</button></td>
+                    </tr>`;
+                    tablaBody.innerHTML += fila;
+                });
+            })
+            .catch(err => {
+                console.error('Error buscando cursillos:', err);
+                tablaBody.innerHTML = `<tr><td colspan="3" class="text-danger">Error al buscar cursillos.</td></tr>`;
+            });
+    }
+
+    document.getElementById('buscar-cursillo-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            buscarCursilloenActa();
+        }
+    });
+
+    function seleccionarCursillo(id, nombre) {
+        document.getElementById('CursilloId').value = id;
+
+        // Petición para obtener los datos completos del cursillo
+        fetch(`/CursilloPrebautismal/GetCursillo?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.cursillo) {
+                    // Rellena los campos del formulario de Acta de Bautismo
+                    document.getElementById('NombreCompleto').value = data.cursillo.nombrecompletonino || '';
+                    document.getElementById('cedulapadre').value = data.cursillo.nombrepadre || '';
+                    document.getElementById('cedulamadre').value = data.cursillo.nombremadre || '';
+                    document.getElementById('cedulapadrino1').value = data.cursillo.nombrepadrino || '';
+                    document.getElementById('cedulapadrino2').value = data.cursillo.nombremadrina || '';
+                    // Si tienes más campos, agrégalos aquí
+                } else {
+                    alert('No se pudo obtener la información del cursillo.');
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener cursillo:', error);
+                alert('Error al obtener la información del cursillo.');
+            });
+
+        alert(`Cursillo seleccionado: ${nombre}`);
+    }
+
+    function limpiarCursilloenActa() {
+        document.getElementById('buscar-cursillo-input').value = "";
+        document.getElementById('tabla-cursillos-body').innerHTML = `<tr><td colspan="3">Sin resultados.</td></tr>`;
+        document.getElementById('CursilloId').value = "";
+        cargarUltimosCursillosEnActa();
+    }
+
+    function cargarFeligreses() {
+        fetch('/Feligres/GetLast?count=4')
+            .then(response => response.json())
+            .then(data => {
+                ['padre_id', 'madre_id', 'padrino_id', 'madrina_id'].forEach(id => {
+                    const select = document.getElementById(id);
+                    if (select) {
+                        select.innerHTML = '<option value="">Seleccione</option>';
+                        data.forEach(f => {
+                        const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                        select.innerHTML += `<option value="${f.cedula}">${nombreCompleto}</option>`;
+                    });
+                    }
+                });
+            })
+            .catch(error => console.error('Error al cargar feligreses:', error));
+    }
+
+    function cargarFeligresesQuienInscribe() {
+        fetch('/Feligres/GetFeligreses')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('quieninscribe_select');
+                select.innerHTML = '<option value="">Seleccione</option>';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    select.innerHTML += `<option value="${f.cedula}">${nombreCompleto}</option>`;
+                });
+                select.innerHTML += `<option value="otro">Otro...</option>`;
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarFeligresesQuienInscribe();
+
+        document.getElementById('quieninscribe_select').addEventListener('change', function () {
+            const textInput = document.getElementById('quieninscribe_text');
+            if (this.value === 'otro') {
+                textInput.style.display = 'block';
+                textInput.value = '';
+            } else if (this.value === '') {
+                textInput.style.display = 'none';
+                textInput.value = '';
+            } else {
+                textInput.style.display = 'none';
+                textInput.value = this.value;
+            }
+        });
+    });
+
+
+    function buscarActaAntigua() {
+        const nombre = document.getElementById('nombrecompletoant').value.trim();
+        const resultadosBody = document.getElementById('resultadosAntiguos');
+        const mensajeError = document.getElementById('mensaje-error-busqueda');
+
+        // Limpiar mensaje anterior
+        mensajeError.textContent = '';
+        mensajeError.style.display = 'none';
+
+        if (nombre.length < 3) {
+            mensajeError.textContent = 'Ingrese al menos 3 caracteres para buscar.';
+            mensajeError.style.display = 'block';
+            return;
+        }
+
+        fetch(`/Antiguos/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = '';
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.nombrecompleto}</td>
+                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                            <td>${item.iglesia}</td>
+                            <td><a href="/Antiguos/ModifyAntiguosView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                            <td><a href="/Antiguos/DeleteAntiguosView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                        </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='5'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='5'>Error al buscar resultados.</td></tr>";
+            });
+    }
+
+    document.getElementById('buscar-actaantigua').addEventListener('submit', function(event) {
+        event.preventDefault();
+        buscarActaAntigua();
+    });
+
+    function limpiarBusquedaAntigua() {
+        document.getElementById('nombrecompletoant').value = '';
+        document.getElementById('resultadosAntiguos').innerHTML = '';
+        ListActasAntiguas();
+    }
+
+    function cargarCursillosRecientes() {
+        fetch('/CursilloPrebautismal/Recent')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultadosCursillo");
+                resultadosBody.innerHTML = "";
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>${item.nombrecompletonino}</td>
+                                <td>${item.telefono}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${item.estado}</td>
+                                <td><a href="/CursilloPrebautismal/ModifyCursilloView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                <td><a href="/CursilloPrebautismal/DeleteCursilloView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                            </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar recientes:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='6'>Error al cargar resultados.</td></tr>";
+            });
+    }
+
+    function validarUnicosPadresPadrinos() {
+        const ids = ['padre_id', 'madre_id', 'padrino_id', 'madrina_id'];
+        ids.forEach(id => {
+            document.getElementById(id).addEventListener('change', function () {
+                const valores = ids.map(i => document.getElementById(i).value).filter(v => v);
+                const repetidos = valores.filter((v, i, arr) => arr.indexOf(v) !== i);
+                if (repetidos.length > 0) {
+                    alert('No puedes seleccionar el mismo feligrés en más de un campo.');
+                    this.value = '';
+                }
+            });
+        });
+    }
+
+    function cargarUltimosCursillosEnActa() {
+        fetch('/CursilloPrebautismal/Recent?count=4')
+            .then(response => response.json())
+            .then(data => {
+                const tablaBody = document.getElementById('tabla-cursillos-body');
+                tablaBody.innerHTML = "";
+                if (data.length > 0) {
+                    data.forEach(cursillo => {
+                        const fila = `<tr>
+                            <td>${cursillo.nombrecompletonino}</td>
+                            <td>${new Date(cursillo.fechacursillo).toLocaleDateString()}</td>
+                            <td><button type="button" class="btn btn-success" onclick="seleccionarCursillo(${cursillo.id}, '${cursillo.nombrecompletonino}')">Seleccionar</button></td>
+                        </tr>`;
+                        tablaBody.innerHTML += fila;
+                    });
+                } else {
+                    tablaBody.innerHTML = `<tr><td colspan="3">Sin resultados.</td></tr>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar cursillos:', error);
+                document.getElementById('tabla-cursillos-body').innerHTML = `<tr><td colspan="3">Error al cargar resultados.</td></tr>`;
+            });
+    }
+
+    function cargarPrimerosActasBautismo() {
+        fetch('/ActaBautismo/SearchAll?count=4')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultadosBody");
+                resultadosBody.innerHTML = "";
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.nombrecompleto}</td>
+                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                            <td>${item.iglesia_nombre}</td>
+                            <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                            <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                        </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='5'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar actas:', error);
+                resultadosBody.innerHTML = "<tr><td colspan='5'>Error al cargar resultados.</td></tr>";
+            });
+    }
+
+    document.getElementById('formFeligres').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = this;
+        const formData = new FormData(form);
+        document.getElementById('feligres_error').style.display = 'none';
+        document.getElementById('feligres_exito').style.display = 'none';
+
+        fetch('/Feligres/Create', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('feligres_exito').textContent = "Feligres registrado correctamente.";
+                document.getElementById('feligres_exito').style.display = 'block';
+                form.reset();
+                // recargar selects de padres/padrinos
+                cargarFeligreses();
+                setTimeout(() => {
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('modalFeligres'));
+                    modal.hide();
+                }, 1200);
+            } else {
+                document.getElementById('feligres_error').textContent = data.message || "Error al registrar feligrés.";
+                document.getElementById('feligres_error').style.display = 'block';
+            }
+        })
+        .catch(error => {
+            document.getElementById('feligres_error').textContent = "Error al registrar feligrés.";
+            document.getElementById('feligres_error').style.display = 'block';
+        });
+    });
+
+    function buscarFeligres(inputId, selectId) {
+        const texto = document.getElementById(inputId).value.trim();
+        if (texto.length < 2) {
+            cargarFeligreses(); 
+            return;
+        }
+        fetch(`/Feligres/SearchByName?nombre=${encodeURIComponent(texto)}`)
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">Seleccione</option>';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    select.innerHTML += `<option value="${f.cedula}">${nombreCompleto}</option>`;
+                });
+            });
+    }
+
+    // Asigna el evento a los inputs de búsqueda
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('buscador_padre').addEventListener('input', function() {
+            buscarFeligres('buscador_padre', 'padre_id');
+        });
+        document.getElementById('buscador_madre').addEventListener('input', function() {
+            buscarFeligres('buscador_madre', 'madre_id');
+        });
+    });
+
+    function cargarPadresDatalist(texto = "") {
+        let url = texto.length >= 2
+            ? `/Feligres/SearchByName?nombre=${encodeURIComponent(texto)}`
+            : '/Feligres/GetLast?count=8';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const datalist = document.getElementById('padres_datalist');
+                datalist.innerHTML = '';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    // Muestra nombre y cédula en la lista
+                    datalist.innerHTML += `<option value="${nombreCompleto}">${nombreCompleto} - ${f.cedula}</option>`;
+                });
+                // Guarda la lista en memoria para búsqueda rápida
+                window._padresFeligreses = data;
+            });
+    }
+
+    // Al seleccionar un nombre, guarda el id en el input hidden
+    document.getElementById('padre_nombre').addEventListener('change', function() {
+        const nombre = this.value;
+        const lista = window._padresFeligreses || [];
+        const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+        document.getElementById('padre_id').value = encontrado ? encontrado.cedula : '';
+    });
+
+    function cargarMadresDatalist(texto = "") {
+        let url = texto.length >= 2
+            ? `/Feligres/SearchByName?nombre=${encodeURIComponent(texto)}`
+            : '/Feligres/GetLast?count=8';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const datalist = document.getElementById('madres_datalist');
+                datalist.innerHTML = '';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    datalist.innerHTML += `<option value="${nombreCompleto}">${nombreCompleto} - ${f.cedula}</option>`;
+                });
+                window._madresFeligreses = data;
+            });
+    }
+
+    // Al seleccionar un nombre, guarda la cédula en el input hidden
+    document.getElementById('madre_nombre').addEventListener('change', function() {
+        const nombre = this.value;
+        const lista = window._madresFeligreses || [];
+        const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+        document.getElementById('madre_id').value = encontrado ? encontrado.cedula : '';
+        console.log('Madre seleccionada:', nombre, '| Cédula:', encontrado ? encontrado.cedula : '');
+    });
+
+    function cargarQuienInscribeDatalist(texto = "") {
+        let url = texto.length >= 2
+            ? `/Feligres/SearchByName?nombre=${encodeURIComponent(texto)}`
+            : '/Feligres/GetLast?count=8';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const datalist = document.getElementById('quieninscribe_datalist');
+                datalist.innerHTML = '';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    datalist.innerHTML += `<option value="${nombreCompleto}">${nombreCompleto} - ${f.cedula}</option>`;
+                });
+                window._quienInscribeFeligreses = data;
+            });
+    }
+
+    // Al seleccionar un nombre, guarda el id en el input hidden
+    document.getElementById('quieninscribe_nombre').addEventListener('change', function() {
+        const nombre = this.value;
+        const lista = window._quienInscribeFeligreses || [];
+        const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+        document.getElementById('quieninscribe_id').value = encontrado ? encontrado.cedula : '';
+    });
+
+    function cargarPadrinosDatalist(texto = "") {
+        let url = texto.length >= 2
+            ? `/Feligres/SearchByName?nombre=${encodeURIComponent(texto)}`
+            : '/Feligres/GetLast?count=8';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const datalist = document.getElementById('padrinos_datalist');
+                datalist.innerHTML = '';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    datalist.innerHTML += `<option value="${nombreCompleto}">${nombreCompleto} - ${f.cedula}</option>`;
+                });
+                window._padrinosFeligreses = data;
+            });
+    }
+
+    // Al seleccionar un nombre, guarda el id en el input hidden
+    document.getElementById('padrino_nombre').addEventListener('change', function() {
+        const nombre = this.value;
+        const lista = window._padrinosFeligreses || [];
+        const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+        document.getElementById('padrino_id').value = encontrado ? encontrado.cedula : '';
+    });
+
+    function cargarMadrinasDatalist(texto = "") {
+        let url = texto.length >= 2
+            ? `/Feligres/SearchByName?nombre=${encodeURIComponent(texto)}`
+            : '/Feligres/GetLast?count=8';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const datalist = document.getElementById('madrinas_datalist');
+                datalist.innerHTML = '';
+                data.forEach(f => {
+                    const nombreCompleto = f.nombre + (f.apellido ? " " + f.apellido : "");
+                    datalist.innerHTML += `<option value="${nombreCompleto}">${nombreCompleto} - ${f.cedula}</option>`;
+                });
+                window._madrinasFeligreses = data;
+            });
+    }
+
+    // Al seleccionar un nombre, guarda el id en el input hidden
+    document.getElementById('madrina_nombre').addEventListener('change', function() {
+        const nombre = this.value;
+        const lista = window._madrinasFeligreses || [];
+        const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+        document.getElementById('madrina_id').value = encontrado ? encontrado.cedula : '';
+    });
+
+    document.getElementById('Observaciones').addEventListener('focus', function () {
+        if (this.value === 'Sin Observaciones') {
+            this.value = '';
+        }
+    });
+    document.getElementById('Observaciones').addEventListener('blur', function () {
+        if (this.value.trim() === '') {
+            this.value = 'Sin Observaciones';
+        }
+    });
+
+    // Para Observaciones de Antiguos
+    document.getElementById('Observacionesant').addEventListener('focus', function () {
+        if (this.value === 'Sin Observaciones') {
+            this.value = '';
+        }
+    });
+    document.getElementById('Observacionesant').addEventListener('blur', function () {
+        if (this.value.trim() === '') {
+            this.value = 'Sin Observaciones';
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Padres
+        cargarPadresDatalist();
+        document.getElementById('padre_nombre').addEventListener('input', function() {
+            cargarPadresDatalist(this.value);
+        });
+        document.getElementById('padre_nombre').addEventListener('change', function() {
+            const nombre = this.value;
+            const lista = window._padresFeligreses || [];
+            const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+            document.getElementById('padre_id').value = encontrado ? encontrado.cedula : '';
+        });
+
+        // Madres
+        cargarMadresDatalist();
+        document.getElementById('madre_nombre').addEventListener('input', function() {
+            cargarMadresDatalist(this.value);
+        });
+        document.getElementById('madre_nombre').addEventListener('change', function() {
+            const nombre = this.value;
+            const lista = window._madresFeligreses || [];
+            const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+            document.getElementById('madre_id').value = encontrado ? encontrado.cedula : '';
+        });
+
+        // Padrinos
+        cargarPadrinosDatalist();
+        document.getElementById('padrino_nombre').addEventListener('input', function() {
+            cargarPadrinosDatalist(this.value);
+        });
+        document.getElementById('padrino_nombre').addEventListener('change', function() {
+            const nombre = this.value;
+            const lista = window._padrinosFeligreses || [];
+            const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+            document.getElementById('padrino_id').value = encontrado ? encontrado.cedula : '';
+        });
+
+        // Madrinas
+        cargarMadrinasDatalist();
+        document.getElementById('madrina_nombre').addEventListener('input', function() {
+            cargarMadrinasDatalist(this.value);
+        });
+        document.getElementById('madrina_nombre').addEventListener('change', function() {
+            const nombre = this.value;
+            const lista = window._madrinasFeligreses || [];
+            const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+            document.getElementById('madrina_id').value = encontrado ? encontrado.cedula : '';
+        });
+
+        // Quien inscribe
+        cargarQuienInscribeDatalist();
+        document.getElementById('quieninscribe_nombre').addEventListener('input', function() {
+            cargarQuienInscribeDatalist(this.value);
+        });
+        document.getElementById('quieninscribe_nombre').addEventListener('change', function() {
+            const nombre = this.value;
+            const lista = window._quienInscribeFeligreses || [];
+            const encontrado = lista.find(f => (f.nombre + (f.apellido ? " " + f.apellido : "")) === nombre);
+            document.getElementById('quieninscribe_id').value = encontrado ? encontrado.cedula : '';
+        });
+
+        // Otros inits
+        cargarMinistros();
+        cargarParroquiasActaBautismo();
+        cargarParroquiasCursillo();
+        cargarIglesias();
+        cargarSacerdotes();
+        cargarCursillosRecientes();
+        validarUnicosPadresPadrinos();
+        cargarUltimosCursillosEnActa();
+        cargarPrimerosActasBautismo();
+        cargarFeligresesQuienInscribe();
+        ListActasAntiguas();
+    });
+
+</script>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

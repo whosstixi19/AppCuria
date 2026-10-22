@@ -1,0 +1,162 @@
+﻿@model AplicacionCuria.Models.AlumnoCatequesis
+
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCatequesis" aria-label="Regresar al menú de sacramentos">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Modificar Alumno</h1>
+            </div>
+            <form asp-action="Edit" asp-controller="AlumnosCatequesis" asp-route-id="@Model.id" method="post" enctype="multipart/form-data">
+                <h3>Registro de Alumno</h3>
+                <div class="mb-3">
+                        <label for="foto" class="form-label">Foto</label>
+                        <img src="@(Model.foto != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Model.foto)}" : "/images/placeholder.png")"
+                             style="padding-bottom:20px" alt="Foto del alumno" width="150" height="150" id="vistaPrevia" />
+                        <input type="file" class="form-control" id="foto" name="foto" onchange="mostrarVistaPrevia(event)">
+
+                </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required value="@Model.nombre">
+                </div>
+
+                <div class="mb-3">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required value="@Model.apellido">
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required value="@Model.fechanacimiento.ToString("yyyy-MM-dd")">
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
+                    <input type="date" class="form-control" id="fechabautizo" name="fechabautizo" value="@Model.fechabautizo.ToString("yyyy-MM-dd")">
+                </div>
+
+                <div class="mb-3">
+                    <label for="cedula" class="form-label">Cédula</label>
+                    <input type="text" class="form-control" id="cedula" name="cedula" value="@Model.cedula">
+                </div>
+                
+                <!-- Nivel -->
+                @{
+                    var niveles = new[] { "Primero", "Segundo", "Tercero", "Cuarto", "Quinto", "Sexto" };
+                }
+                <div class="mb-3">
+                    <label for="nivel" class="form-label">Nivel</label>
+                    <select class="form-select" id="nivel" name="nivel" required>
+                        <option value="">Seleccione un nivel</option>
+                        @foreach (var n in niveles)
+                        {
+                            <option value="@n" selected="@(Model.nivel?.Trim().ToLower() == n.ToLower() ? "selected" : null)">@n</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Catequista -->
+                <div class="mb-3">
+                    <label for="catequista_id" class="form-label">Catequista</label>
+                    <select class="form-control" id="catequista_id" name="catequista_id" required>
+                        <option value="">Seleccione un catequista</option>
+                        @foreach (var item in ViewBag.Catequistas as List<AplicacionCuria.Models.Catequista>)
+                        {
+                            <option value="@item.id" selected="@(item.id == Model.catequista_id ? "selected" : null)">
+                                @item.nombre
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Periodo -->
+                <div class="mb-3">
+                    <label for="periodo_id" class="form-label">Periodo</label>
+                    <select class="form-control" id="periodo_id" name="periodo_id" required>
+                        <option value="">Seleccione un periodo</option>
+                        @foreach (var item in ViewBag.Periodos as List<AplicacionCuria.Models.Periodo>)
+                        {
+                            <option value="@item.id" selected="@(item.id == Model.periodo_id ? "selected" : null)">
+                                @item.nombre
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion" value="@Model.direccion">
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" value="@Model.telefono">
+                </div>
+
+                <div class="mb-3">
+                    <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                    <input type="text" class="form-control" id="nacionalidad" name="nacionalidad" value="@Model.nacionalidad">
+                </div>
+
+                <div class="mb-3">
+                    <label for="estadocivil" class="form-label">Estado Civil</label>
+                    <input type="text" class="form-control" id="estadocivil" name="estadocivil" value="@Model.estadocivil">
+                </div>
+
+                <div class="mb-3">
+                    <label for="correo" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" name="correo" value="@Model.correo">
+                </div>
+
+                <h4>Datos del Representante</h4>
+
+                <div class="mb-3">
+                    <label for="nombrerepresentante" class="form-label">Nombre del Representante</label>
+                    <input type="text" class="form-control" id="nombrerepresentante" name="nombrerepresentante" value="@Model.nombrerepresentante">
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefonorepresentante" class="form-label">Teléfono del Representante</label>
+                    <input type="text" class="form-control" id="telefonorepresentante" name="telefonorepresentante" value="@Model.telefonorepresentante">
+                </div>
+
+                <div class="mb-3">
+                    <label for="relacionconelestudiante" class="form-label">Relación con el Estudiante</label>
+                    <input type="text" class="form-control" id="relacionconelestudiante" name="relacionconelestudiante" value="@Model.relacionconelestudiante">
+                </div>
+
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones" rows="3" required>@Model.observaciones</textarea>
+                </div>
+
+                <!-- Más campos aquí según el modelo AlumnoCatequesis -->
+
+                <div class="mb-3">
+                <button type="submit"  class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function mostrarVistaPrevia(event) {
+        const archivo = event.target.files[0];
+        if (archivo) {
+            const lector = new FileReader();
+            lector.onload = function (e) {
+                document.getElementById('vistaPrevia').src = e.target.result;
+            };
+            lector.readAsDataURL(archivo);
+        }
+    }
+</script>

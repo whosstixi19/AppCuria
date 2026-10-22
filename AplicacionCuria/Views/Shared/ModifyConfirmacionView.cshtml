@@ -1,0 +1,123 @@
+﻿@model AplicacionCuria.Models.Confirmacion
+
+<div class="tab-pane fade show active" id="acta-bautismo" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="ConfirmacionView" aria-label="Regresar al menú de sacramentos">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Modificar Confirmación</h1>
+            </div>
+
+            <form asp-controller="Confirmacion" asp-action="Edit" method="post" id="acta-form">
+                <input type="hidden" name="id" value="@Model.id" 
+                <!-- Nombre completo -->
+                <div class="mb-3">
+                    <label for="Nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="Nombre" name="nombre" value="@Model.nombre" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="Apellido" name="apellido" value="@Model.apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechanacimiento" value="@Model.fechanacimiento.ToString("yyyy-MM-dd")" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Cedula" class="form-label">Cedula</label>
+                    <input type="text" class="form-control" id="Cedula" name="cedula" value="@Model.cedula" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="Direccion" name="direccion" value="@Model.direccion" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Telefono" class="form-label">Telefono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" value="@Model.telefono" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaConfirmacion" class="form-label">Fecha de Confirmación</label>
+                    <input type="date" class="form-control" id="fechaConfirmacion" name="fechaconfirmacion" value="@Model.fechaconfirmacion.ToString("yyyy-MM-dd")" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Parroquia" class="form-label">Parroquia</label>
+                        <select asp-for="parroquia_id" class="form-select" asp-items="@(new SelectList(ViewBag.Parroquias, "id", "nombre", Model.parroquia_id))">
+                            <option value="">Seleccione una Parroquia</option>
+                        </select>
+                    </div>
+                </div
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Sacerdote" class="form-label">Sacerdote</label>
+                        <select asp-for="sacerdote_id" class="form-select" asp-items="@(new SelectList(ViewBag.Sacerdotes, "id", "nombre", Model.sacerdote_id))">
+                            <option value="">Seleccione un Sacerdote</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones">@Model.observaciones</textarea>
+                </div>
+                <!-- Botón de actualización -->
+                <div class="mb-3">
+                    <button type="submit" asp-controller="Confirmacion" asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary">Actualizar</button>
+                    <label id="exito" class="text-success" style="display: none;">Confirmación Actualizada</label>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch(`/Confirmacion/Valores/${@Model.id}`)
+            .then(response => response.json())
+            .then(data => {
+                const ministro = data.sacerdote;
+                const parroquia = data.parroquia;
+                const selectElement = document.getElementById('Sacerdote');
+                const selectElement2 = document.getElementById('Parroquia');
+                selectElement.value = ministro;
+                selectElement2.value = parroquia;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById("acta-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("exito").style.display = "none";
+                if (data.success) {
+                    document.getElementById("exito").style.display = "block";
+                    setTimeout(function () {
+                        window.location.href = "/Home/MenuSacramentos";
+                    }, 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("exito").innerText = error;
+                document.getElementById("exito").style.display = "block";
+            });
+    });
+</script>

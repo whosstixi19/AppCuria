@@ -1,0 +1,309 @@
+﻿<div class="d-flex align-items-center mb-3">
+    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home"
+        asp-action="MenuSacramentos">
+        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
+        <span>Volver</span>
+    </a>
+    <h1 class="ms-3">Primera Comunion</h1>
+</div>
+<div class="tab-pane fade show active">
+
+    <div class="row">
+        <!-- Formulario de creación a la izquierda -->
+        <div class="col-md-6">
+            <form asp-action="Create" id="plantilla-com" asp-controller="PrimeraComunion" method="post">
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <!-- Apellido -->
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                </div>
+                <!-- Fecha de Nacimiento -->
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" required>
+                </div>
+                <!-- Cédula -->
+                <div class="form-group">
+                    <label for="cedula">Cédula</label>
+                    <input type="text" class="form-control" id="cedula" name="cedula" required>
+                </div>
+                <!-- Dirección -->
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion" required>
+                </div>
+                <!-- Teléfono -->
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                </div>
+                <!-- Fecha de Primera Comunión -->
+                <div class="form-group">
+                    <label for="fechaPrimeraComunion">Fecha de Primera Comunión</label>
+                    <input type="date" class="form-control" id="fechaPrimeraComunion" name="fechaPrimeraComunion"
+                        required>
+                </div>
+                <!-- Parroquia -->
+                <div class="form-group">
+                    <div class="col-md-6 mb-3">
+                        <label for="Parroquia" class="form-label">Parroquia</label>
+                        <select class="form-select" id="Parroquia" name="parroquia_id">
+                            <option value="">Seleccione una Parroquia</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Sacerdote -->
+                <div class="form-group">
+                    <div class="col-md-6 mb-3">
+                        <label for="Sacerdote" class="form-label">Sacerdote</label>
+                        <select class="form-select" id="Sacerdote" name="sacerdote_id">
+                            <option value="">Seleccione un Sacerdote</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Observaciones -->
+                <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones" rows="3" placeholder="Escriba alguna observación">Sin Observaciones</textarea>
+                </div>
+                <!-- Botón -->
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <label id="exito" class="text-success" style="display: none;">Primera Comunión Registrada</label>
+            
+            </form>
+        </div>
+        <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+            <form asp-action="Search" method="get" id="buscar-acta" asp-controller="PrimeraComunion">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-6">
+                    <label for="nombrecompleto" class="form-label">Nombre completo del niño/niña</label>
+                    <input type="text" class="form-control" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
+                </div>
+                <div class="col-md-3 mt-3 mt-md-0">
+                    <button type="button" class="btn btn-primary w-100" onclick="Buscar()">Buscar</button>
+                </div>
+                <div class="col-md-3 mt-3 mt-md-0">
+                    <button type="button" class="btn btn-secondary w-100" onclick="Limpiar()">Limpiar</button>
+                </div>
+            </div>
+                <div class="mb-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Teléfono</th>
+                                <th>Fecha de Nacimiento</th>
+                                <th>Parroquia</th>
+                                <th>Modificar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultados">
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.nombre</td>
+                                        <td>@item.apellido</td>
+                                        <td>@item.telefono</td>
+                                        <td>@item.fechanacimiento.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.parroquia</td>
+                                        <td>
+                                            <a asp-action="ModifyPrimeraComunionView" asp-controller="PrimeraComunion"
+                                                asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                        </td>
+                                        <td>
+                                            <a asp-action="DeletePrimeraComunionView" asp-controller="PrimeraComunion"
+                                                asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.getElementById("plantilla-com").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                const mensaje = document.getElementById("exito");
+                mensaje.style.display = "none";
+
+                if (data.success) {
+                    mensaje.className = "text-success";
+                    mensaje.textContent = "Alumno Registrado";
+                    mensaje.style.display = "block";
+
+                    // Limpiar formulario
+                    document.getElementById("plantilla-com").reset();
+
+                    // Ocultar mensaje después de 3 segundos
+                    setTimeout(function () {
+                        mensaje.style.display = "none";
+                    }, 3000);
+                } else {
+                    mensaje.className = "text-danger";
+                    if (Array.isArray(data.errors)) {
+                        mensaje.textContent = data.errors.join(", ");
+                    } else {
+                        mensaje.textContent = data.errors || "Error desconocido.";
+                    }
+                    mensaje.style.display = "block";
+                }
+            })
+            .catch(errors => {
+                const mensaje = document.getElementById("exito");
+                mensaje.className = "text-danger";
+                mensaje.innerText = errors;
+                mensaje.style.display = "block";
+            });
+    });
+
+    function cargarParroquias() {
+        fetch('/PrimeraComunion/GetParroquias')
+            .then(response => response.json())
+            .then(data => {
+                let ministroSelect = document.getElementById('Parroquia');
+                ministroSelect.innerHTML = '<option value="">Seleccione una Parroquia</option>'; // Limpiar opciones previas
+
+                data.forEach(ministro => {
+                    ministroSelect.innerHTML += `<option value="${ministro.id}">${ministro.nombre}</option>`;
+                });
+            })
+            .catch(error => console.log('Error:', error));
+    }
+    function cargarSacerdotes() {
+        fetch('/PrimeraComunion/GetSacerdotes')
+            .then(response => response.json())
+            .then(data => {
+                let sacerdoteSelect = document.getElementById('Sacerdote');
+                sacerdoteSelect.innerHTML = '<option value="">Seleccione un Sacerdote</option>';
+                data.forEach(sacerdote => {
+                    sacerdoteSelect.innerHTML += `<option value="${sacerdote.id}">${sacerdote.nombre}</option>`;
+                });
+            })
+            .catch(error => console.error('Error al cargar sacerdotes:', error));
+    }
+
+    function List() {
+        fetch('/PrimeraComunion/GetListado')
+            .then(response => response.json())
+            .then(data => {
+                const resultadosBody = document.getElementById("resultados");
+                if (!resultadosBody) {
+                    console.error("Elemento con id 'resultadosBody' no encontrado.");
+                    return;
+                }
+                resultadosBody.innerHTML = ""; // Limpiar resultados anteriores
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                                            <td>${item.nombre}</td>
+                                            <td>${item.apellido}</td>
+                                            <td>${item.telefono}</td>
+                                            <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td> <!-- Formatea la fecha en JavaScript -->
+                                            <td>${item.parroquia}</td>
+                                                <td><a href="/PrimeraComunion/ModifyPrimeraComunionView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                                                <td><a href="/PrimeraComunion/DeletePrimeraComunionView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                        </tr>`;
+                        resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
+                    });
+                } else {
+                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                }
+            })
+            .catch(error => console.error('Error en la búsqueda:', error));
+    }
+
+    function Buscar() {
+        const nombre = document.getElementById('nombrecompleto').value.trim();
+        const resultadosBody = document.getElementById('resultados');
+
+        resultadosBody.innerHTML = ''; // Limpiar resultados anteriores
+
+        if (nombre.length < 3) {
+            resultadosBody.innerHTML = `<tr><td colspan="7">Por favor ingresa al menos 3 caracteres para buscar.</td></tr>`;
+            return;
+        }
+
+        fetch(`/PrimeraComunion/SearchByName?nombrecompleto=${nombre}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.nombre}</td>
+                            <td>${item.apellido}</td>
+                            <td>${item.telefono}</td>
+                            <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td>
+                            <td>${item.parroquia}</td>
+                            <td><a href="/PrimeraComunion/ModifyPrimeraComunionView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                            <td><a href="/PrimeraComunion/DeletePrimeraComunionView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                        </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = `<tr><td colspan="7">No se encontraron resultados.</td></tr>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultadosBody.innerHTML = `<tr><td colspan="7">Ocurrió un error al buscar.</td></tr>`;
+            });
+    }
+
+    document.getElementById('buscar-acta').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        Buscar();
+    });
+
+    function Limpiar() {
+        const input = document.getElementById("nombrecompleto");
+        input.value = ""; 
+        List();
+    }
+
+    // Observaciones por defecto
+    document.getElementById('observaciones').addEventListener('focus', function () {
+        if (this.value === 'Sin Observaciones') {
+            this.value = '';
+        }
+    });
+    document.getElementById('observaciones').addEventListener('blur', function () {
+        if (this.value.trim() === '') {
+            this.value = 'Sin Observaciones';
+        }
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarParroquias();
+        cargarSacerdotes();
+        List();
+
+        window.onload = function () {
+        }
+    });
+
+</script>

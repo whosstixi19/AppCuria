@@ -1,0 +1,108 @@
+﻿@model AplicacionCuria.Models.ActaDeMatrimonio
+
+
+
+
+<div class="tab-pane fade show active" id="acta-matrimonial" role="tabpanel" aria-labelledby="acta-bautismo-tab">
+    <div class="row">
+        <!-- Formulario de actualización a la izquierda -->
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+                <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MatrimoniosView" aria-label="Regresar al menú de sacramentos">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span>Volver</span>
+                </a>
+                <h1 class="ms-3">Modificar</h1>
+            </div>
+
+            <form asp-action="Edit" asp-controller="ActaMatrimonial" method="post" id="acta-matrimonial">
+                <input type="hidden" name="id" value="@Model.id" />
+                <input type="hidden" name="acta_prematrimonial_id" value="@Model.acta_prematrimonial_id" />
+                <input type="hidden" name="fecha_matrimonio" value="@Model.fecha_matrimonio.ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="acta" value="@Model.acta" />
+                <input type="hidden" name="tomo" value="@Model.tomo" />
+                <input type="hidden" name="pagina" value="@Model.pagina" />
+                <input type="hidden" name="iglesia_id" value="@Model.iglesia_id" />
+                <input type="hidden" name="ministro_id" value="@Model.ministro_id" />
+                <h2>Acta Matrimonial</h2>
+                <div class="row">
+
+                    <h5>Datos</del></h5>
+                    <div class="mb-3">
+                        @*                         <label for="NombreNovio">Nombre del Novio:</label>
+                        *@
+                        <input type="text" id="NombreNovio" name="padrino1" class="form-control" value="@Model.padrino1" placeholder="Padrino 1" required />
+                    </div>
+                    <div class="mb-3">
+                        @*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
+                        *@
+                        <input type="text" id="LugarBautizoNovio" name="padrino2" value="@Model.padrino2" placeholder="Padrino 2" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        @*                         <label for="PadreNovio">Padre del Novio:</label>
+                        *@
+                        <input type="text" id="PadreNovio" placeholder="Padrino 3" value="@Model.padrino3" name="padrino3" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        @*                         <label for="MadreNovio">:</label>
+                        *@
+                        <input type="text" id="MadreNovio" name="padrino4" value="@Model.padrino4" placeholder="Padrino 4" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="FechaBautizoNovio">Fecha de registro:</label>
+                        <input type="date" id="FechaBautizoNovio" name="fecharegistro" value="@(Model.fecharegistro.HasValue ? Model.fecharegistro.Value.ToString("yyyy-MM-dd") : "")" class="form-control" />
+                    </div>
+            </div>
+
+                <button type="submit" asp-controller="ActaMatrimonial" asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary">Actualizar Acta</button>
+                <label id="exito" class="text-success" style="display: none;">Acta Actualizada</label>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form#acta-matrimonial");  // Asegura que se selecciona el <form>
+
+        if (form) {
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);  // <-- AQUÍ: asegúrate de pasar el FORM directamente
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const exito = document.getElementById("exito");
+                        exito.style.display = "none";
+
+                        if (data.success) {
+                            exito.textContent = "Acta Actualizada";
+                            exito.style.display = "block";
+                            setTimeout(() => {
+                                window.location.href = "/Submenus/MatrimoniosView";
+                            }, 5000);
+                        } else {
+                            exito.textContent = data.errors || "Error al actualizar.";
+                            exito.style.display = "block";
+                        }
+                    })
+                    .catch(error => {
+                        const exito = document.getElementById("exito");
+                        exito.textContent = "Error inesperado: " + error;
+                        exito.style.display = "block";
+                    });
+            });
+        } else {
+            console.error("Formulario no encontrado.");
+        }
+    });
+</script>
+

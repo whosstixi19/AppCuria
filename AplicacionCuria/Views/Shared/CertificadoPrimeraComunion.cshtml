@@ -1,0 +1,145 @@
+﻿@model AplicacionCuria.Models.PrimeraComunionImprimir
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado de Primera Comunión</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #FFFFFF;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            border: 10px solid #FFFFFF;
+            background-color: #FFFFFF;
+            box-shadow: 0px 0px 5px #FFFFFF;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 32px;
+            font-weight: bold;
+            color: #D62429;
+            margin-top: 10px;
+        }
+
+        .sub-header {
+            font-size: 30px;
+            color: #333;
+            margin: 10px 0 20px;
+        }
+
+        .content {
+            font-size: 30px;
+            color: #000;
+            line-height: 1.5;
+            margin: 0 15%;
+        }
+
+        .footer {
+            font-size: 26px;
+            margin-top: 30px;
+        }
+
+        .firma {
+            text-align: center;
+            margin-top: 40px;
+            min-height: 100px;
+        }
+
+        .img-firma {
+            max-width: 250px;
+            height: auto;
+        }
+
+        .mmmm {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+        }
+
+        .badge {
+            width: 160px;
+            height: auto;
+            margin-left: 50px;
+            margin-bottom: 50px;
+        }
+
+        .badgee {
+            width: 160px;
+            height: auto;
+            margin-right: 50px;
+            margin-bottom: 20px;
+        }
+
+        .character {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            height: auto;
+        }
+        .fecha {
+            margin-top: 20px; /* Ajusta el valor según el espacio que quieras */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Imagen del escudo -->
+        <div class="mmmm">
+            <img src="~/imagenes/escudo.png" alt="Escudo" class="badge" />
+            <img src="~/imagenes/comunion.jpg" alt="Escudo" class="badgee" />
+        </div>
+       
+        <!-- Encabezado del certificado -->
+        <div class="header">Certificado de Primera Comunión</div>
+        <div class="sub-header">Este certificado es otorgado a</div>
+
+        <!-- Contenido del certificado -->
+        <div class="content">
+            <p><strong>Nombre del Alumno:</strong> @Model.Alumno.nombre @Model.Alumno.apellido</p>
+            <p>Por haber recibido el sacramento de la Primera Comunión y demostrar su compromiso con la fe católica.</p>
+        </div>
+
+        <!-- Pie de página con fecha y firma -->
+        <div class="footer">
+
+            <div class="firma">
+                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                {
+                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
+                }
+            </div>
+            <p>@Model.NombreSacerdote</p>
+            <p>SACERDOTE</p>
+            <p class="fecha">Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
+            <p>"Yo soy el pan de vida. El que viene a mí nunca tendrá hambre, y el que cree en mí nunca tendrá sed." </p>
+            <p><em>(Juan 6:35)</em></p>
+        </div>
+    </div>
+</body>
+</html>

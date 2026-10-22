@@ -1,0 +1,383 @@
+@{
+    ViewData["Title"] = "Gestión de Ministros y Catequistas";
+    Layout = "_Layout";
+}
+
+<h2>Gestión de Ministros y Catequistas</h2>
+
+<ul class="nav nav-tabs" id="ministrosTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="catequista-tab" data-bs-toggle="tab" data-bs-target="#catequista" type="button" role="tab" aria-controls="catequista" aria-selected="true">Catequista</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ministro-tab" data-bs-toggle="tab" data-bs-target="#ministro" type="button" role="tab" aria-controls="ministro" aria-selected="false">Ministro</button>
+    </li>
+</ul>
+<div class="tab-content mt-3" id="ministrosTabsContent">
+    <div class="tab-pane fade show active" id="catequista" role="tabpanel" aria-labelledby="catequista-tab">
+        <div class="row">
+            <div class="col-md-5">
+                <form id="formCatequista">
+                    <input type="hidden" id="id" name="id" value="0" />
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input class="form-control" id="nombre" name="nombre" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input class="form-control" id="apellido" name="apellido" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="cedula" class="form-label">Cédula</label>
+                        <input class="form-control" id="cedula" name="cedula" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input class="form-control" id="telefono" name="telefono" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input class="form-control" id="direccion" name="direccion" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input class="form-control" id="email" name="email" type="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <button type="button" class="btn btn-secondary" id="btnNuevoCatequista">Limpiar</button>
+                </form>
+            </div>
+            <div class="col-md-7">
+                <div class="mb-3">
+                    <input type="text" id="busquedaCatequista" class="form-control" placeholder="Buscar por nombre, apellido o cédula..." />
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cédula</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCatequistas">
+                        <!-- Se llena por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="ministro" role="tabpanel" aria-labelledby="ministro-tab">
+        <div class="row">
+            <div class="col-md-5">
+                <form id="formMinistro">
+                    <input type="hidden" id="ministro_id" name="id" value="0" />
+                    <div class="mb-3">
+                        <label for="ministro_nombre" class="form-label">Nombre</label>
+                        <input class="form-control" id="ministro_nombre" name="nombre" required maxlength="255" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ministro_apellido" class="form-label">Apellido</label>
+                        <input class="form-control" id="ministro_apellido" name="apellido" required maxlength="255" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ministro_email" class="form-label">Email</label>
+                        <input class="form-control" id="ministro_email" name="email" type="email" maxlength="255" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ministro_telefono" class="form-label">Teléfono</label>
+                        <input class="form-control" id="ministro_telefono" name="telefono" maxlength="20" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ministro_fechaordenacion" class="form-label">Fecha de Ordenación</label>
+                        <input type="date" class="form-control" id="ministro_fechaordenacion" name="fechaordenacion" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ministro_estado" class="form-label">Estado</label>
+                        <select class="form-control" id="ministro_estado" name="estado">
+                            <option value="ACTIVO">ACTIVO</option>
+                            <option value="INACTIVO">INACTIVO</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ministro_observaciones" class="form-label">Observaciones</label>
+                        <textarea class="form-control" id="ministro_observaciones" name="observaciones"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    <button type="button" class="btn btn-secondary" id="btnLimpiarMinistro">Limpiar</button>
+                </form>
+                <div id="msgMinistro" class="mt-2"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="mb-3">
+                    <input type="text" id="busquedaMinistro" class="form-control" placeholder="Buscar por nombre o apellido..." />
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Fecha Ordenación</th>
+                            <th>Estado</th>
+                            <th>Observaciones</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaMinistros">
+                        <!-- Se llena por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        // --- Catequistas ---
+        $(document).ready(function () {
+            cargarCatequistas();
+
+            $("#busquedaCatequista").on("input", function () {
+                let texto = $(this).val();
+                buscarCatequistas(texto);
+            });
+
+            $("#formCatequista").submit(function (e) {
+                e.preventDefault();
+                let id = $("#id").val();
+                let url = id == 0 ? "/Catequista/Create" : "/Catequista/Edit/" + id;
+                let data = {
+                    id: id,
+                    nombre: $("#nombre").val(),
+                    apellido: $("#apellido").val(),
+                    cedula: $("#cedula").val(),
+                    telefono: $("#telefono").val(),
+                    direccion: $("#direccion").val(),
+                    email: $("#email").val(),
+                    fecha_nacimiento: $("#fecha_nacimiento").val(),
+                    observaciones: $("#observaciones").val()
+                };
+                $.post(url, data, function (res) {
+                    if (res.success) {
+                        cargarCatequistas();
+                        limpiarFormularioCatequista();
+                    } else {
+                        alert("Error al guardar.");
+                    }
+                });
+            });
+
+            $("#btnNuevoCatequista").click(function () {
+                limpiarFormularioCatequista();
+            });
+
+            // --- Ministros ---
+            $('#ministro-tab').on('shown.bs.tab', function () {
+                cargarMinistros();
+            });
+
+            $("#busquedaMinistro").on("input", function () {
+                buscarMinistros($(this).val());
+            });
+
+            $("#formMinistro").submit(function (e) {
+                e.preventDefault();
+                let id = $("#ministro_id").val();
+                let url = id == 0 ? "/Ministros/Create" : "/Ministros/Edit/" + id;
+                let data = {
+                    id: id,
+                    nombre: $("#ministro_nombre").val(),
+                    apellido: $("#ministro_apellido").val(),
+                    email: $("#ministro_email").val(),
+                    telefono: $("#ministro_telefono").val(),
+                    fechaordenacion: $("#ministro_fechaordenacion").val(),
+                    estado: $("#ministro_estado").val(),
+                    observaciones: $("#ministro_observaciones").val()
+                };
+                $.post(url, data, function (res) {
+                    if (res.success) {
+                        cargarMinistros();
+                        limpiarFormularioMinistro();
+                        mostrarMsgMinistro("Ministro guardado correctamente.", true);
+                    } else {
+                        mostrarMsgMinistro(res.message || "Error al guardar.", false);
+                    }
+                });
+            });
+
+            $("#btnLimpiarMinistro").click(function () {
+                limpiarFormularioMinistro();
+            });
+        });
+
+        function cargarCatequistas() {
+            $.get("/Catequista/Search", function (data) {
+                renderTablaCatequistas(data);
+            });
+        }
+
+        function buscarCatequistas(texto) {
+            if (!texto) {
+                cargarCatequistas();
+                return;
+            }
+            $.get("/Catequista/SearchByName", { nombre: texto }, function (data) {
+                renderTablaCatequistas(data);
+            });
+        }
+
+        function renderTablaCatequistas(data) {
+            let html = "";
+            data.forEach(function (c) {
+                html += `<tr>
+                    <td>${c.nombre}</td>
+                    <td>${c.apellido}</td>
+                    <td>${c.cedula ?? ""}</td>
+                    <td>${c.telefono ?? ""}</td>
+                    <td>${c.email ?? ""}</td>
+                    <td>${c.estado ?? ""}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editarCatequista(${c.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarCatequista(${c.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+            $("#tablaCatequistas").html(html);
+        }
+
+        function editarCatequista(id) {
+            $.get("/Catequista/ModifyCatequistaView", { id: id }, function (data) {
+                $("#id").val(data.id);
+                $("#nombre").val(data.nombre);
+                $("#apellido").val(data.apellido);
+                $("#cedula").val(data.cedula);
+                $("#telefono").val(data.telefono);
+                $("#direccion").val(data.direccion);
+                $("#email").val(data.email);
+                $("#fecha_nacimiento").val((data.fecha_nacimiento || "").substring(0,10));
+                $("#observaciones").val(data.observaciones);
+            });
+        }
+
+        function eliminarCatequista(id) {
+            if (confirm("¿Seguro que deseas eliminar este catequista?")) {
+                $.post("/Catequista/DeleteConfirmed", { id: id }, function (res) {
+                    if (res.success) {
+                        cargarCatequistas();
+                    } else {
+                        alert("No se pudo eliminar.");
+                    }
+                });
+            }
+        }
+
+        function limpiarFormularioCatequista() {
+            $("#id").val(0);
+            $("#nombre").val("");
+            $("#apellido").val("");
+            $("#cedula").val("");
+            $("#telefono").val("");
+            $("#direccion").val("");
+            $("#email").val("");
+            $("#fecha_nacimiento").val("");
+            $("#observaciones").val("");
+        }
+
+        // --- Ministros ---
+        function cargarMinistros() {
+            $.get("/Ministros/GetMinistros", function (data) {
+                renderTablaMinistros(data);
+            });
+        }
+
+        function buscarMinistros(nombre) {
+            if (!nombre) {
+                cargarMinistros();
+                return;
+            }
+            $.get("/Ministros/SearchByName", { nombre: nombre }, function (data) {
+                renderTablaMinistros(data);
+            });
+        }
+
+        function renderTablaMinistros(data) {
+            let html = "";
+            data.forEach(function (m) {
+                html += `<tr>
+                    <td>${m.nombre}</td>
+                    <td>${m.apellido}</td>
+                    <td>${m.email ?? ""}</td>
+                    <td>${m.telefono ?? ""}</td>
+                    <td>${m.fechaordenacion ? m.fechaordenacion.substring(0,10) : ""}</td>
+                    <td>${m.estado ?? ""}</td>
+                    <td>${m.observaciones ?? ""}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editarMinistro(${m.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarMinistro(${m.id})">Eliminar</button>
+                    </td>
+                </tr>`;
+            });
+            $("#tablaMinistros").html(html);
+        }
+
+        function editarMinistro(id) {
+            $.get("/Ministros/GetMinistros", function (data) {
+                let ministro = data.find(m => m.id === id);
+                if (ministro) {
+                    $("#ministro_id").val(ministro.id);
+                    $("#ministro_nombre").val(ministro.nombre);
+                    $("#ministro_apellido").val(ministro.apellido);
+                    $("#ministro_email").val(ministro.email);
+                    $("#ministro_telefono").val(ministro.telefono);
+                    $("#ministro_fechaordenacion").val(ministro.fechaordenacion ? ministro.fechaordenacion.substring(0,10) : "");
+                    $("#ministro_estado").val(ministro.estado);
+                    $("#ministro_observaciones").val(ministro.observaciones);
+                }
+            });
+        }
+
+        function eliminarMinistro(id) {
+            if (confirm("¿Seguro que deseas eliminar este ministro?")) {
+                $.post("/Ministros/DeleteConfirmed", { id: id }, function (res) {
+                    if (res.success) {
+                        cargarMinistros();
+                        mostrarMsgMinistro("Ministro eliminado.", true);
+                    } else {
+                        mostrarMsgMinistro("No se pudo eliminar.", false);
+                    }
+                });
+            }
+        }
+
+        function limpiarFormularioMinistro() {
+            $("#ministro_id").val(0);
+            $("#ministro_nombre").val("");
+            $("#ministro_apellido").val("");
+            $("#ministro_email").val("");
+            $("#ministro_telefono").val("");
+            $("#ministro_fechaordenacion").val("");
+            $("#ministro_estado").val("ACTIVO");
+            $("#ministro_observaciones").val("");
+        }
+
+        function mostrarMsgMinistro(msg, exito) {
+            $("#msgMinistro").text(msg).removeClass().addClass(exito ? "text-success" : "text-danger");
+            setTimeout(() => { $("#msgMinistro").text(""); }, 3000);
+        }
+    </script>
+}

@@ -1,0 +1,169 @@
+﻿@model AplicacionCuria.Models.CursilloMatrimonioImprimir
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #FFFFFF;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 150%;
+            padding: 10px;
+            border: 10px solid #FFFFFF;
+            background-color: #FFFFFF;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 32px;
+            font-weight: bold;
+            color: #D62429;
+            margin-top: 10px;
+        }
+
+        .sub-header {
+            font-size: 30px;
+            color: #333;
+            margin: 10px 0 20px;
+        }
+
+        .content {
+            font-size: 30px;
+            color: #000;
+            line-height: 1.5;
+            margin: 0 15%;
+        }
+
+        .footer {
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .mmmm {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+        }
+
+        .badge {
+            width: 190px;
+            height: auto;
+            margin-bottom: 50px;
+        }
+
+        .firma {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        .img-firma {
+            max-height: 120px;     /* Ajusta tamaño de la firma */
+            position: relative;    /* Permite moverla sin afectar el resto */
+            top: 25px;             /* Bajar la firma sin mover la línea */
+            margin-bottom: -25px; /* Acerca más la firma a la línea */
+            margin-left: 160px;    /* Mueve más a la derecha (ajusta este valor) */
+            display: block;       /* Evita espacios extra */
+        }
+
+        .linea-firma {
+            border: 1px solid black;
+            margin: 0 auto 5px auto; /* reduce el espacio */
+            width: 80%;
+        }
+
+        .footer p:nth-of-type(2) { 
+            margin-top: 0;         /* Evita subir o bajar la línea en exceso */
+        }
+
+        .firma-col {
+            text-align: center;
+            width: 45%;
+            margin-top: 0; /* Evita espacio extra arriba */
+            min-height: 100px;
+        }
+
+        .firma-col img {
+            all: unset;            /* Limpia estilos previos */
+        }
+
+        .linea {
+            margin-top: -10px;
+            border-top: 2px solid black;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Imagen del escudo -->
+        <div class="sub-header">La Pastoral Familiar de la Parroquia Santa Maria de El Vergel</div>
+
+        <div class="mmmm">
+            <img src="~/imagenes/logo_certificados.png" alt="Escudo" class="badge" />
+        </div>
+
+        <!-- Encabezado del certificado -->
+        <div class="header">Certificado</div>
+        <div class="sub-header">
+            <p>Que los Señores: <strong>@Model.Cursillo.nombrenovio</strong> y <strong>@Model.Cursillo.nombrenovia</strong></p>
+            <p>Participaron del <strong>CURSILLO PREMATRIMONIAL</strong></p>
+            <p>
+                efectuado en esta jurisdicción el 
+                <strong>@Model.Cursillo.fechacursillo.ToString("dd") de @Model.Cursillo.fechacursillo.ToString("MMMM") de @Model.Cursillo.fechacursillo.ToString("yyyy")</strong>.
+            </p>
+            <p>
+                Fecha del Matrimonio:  
+                <strong>@Model.Cursillo.fechamatrimonio.ToString("dd") de @Model.Cursillo.fechamatrimonio.ToString("MMMM") de @Model.Cursillo.fechamatrimonio.ToString("yyyy")</strong>
+            </p>
+            <p>Parroquia: <strong>@Model.Cursillo.Parroquia.nombre</strong></p>
+        </div>
+
+        <!-- Pie de página con fecha y firma -->
+        <div class="footer">
+            <p>Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
+            @*  <div class="signature">__________________________</div>
+            <p>Maestro/a</p> *@
+            ‎
+            <div class="firma-col">
+                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                {
+                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
+                }
+            </div>
+            <div>
+
+                ‎
+            </div>
+            <p>________________________ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ________________________</p>
+            <p>‎‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎  PARROCO ‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎  ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Representante Pastoral Familiar</p>
+
+        </div>
+    </div>
+</body>
+</html>
