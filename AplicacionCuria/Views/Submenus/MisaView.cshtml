@@ -3,87 +3,112 @@
     Layout = "_Layout";
 }
 
-<h2>Gestión de Misas</h2>
+<div class="container-fluid px-2">
+    <h2 class="text-center mb-4">Gestión de Misas</h2>
 
-<div class="row">
-    <div class="col-md-5">
-        <form id="formMisa">
-            <input type="hidden" id="id" name="id" value="0" />
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre</label>
-                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
+    <div class="row justify-content-center align-items-start g-3">
+        <div class="col-lg-4 col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-3">
+                    <form id="formMisa">
+                        <input type="hidden" id="id" name="id" value="0" />
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                <input class="form-control form-control-sm" id="nombre" name="nombre" required maxlength="255" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="dia_semana" class="form-label mb-1 fw-semibold">Día de la Semana</label>
+                                <select class="form-control form-control-sm" id="dia_semana" name="dia_semana">
+                                    <option value="">Seleccione un día</option>
+                                    <option value="Lunes">Lunes</option>
+                                    <option value="Martes">Martes</option>
+                                    <option value="Miércoles">Miércoles</option>
+                                    <option value="Jueves">Jueves</option>
+                                    <option value="Viernes">Viernes</option>
+                                    <option value="Sábado">Sábado</option>
+                                    <option value="Domingo">Domingo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="hora_inicio" class="form-label mb-1 fw-semibold">Hora de Inicio</label>
+                                <input type="time" class="form-control form-control-sm" id="hora_inicio" name="hora_inicio" required />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="hora_fin" class="form-label mb-1 fw-semibold">Hora de Fin</label>
+                                <input type="time" class="form-control form-control-sm" id="hora_fin" name="hora_fin" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="iglesia_id" class="form-label mb-1 fw-semibold">Iglesia</label>
+                                <select class="form-control form-control-sm" id="iglesia_id" name="iglesia_id">
+                                    <option value="">Seleccione una iglesia</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="sacerdote_id" class="form-label mb-1 fw-semibold">Sacerdote</label>
+                                <select class="form-control form-control-sm" id="sacerdote_id" name="sacerdote_id">
+                                    <option value="">Seleccione un sacerdote</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="estado" class="form-label mb-1 fw-semibold">Estado</label>
+                            <select class="form-control form-control-sm" id="estado" name="estado">
+                                <option value="ACTIVO">ACTIVO</option>
+                                <option value="INACTIVO">INACTIVO</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label mb-1 fw-semibold">Descripción</label>
+                            <textarea class="form-control form-control-sm" id="descripcion" name="descripcion" rows="2"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
+                            <button type="button" class="btn btn-secondary btn-sm px-4" id="btnLimpiarMisa">Limpiar</button>
+                        </div>
+                    </form>
+                    <div id="msgMisa" class="mt-2 text-center fw-semibold"></div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="hora_inicio" class="form-label">Hora de Inicio</label>
-                <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required />
-            </div>
-            <div class="mb-3">
-                <label for="hora_fin" class="form-label">Hora de Fin</label>
-                <input type="time" class="form-control" id="hora_fin" name="hora_fin" />
-            </div>
-            <div class="mb-3">
-                <label for="dia_semana" class="form-label">Día de la Semana</label>
-                <select class="form-control" id="dia_semana" name="dia_semana">
-                    <option value="">Seleccione un día</option>
-                    <option value="Lunes">Lunes</option>
-                    <option value="Martes">Martes</option>
-                    <option value="Miércoles">Miércoles</option>
-                    <option value="Jueves">Jueves</option>
-                    <option value="Viernes">Viernes</option>
-                    <option value="Sábado">Sábado</option>
-                    <option value="Domingo">Domingo</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="iglesia_id" class="form-label">Iglesia</label>
-                <select class="form-control" id="iglesia_id" name="iglesia_id">
-                    <option value="">Seleccione una iglesia</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="sacerdote_id" class="form-label">Sacerdote</label>
-                <select class="form-control" id="sacerdote_id" name="sacerdote_id">
-                    <option value="">Seleccione un sacerdote</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="estado" class="form-label">Estado</label>
-                <select class="form-control" id="estado" name="estado">
-                    <option value="ACTIVO">ACTIVO</option>
-                    <option value="INACTIVO">INACTIVO</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Registrar</button>
-            <button type="button" class="btn btn-secondary" id="btnLimpiarMisa">Limpiar</button>
-        </form>
-        <div id="msgMisa" class="mt-2"></div>
-    </div>
-    <div class="col-md-7">
-        <div class="mb-3">
-            <input type="text" id="busquedaMisa" class="form-control" placeholder="Buscar por nombre..." />
         </div>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Hora Inicio</th>
-                    <th>Hora Fin</th>
-                    <th>Día</th>
-                    <th>Iglesia</th>
-                    <th>Sacerdote</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tablaMisas">
-                <!-- Se llena por JS -->
-            </tbody>
-        </table>
+        <div class="col-lg-8 col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-3">
+                    <div class="mb-3">
+                        <input type="text" id="busquedaMisa" class="form-control form-control-sm" placeholder="Buscar por nombre..." />
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                    <th>Día</th>
+                                    <th>Iglesia</th>
+                                    <th>Sacerdote</th>
+                                    <th>Descripción</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaMisas">
+                                <!-- Se llena por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

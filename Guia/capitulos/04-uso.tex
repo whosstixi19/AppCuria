@@ -1,0 +1,138 @@
+\chapter{Uso de la aplicación}\label{cap:uso}
+
+\section{Arquitectura general de la aplicación}
+El sistema \textbf{ECLESOFT 2.0} sigue el patrón \textbf{MVC} (Modelo--Vista--Controlador) sobre ASP.NET Core 8.0:
+\begin{itemize}
+    \item \texttt{Conexion/ConexionPostgreSQL.cs}: contexto de Entity Framework Core que enlaza las 24 tablas de la base de datos \texttt{curia}.
+    \item \texttt{Models/}: clases de C\# que representan cada entidad y vista de impresión del sistema.
+    \item \texttt{Controllers/}: controladores encargados de las operaciones de registro, consulta, edición, eliminación (CRUD) y generación de documentos PDF.
+    \item \texttt{Views/Home/}: vistas contenedoras principales de cada sección de la barra de navegación.
+    \item \texttt{Views/Submenus/}: subpestañas específicas de cada módulo (por ejemplo, dentro de \textbf{Registrar} o \textbf{Sacramentos}).
+    \item \texttt{Views/Shared/}: barra de navegación principal (\texttt{\_Layout.cshtml}), formularios de edición y eliminación (\texttt{Edit*.cshtml}, \texttt{Delete*.cshtml}) y plantillas de certificados PDF (\texttt{Imprimir*.cshtml}).
+\end{itemize}
+
+\section{Inicio de sesión}
+\begin{enumerate}
+    \item Abra el navegador web e ingrese a la dirección del servidor (por ejemplo, \url{http://localhost:5155} en la máquina principal o \texttt{http://IP\_DEL\_SERVIDOR:5155} desde otra computadora de la red).
+    \item En la pantalla de \textbf{Inicio de Sesión}, ingrese las credenciales de administrador creadas por el script \texttt{BD.sql}:
+    \begin{itemize}
+        \item \textbf{Correo electrónico:} \texttt{admin@curia.com}
+        \item \textbf{Contraseña:} \texttt{Clave\_curia}
+    \end{itemize}
+    \item Haga clic en \textbf{Iniciar Sesión}. Al autenticarse correctamente, se mostrará la pantalla de bienvenida con su nombre de usuario, rol activo y fecha actual.
+\end{enumerate}
+
+\pendiente{captura de pantalla del inicio de sesión y pantalla de bienvenida}
+
+\section{Estructura de la barra de navegación principal}
+Una vez iniciada la sesión, la barra superior de \textbf{ECLESOFT 2.0} presenta las siguientes secciones:
+\begin{enumerate}
+    \item \textbf{Inicio:} pantalla de bienvenida e identificación del usuario activo.
+    \item \textbf{Sacramentos:} acceso a los módulos de \textbf{Bautismos} y \textbf{Matrimonios}.
+    \item \textbf{Catequesis:} gestión de alumnos de catequesis, control de inasistencias (faltas), registros de \textbf{Primera Comunión} y \textbf{Confirmación}.
+    \item \textbf{Certificados:} búsqueda, vista previa en PDF e impresión de actas, certificados sacramentales y documentos de dispensa.
+    \item \textbf{Agenda:} calendario interactivo de eventos litúrgicos y administrativos, gestión de responsables y envío automático de recordatorios por correo electrónico.
+    \item \textbf{Ayuda Social:} ficha de registro socioeconómico para beneficiarios de programas comunitarios.
+    \item \textbf{Ayuda:} guía rápida integrada para consulta del personal.
+    \item \textbf{Registrar:} módulo central de catálogos base (\textit{Feligreses, Sacerdotes, Ministros, Parroquias, Iglesias, Barrios, Catequistas, Periodos y Misas}).
+    \item \textbf{Pagos:} control de aranceles y contribuciones vinculados a cursillos, celebraciones u otros conceptos, con generación de reportes en PDF.
+    \item \textbf{Crear Usuario} \textit{(exclusivo para rol \texttt{admin})}: administración de cuentas de acceso al sistema y asignación de roles.
+\end{enumerate}
+
+\pendiente{captura de pantalla de la barra de navegación principal}
+
+\section{Orden recomendado de registro inicial (Catálogos Base)}
+\begin{alerta}
+Antes de registrar un bautismo, matrimonio o curso de catequesis, es indispensable poblar primero los catálogos base desde la pestaña \textbf{Registrar}. Si estos catálogos están vacíos, las listas desplegables de los formularios sacramentales no tendrán opciones para seleccionar.
+\end{alerta}
+
+Diríjase a la pestaña \textbf{Registrar} en la barra superior y registre los datos base siguiendo este orden lógico:
+\begin{enumerate}
+    \item \textbf{Sacerdotes:} registre los datos personales del sacerdote y cargue la imagen de su \textbf{firma digital} (la cual se estampará automáticamente al emitir certificados en PDF).
+    \item \textbf{Ministros:} registre los ministros ordenados, su fecha de ordenación y observaciones.
+    \item \textbf{Parroquias:} registre cada parroquia asignándole el sacerdote responsable previamente creado.
+    \item \textbf{Iglesias:} registre cada iglesia vinculándola con su parroquia y ministro correspondiente.
+    \item \textbf{Misas y Barrios:} registre los horarios de misas (asociados a iglesia y sacerdote) y los barrios parroquiales.
+    \item \textbf{Catequistas y Periodos:} registre a los catequistas y los periodos lectivos (con fecha de inicio y fin) necesarios para el módulo de Catequesis.
+    \item \textbf{Feligreses:} registre el padrón de feligreses con su número de cédula de 10 dígitos (utilizado para vincular padres, padrinos y testigos).
+\end{enumerate}
+
+\section{Operaciones comunes en todos los módulos}
+Todas las tablas y formularios del sistema comparten un flujo uniforme de trabajo:
+\begin{enumerate}
+    \item \textbf{Registrar:} complete los campos del formulario en la pestaña correspondiente y pulse el botón de guardar. El sistema validará los formatos (cédulas de 10 dígitos, correos electrónicos y campos obligatorios) y mostrará una notificación de confirmación.
+    \item \textbf{Buscar:} utilice el cuadro de búsqueda superior de cada tabla para filtrar registros en tiempo real por nombre, cédula o fecha.
+    \item \textbf{Editar:} pulse el botón \textbf{Editar} en la fila deseada; se abrirá la ventana de actualización con los datos cargados.
+    \item \textbf{Eliminar:} pulse el botón \textbf{Eliminar} en la fila correspondiente y confirme la operación.
+\end{enumerate}
+
+\section{Módulo de Sacramentos}
+Al hacer clic en \textbf{Sacramentos}, el sistema permite elegir entre \textbf{Bautismos} y \textbf{Matrimonios}.
+
+\subsection{Bautismos}
+Cuenta con tres subpestañas secuenciales:
+\begin{enumerate}
+    \item \textbf{Cursillo Prebautismal:} inscripción previa del niño/a, registrando los nombres de los padres y padrinos, la parroquia, teléfonos de contacto, fecha del cursillo y fecha programada de bautizo.
+    \item \textbf{Acta de Bautismo:} registro oficial del sacramento. Permite seleccionar el cursillo prebautismal aprobado, los datos del bautizado, cédulas de padres y padrinos, datos de tomo/página/acta eclesiástica, datos del Registro Civil, ministro, sacerdote, iglesia y parroquia.
+    \item \textbf{Bautismos Antiguos:} formulario diseñado para digitalizar actas históricas en papel que no pasaron por un cursillo prebautismal reciente.
+\end{enumerate}
+
+\pendiente{capturas de pantalla del módulo de Bautismos}
+
+\subsection{Matrimonios}
+Cuenta con cuatro subpestañas:
+\begin{enumerate}
+    \item \textbf{Cursillo Prematrimonial:} registro de los datos de los novios, cédulas, teléfonos, fechas de cursillo y matrimonio, y parroquia.
+    \item \textbf{Acta Prematrimonial:} expediente prematrimonial completo con datos de bautismo de ambos novios, padres, datos del Registro Civil, testigos y vinculación con el cursillo prematrimonial.
+    \item \textbf{Acta de Matrimonio:} asiento definitivo del matrimonio celebrado, vinculando el acta prematrimonial, padrinos, iglesia, ministro celebrante y ubicación en libros (tomo, página y acta).
+    \item \textbf{Matrimonios Antiguos:} digitalización de partidas matrimoniales históricas.
+\end{enumerate}
+
+\pendiente{capturas de pantalla del módulo de Matrimonios}
+
+\section{Módulo de Catequesis}
+Desde la pestaña \textbf{Catequesis} se gestiona el proceso formativo en cuatro subpestañas:
+\begin{enumerate}
+    \item \textbf{Catequesis (Alumnos):} matrícula del estudiante (con fotografía opcional, datos de representante, nivel, paralelo, periodo lectivo y asignación de uno o dos catequistas).
+    \item \textbf{Faltas:} registro y seguimiento de inasistencias por alumno y fecha.
+    \item \textbf{Primera Comunión:} registro de los alumnos que culminan el nivel correspondiente, asociando parroquia y sacerdote para su certificado.
+    \item \textbf{Confirmación:} registro de los confirmandos vinculados a su expediente de catequesis, parroquia y sacerdote.
+\end{enumerate}
+
+\pendiente{capturas de pantalla del módulo de Catequesis}
+
+\section{Módulo de Certificados e Impresión PDF}
+En la pestaña \textbf{Certificados} se emiten los documentos oficiales listos para firma o con firma digital estampada:
+\begin{enumerate}
+    \item Seleccione la subpestaña del documento requerido (\textit{Actas de Bautismo, Bautismos Antiguos, Cursillos Prebautismales, Cursillos Prematrimoniales, Actas de Matrimonio, Certificados de Matrimonio, Catequesis, Primera Comunión, Confirmación} o dispensas de \textit{Consanguinidad, Mixta Religión y Disponibilidad de Cultos}).
+    \item Localice el registro mediante el buscador en tiempo real.
+    \item Pulse el botón \textbf{Imprimir / PDF}: el servidor generará el documento mediante \texttt{Rotativa (wkhtmltopdf)} incluyendo los datos de la parroquia y la firma del sacerdote, abriéndolo en el navegador para su descarga o impresión local.
+\end{enumerate}
+
+\pendiente{captura de pantalla de un certificado PDF generado}
+
+\section{Módulo de Agenda y Recordatorios por Correo}
+\begin{enumerate}
+    \item En la pestaña \textbf{Agenda}, visualice el calendario mensual, semanal o diario de actividades.
+    \item Antes de asignar encargados a un evento, puede registrarlos en el botón/sección de \textbf{Personas / Responsables de Evento} indicando su nombre, correo electrónico, teléfono y rol.
+    \item Al crear un nuevo evento en la agenda, defina el título, tipo de evento, fecha, hora, lugar, responsables y marque la casilla \textbf{Notificar} indicando los días de anticipación del recordatorio.
+    \item El servicio en segundo plano del sistema (\texttt{RecordatorioBackgroundService}) verifica automáticamente los eventos próximos y envía los recordatorios por correo electrónico mediante la configuración SMTP de \texttt{appsettings.Development.json}.
+\end{enumerate}
+
+\section{Módulo de Pagos}
+\begin{enumerate}
+    \item Seleccione la pestaña \textbf{Pagos}.
+    \item Elija el tipo de servicio (\textit{Cursillo Prebautismal, Celebración de Bautismo, Cursillo Prematrimonial, Celebración de Matrimonio} u \textit{Otro}). El sistema cargará automáticamente las referencias disponibles para autocompletar los datos del solicitante.
+    \item Ingrese el valor, método de pago (\textit{Efectivo, Transferencia, Tarjeta}), estado y observaciones, y guarde el registro.
+    \item Utilice los filtros de la parte inferior para consultar la recaudación por fechas o exportar el reporte de pagos en formato PDF.
+\end{enumerate}
+
+\pendiente{capturas de pantalla del módulo de Pagos}
+
+\section{Administración de Usuarios (\textbf{Crear Usuario})}
+Disponible únicamente cuando se inicia sesión con una cuenta de rol \texttt{admin}:
+\begin{enumerate}
+    \item Haga clic en \textbf{Crear Usuario} en la barra superior.
+    \item Complete el formulario con nombre, apellido, correo electrónico, contraseña (mínimo 6 caracteres) y seleccione el rol (\texttt{admin} para acceso total o rol operativo para personal de secretaría).
+    \item Desde la tabla inferior puede editar los datos o cambiar la contraseña de cualquier usuario existente, o eliminar cuentas que ya no requieran acceso.
+\end{enumerate}

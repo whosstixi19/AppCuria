@@ -95,9 +95,29 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult SearchByName(string nombre)
         {
-            var resultados = sql.iglesias
-                .Where(i => i.nombre.ToLower().Contains(nombre.ToLower()))
-                .ToList();
+            var filtro = (nombre ?? "").Trim().ToLower();
+            var resultados = (from i in sql.iglesias
+                              join m in sql.ministros on i.ministro_id equals m.id into mj
+                              from m in mj.DefaultIfEmpty()
+                              join p in sql.parroquias on i.parroquia_id equals p.id into pj
+                              from p in pj.DefaultIfEmpty()
+                              where i.nombre.ToLower().Contains(filtro)
+                              select new
+                              {
+                                  i.id,
+                                  i.nombre,
+                                  i.direccion,
+                                  i.ciudad,
+                                  i.telefono,
+                                  i.email,
+                                  ministro_id = i.ministro_id,
+                                  ministro_nombre = m != null ? m.nombre + " " + m.apellido : "",
+                                  parroquia_id = i.parroquia_id,
+                                  parroquia_nombre = p != null ? p.nombre : "",
+                                  i.denominacion,
+                                  i.estado,
+                                  i.observaciones
+                              }).ToList();
 
             return Json(resultados);
         }

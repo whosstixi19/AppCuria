@@ -1,0 +1,70 @@
+\chapter{Solución de problemas frecuentes}
+
+\section{Problemas de instalación y conexión a base de datos}
+
+\subsection{Error \texttt{3D000: database "curia" does not exist}}
+\begin{itemize}
+    \item \textbf{Síntoma:} al ejecutar \texttt{dotnet run}, la consola muestra una excepción \texttt{Npgsql.PostgresException: 3D000: database "curia" does not exist}.
+    \item \textbf{Causa probable:} la base de datos aún no ha sido creada en pgAdmin 4, se creó con un nombre distinto, o bien se modificó únicamente \texttt{appsettings.json} olvidando que en modo desarrollo manda \texttt{appsettings.Development.json}.
+    \item \textbf{Solución:}
+    \begin{enumerate}
+        \item Abra \textbf{pgAdmin 4} y verifique que debajo de \textbf{Databases} exista la base de datos llamada exactamente \texttt{curia} (en minúsculas).
+        \item Verifique que tanto \texttt{appsettings.Development.json} como \texttt{appsettings.json} tengan \texttt{Database=curia} y \texttt{Password=Clave\_curia}.
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Error \texttt{42P01: relation "agendas" does not exist} (o tablas faltantes)}
+\begin{itemize}
+    \item \textbf{Síntoma:} la aplicación conecta a PostgreSQL pero falla al consultar una tabla indicando que la relación no existe.
+    \item \textbf{Causa probable:} se ejecutó un script antiguo (\texttt{Tablas.sql} o \texttt{TablasNuevo.sql} sin actualizar) o bien en el \textbf{Query Tool} de pgAdmin 4 estaba seleccionada solo una línea de texto cuando se presionó el botón \textbf{Execute script (F5)}.
+    \item \textbf{Solución:} abra el \textbf{Query Tool} sobre la base de datos \texttt{curia}, cargue el archivo \texttt{BD.sql}, asegúrese de no tener ningún fragmento sombreado y presione \textbf{F5} para crear las 24 tablas completas.
+\end{itemize}
+
+\subsection{El puerto 5432 ya está ocupado o falla la contraseña de PostgreSQL}
+\begin{itemize}
+    \item \textbf{Síntoma:} la aplicación rechaza la conexión al puerto \texttt{5432} con error de autenticación (\texttt{28P01}).
+    \item \textbf{Causa probable:} la contraseña configurada durante la instalación de PostgreSQL no coincide con la escrita en \texttt{appsettings.Development.json}.
+    \item \textbf{Solución:} asegúrese de que la contraseña en \texttt{appsettings.Development.json} coincida exactamente con la contraseña del usuario \texttt{postgres} definida al instalar PostgreSQL (\texttt{Clave\_curia}).
+\end{itemize}
+
+\subsection{Otra computadora de la red no puede entrar o el Login la rebota sin mostrar error}
+\begin{itemize}
+    \item \textbf{Síntoma 1 (La página no carga desde otra PC):} el navegador de la computadora secundaria se queda cargando al intentar abrir \texttt{http://IP\_SERVIDOR:5155}.
+    \item \textbf{Solución 1:}
+    \begin{enumerate}
+        \item Verifique que el servidor se haya iniciado con \texttt{dotnet run --urls "http://0.0.0.0:5155"} (y no solo con \texttt{localhost}).
+        \item Verifique en la máquina principal que se haya creado la regla del Firewall de Windows para el puerto \texttt{5155} en una consola PowerShell como Administrador.
+        \item Ejecute \texttt{ipconfig} en la máquina principal para confirmar que la dirección IPv4 no haya cambiado tras reiniciar el equipo (o utilice el nombre de red devuelto por \texttt{hostname}).
+    \end{enumerate}
+    \item \textbf{Síntoma 2 (La página carga, pero al iniciar sesión desde otra PC vuelve al Login con \texttt{?ReturnUrl=\%2F}):}
+    \item \textbf{Causa probable:} en \texttt{Program.cs} la política de cookies sigue en \texttt{CookieSecurePolicy.Always}, lo cual hace que el navegador bloquee la cookie de sesión cuando se accede por dirección IP sobre \texttt{http://}.
+    \item \textbf{Solución 2:} cambie la línea 41 de \texttt{Program.cs} a \texttt{options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;}, guarde el archivo y reinicie la aplicación con \texttt{dotnet run --urls "http://0.0.0.0:5155"}.
+\end{itemize}
+
+\section{Problemas durante el uso de la aplicación}
+
+\subsection{Las listas desplegables aparecen vacías en Bautismos, Matrimonios o Catequesis}
+\begin{itemize}
+    \item \textbf{Causa probable:} aún no se han dado de alta los registros base de los que depende el formulario.
+    \item \textbf{Solución:} diríjase primero a la pestaña \textbf{Registrar} de la barra superior y cree al menos un Sacerdote, un Ministro, una Parroquia, una Iglesia y los Feligreses correspondientes antes de llenar un acta sacramental.
+\end{itemize}
+
+\subsection{No se guardan los registros de un formulario}
+\begin{itemize}
+    \item \textbf{Causa probable:} faltan campos obligatorios o algún dato no cumple el formato exigido (por ejemplo, las cédulas y números telefónicos deben tener 10 dígitos numéricos).
+    \item \textbf{Solución:} revise los mensajes de validación en color rojo debajo de cada campo del formulario y corrija el formato antes de volver a guardar.
+\end{itemize}
+
+\subsection{Error al generar un certificado o documento PDF}
+\begin{itemize}
+    \item \textbf{Causa probable:} falta el ejecutable \texttt{Rotativa/Windows/wkhtmltopdf.exe} o en una instalación limpia de Windows faltan las librerías redistribuibles de Microsoft Visual C++.
+    \item \textbf{Solución:} verifique que exista la carpeta \texttt{Rotativa/Windows/wkhtmltopdf.exe} dentro del proyecto e instale el paquete \textbf{Microsoft Visual C++ Redistributable 2015--2022 (x64 y x86)} en la máquina principal.
+\end{itemize}
+
+\section{Dónde buscar ayuda}
+Si un inconveniente persiste después de aplicar las soluciones de este capítulo:
+\begin{enumerate}
+    \item Revise los mensajes detallados que imprime la consola de PowerShell donde se ejecuta \texttt{dotnet run} en la máquina principal.
+    \item Verifique en \textbf{pgAdmin 4} el estado de las tablas dentro de la base de datos \texttt{curia}.
+    \item Consulte con el responsable técnico encargado del mantenimiento del sistema.
+\end{enumerate}

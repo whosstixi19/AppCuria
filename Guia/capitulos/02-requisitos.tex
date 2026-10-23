@@ -1,0 +1,76 @@
+\chapter{Requisitos previos}\label{cap:requisitos}
+
+\section{Requisitos de hardware}
+Para el equipo principal (servidor físico donde se alojarán la base de datos y la aplicación) se recomienda contar con las siguientes características mínimas:
+\begin{itemize}
+    \item Procesador de 4 núcleos (64 bits).
+    \item 8 GB de memoria RAM.
+    \item 10 GB de espacio libre en disco.
+    \item Conexión de red local (LAN/Wi-Fi) para permitir el acceso de los demás equipos de la Curia, y acceso a internet para descargar las herramientas iniciales.
+    \item \textbf{Recomendado:} Sistema de alimentación ininterrumpida (UPS) con conexión USB para proteger el equipo principal ante cortes de energía eléctrica.
+\end{itemize}
+
+\begin{nota}
+Las computadoras secundarias (secretarías, despachos o parroquias) \textbf{no requieren instalar ninguno de los programas técnicos listados a continuación}; únicamente necesitan contar con un navegador web actualizado (Chrome, Edge o Firefox) conectado a la misma red del servidor principal.
+\end{nota}
+
+\section{Requisitos de software (Máquina Principal)}
+Antes de iniciar la instalación en la máquina principal con Windows 10/11, es necesario contar con los siguientes programas:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|p{6.5cm}|}
+        \hline
+        \textbf{Software} & \textbf{Versión recomendada} & \textbf{Propósito} \\ \hline
+        .NET SDK & 8.0 (x64) & Compilar y ejecutar la aplicación web \\ \hline
+        PostgreSQL + pgAdmin 4 & 18.x (o 13+) & Motor de base de datos relacional y herramienta de administración gráfica \\ \hline
+        Visual Studio 2022 / VS Code & 17.x / Última & Entorno de edición y ejecución del proyecto \\ \hline
+        Git & Última disponible & Obtención y control de versiones del código fuente \\ \hline
+        Navegador web & Chrome, Edge o Firefox & Acceso a la interfaz web del sistema \\ \hline
+    \end{tabular}
+    \caption{Software requerido en la máquina principal}
+\end{table}
+
+\subsection{Instalación de .NET SDK 8.0}
+\begin{enumerate}
+    \item Descargue el instalador de \textbf{.NET 8.0 SDK (x64)} para Windows desde \url{https://dotnet.microsoft.com/download/dotnet/8.0}.
+    \item Ejecute el instalador y siga los pasos del asistente.
+    \item Verifique la instalación abriendo una terminal (PowerShell o Símbolo del sistema) y ejecutando:
+    \begin{lstlisting}[style=consola]
+dotnet --list-sdks
+\end{lstlisting}
+    \item La salida debe mostrar una versión perteneciente a la rama \texttt{8.0.x} (por ejemplo, \texttt{8.0.303}).
+\end{enumerate}
+
+\subsection{Instalación de PostgreSQL y pgAdmin 4}
+\begin{enumerate}
+    \item Descargue el instalador oficial de PostgreSQL para Windows desde \url{https://www.postgresql.org/download/windows/}.
+    \item Ejecute el instalador y, en la ventana de selección de componentes, mantenga marcados \textbf{PostgreSQL Server}, \textbf{pgAdmin 4} y \textbf{Command Line Tools}.
+    \item Cuando el asistente solicite definir la contraseña para el superusuario (\texttt{postgres}), ingrese exactamente la clave definida para el sistema:
+    \begin{lstlisting}[style=consola]
+Clave_curia
+\end{lstlisting}
+    \item Mantenga el puerto predeterminado \texttt{5432} y continúe hasta finalizar la instalación.
+    \item Al terminar, abra \textbf{pgAdmin 4} desde el menú Inicio de Windows y despliegue \textbf{Servers} $\rightarrow$ \textbf{PostgreSQL 18} ingresando la contraseña \texttt{Clave\_curia} para comprobar la conexión.
+\end{enumerate}
+
+\begin{consejo}
+El instalador de PostgreSQL en Windows registra automáticamente el motor como un \textbf{Servicio de Windows} con inicio automático, por lo que la base de datos se iniciará sola en segundo plano cada vez que se encienda la computadora principal.
+\end{consejo}
+
+\subsection{Instalación de Git}
+\begin{enumerate}
+    \item Descargue Git desde \url{https://git-scm.com/downloads}.
+    \item Ejecute el instalador aceptando las opciones predeterminadas.
+    \item Verifique la instalación ejecutando en una terminal:
+    \begin{lstlisting}[style=consola]
+git --version
+\end{lstlisting}
+\end{enumerate}
+
+\subsection{Instalación de Visual Studio 2022 o Visual Studio Code}
+\begin{enumerate}
+    \item Descargue Visual Studio 2022 Community desde \url{https://visualstudio.microsoft.com/es/downloads/} o Visual Studio Code desde \url{https://code.visualstudio.com/}.
+    \item Si instala Visual Studio 2022, seleccione la carga de trabajo \textbf{Desarrollo de ASP.NET y web}.
+    \item Finalice la instalación y verifique que el entorno se inicia correctamente.
+\end{enumerate}

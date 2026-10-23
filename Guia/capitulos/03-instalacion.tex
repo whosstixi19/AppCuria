@@ -1,0 +1,110 @@
+\chapter{Instalación paso a paso}\label{cap:instalacion}
+
+\section{Obtener el código fuente}
+\begin{enumerate}
+    \item Descomprima el paquete del proyecto en su carpeta de documentos o bien abra una terminal (PowerShell) para clonarlo con Git:
+    \begin{lstlisting}[style=consola]
+cd C:\Users\SuUsuario\Documents
+git clone https://github.com/Chris-Liter/AplicacionCuria.git
+\end{lstlisting}
+    \item Verifique que dentro de la carpeta del proyecto se encuentre la subcarpeta \texttt{AplicacionCuria}, la cual contiene el archivo de proyecto \texttt{AplicacionCuria.csproj} y el script de base de datos \texttt{BD.sql}.
+\end{enumerate}
+
+\section{Configurar pgAdmin 4 y crear las tablas}
+
+\subsection{Crear la base de datos \texttt{curia}}
+\begin{enumerate}
+    \item Abra \textbf{pgAdmin 4} en la máquina principal y expanda en el panel izquierdo \textbf{Servers} $\rightarrow$ \textbf{PostgreSQL 18}.
+    \item Haga clic derecho sobre \textbf{Databases} y seleccione \textbf{Create} $\rightarrow$ \textbf{Database...}.
+    \item En el campo \textbf{Database}, escriba exactamente en minúsculas:
+    \begin{lstlisting}[style=consola]
+curia
+\end{lstlisting}
+    \item Haga clic en el botón \textbf{Save} para crear la base de datos.
+\end{enumerate}
+
+\subsection{Ejecutar el script de base de datos (\texttt{BD.sql})}
+\begin{enumerate}
+    \item En el panel izquierdo de pgAdmin 4, haga clic derecho sobre la base de datos \texttt{curia} recién creada y seleccione \textbf{Query Tool} (Herramienta de consulta).
+    \item En la barra superior del editor de consultas, haga clic en el ícono de \textbf{Open File} (Abrir archivo) y seleccione el archivo \texttt{BD.sql} (o copie y pegue su contenido completo en el editor).
+    \item Asegúrese de no tener sombreada solo una parte del texto y presione el botón \textbf{Execute script} (ícono de reproducción $\blacktriangleright$ o tecla \textbf{F5}).
+    \item En la pestaña inferior \textbf{Messages} deberá mostrarse el mensaje \texttt{Query returned successfully}. Con esto quedarán creadas las 24 tablas del sistema y la cuenta de usuario administrador inicial.
+\end{enumerate}
+
+\begin{alerta}
+El repositorio contiene archivos históricos de versiones previas (\texttt{Tablas.sql} y \texttt{TablasNuevo.sql}). Para la instalación utilice únicamente el archivo actualizado \texttt{BD.sql}, ya que está 100\% sincronizado con todos los modelos de datos actuales del sistema. Asimismo, verifique en pgAdmin 4 que no quede seleccionado solo un fragmento de texto antes de presionar \textbf{F5}, para que se ejecute el script completo.
+\end{alerta}
+
+\section{Configurar la cadena de conexión}
+ASP.NET Core cuenta con dos archivos de configuración dentro de la carpeta \texttt{AplicacionCuria}: \texttt{appsettings.json} y \texttt{appsettings.Development.json}.
+
+\begin{alerta}
+Cuando la aplicación se ejecuta mediante \texttt{dotnet run} o desde Visual Studio, ASP.NET Core opera en el entorno \texttt{Development} y \textbf{da prioridad al archivo \texttt{appsettings.Development.json}}, sobreescribiendo a \texttt{appsettings.json}. Por ello, asegúrese de que la cadena de conexión esté configurada en \texttt{appsettings.Development.json} (y replíquela también en \texttt{appsettings.json}).
+\end{alerta}
+
+\begin{enumerate}
+    \item Abra el archivo \texttt{appsettings.Development.json} ubicado en la carpeta \texttt{AplicacionCuria}.
+    \item Verifique que la sección \texttt{ConnectionStrings} apunte a la base de datos \texttt{curia} y contenga la contraseña asignada a PostgreSQL (\texttt{Clave\_curia}):
+\begin{lstlisting}[style=json]
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=curia;Username=postgres;Password=Clave_curia"
+  }
+}
+\end{lstlisting}
+    \item Guarde los cambios en caso de haber realizado alguna modificación.
+\end{enumerate}
+
+\section{Ejecutar la aplicación y habilitar el acceso en red local}
+
+\subsection{Ejecución local en la máquina principal}
+\begin{enumerate}
+    \item Abra una terminal de PowerShell dentro de la carpeta \texttt{AplicacionCuria} (donde se ubica \texttt{AplicacionCuria.csproj}).
+    \item Restaure los paquetes del proyecto y ejecute la aplicación:
+    \begin{lstlisting}[style=consola]
+dotnet restore
+dotnet run
+\end{lstlisting}
+    \item La consola mostrará que el servidor está escuchando en \url{http://localhost:5155} y que la verificación inicial de recordatorios se ejecutó con \texttt{[OK]}.
+\end{enumerate}
+
+\subsection{Habilitar el acceso desde otras computadoras de la red (Cliente--Servidor)}
+Para que las demás computadoras de la Curia puedan conectarse mediante su navegador web a la máquina principal:
+
+\begin{enumerate}
+    \item \textbf{Política de cookies en red local (\texttt{Program.cs}):} Verifique que en la línea 41 del archivo \texttt{Program.cs} la política de cookies esté definida como:
+    \begin{lstlisting}[style=codigo]
+options.Cookie.HttpOnly = true;
+options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+\end{lstlisting}
+    Esto permite que los navegadores de las computadoras clientes mantengan la sesión iniciada al conectarse por dirección IP local mediante \texttt{http://}.
+    \item \textbf{Abrir el puerto en el Firewall de Windows:} En la máquina principal, abra una ventana de PowerShell como \textbf{Administrador} y ejecute por única vez el siguiente comando para permitir conexiones entrantes al puerto \texttt{5155}:
+    \begin{lstlisting}[style=consola]
+New-NetFirewallRule -DisplayName "AplicacionCuria 5155" -Direction Inbound -LocalPort 5155 -Protocol TCP -Action Allow
+\end{lstlisting}
+    \item \textbf{Iniciar el servidor escuchando en toda la red local:} En la carpeta \texttt{AplicacionCuria}, ejecute:
+    \begin{lstlisting}[style=consola]
+dotnet run --urls "http://0.0.0.0:5155"
+\end{lstlisting}
+    \item \textbf{Consultar la dirección IP o nombre de equipo de la máquina principal:} En otra ventana de PowerShell de la máquina principal, ejecute:
+    \begin{lstlisting}[style=consola]
+ipconfig
+hostname
+\end{lstlisting}
+    Anote la dirección \textbf{IPv4} (por ejemplo, \texttt{192.168.1.100} o \texttt{172.29.x.x}) o el nombre del equipo (\texttt{hostname}).
+    \item \textbf{Ingresar desde las demás computadoras:} En cualquiera de las computadoras clientes de la red, abra el navegador web e ingrese a \texttt{http://IP\_DE\_LA\_MAQUINA\_PRINCIPAL:5155}.
+\end{enumerate}
+
+\begin{nota}
+El comodín \texttt{0.0.0.0} se utiliza exclusivamente en el comando \texttt{dotnet run} de la máquina principal para indicarle que acepte conexiones por cualquiera de sus tarjetas de red. En el navegador de las demás computadoras siempre debe escribirse la dirección IPv4 real o el nombre de red de la máquina principal.
+\end{nota}
+
+\section{Verificación final y credenciales iniciales de acceso}
+Al acceder a la dirección desde el navegador web (tanto en la máquina principal como desde un equipo cliente), se mostrará la pantalla de \textbf{Inicio de Sesión} de \textbf{ECLESOFT 2.0}. El script \texttt{BD.sql} incluye precreada la cuenta de administrador lista para el primer ingreso:
+
+\begin{itemize}
+    \item \textbf{Correo electrónico:} \texttt{admin@curia.com}
+    \item \textbf{Contraseña:} \texttt{Clave\_curia}
+\end{itemize}
+
+\pendiente{captura de pantalla de la página de inicio de sesión}

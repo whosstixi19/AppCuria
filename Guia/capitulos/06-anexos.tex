@@ -1,0 +1,47 @@
+\chapter{Anexos}
+
+\section{Credenciales iniciales por defecto}
+La siguiente tabla resume las credenciales configuradas para la instalación local del sistema (Escenario 1):
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{Servicio / Sistema} & \textbf{Usuario / Correo} & \textbf{Contraseña} & \textbf{Rol / Notas} \\ \hline
+        PostgreSQL / pgAdmin 4 & \texttt{postgres} & \texttt{Clave\_curia} & Superusuario del motor de base de datos \\ \hline
+        Aplicación ECLESOFT 2.0 & \texttt{admin@curia.com} & \texttt{Clave\_curia} & Rol \texttt{admin} (creado en \texttt{BD.sql}) \\ \hline
+    \end{tabular}
+    \caption{Credenciales iniciales del sistema}
+\end{table}
+
+\begin{alerta}
+Por seguridad, una vez puesta en marcha la aplicación en el entorno definitivo de la Curia, se recomienda crear las cuentas nominales de cada funcionario desde el módulo \textbf{Crear Usuario} y actualizar las contraseñas por defecto.
+\end{alerta}
+
+\section{Puertos utilizados en la máquina principal}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|p{7.5cm}|}
+        \hline
+        \textbf{Servicio} & \textbf{Puerto} & \textbf{Descripción} \\ \hline
+        PostgreSQL & \texttt{5432} & Puerto local de conexión entre la aplicación y la base de datos \texttt{curia} \\ \hline
+        ECLESOFT 2.0 (HTTP) & \texttt{5155} & Puerto web principal de acceso desde el navegador local (\texttt{localhost:5155}) y desde las demás computadoras de la red (\texttt{http://IP\_SERVIDOR:5155}) \\ \hline
+        SMTP (Gmail) & \texttt{587} & Puerto de salida utilizado para el envío automático de recordatorios de la Agenda por correo electrónico \\ \hline
+    \end{tabular}
+    \caption{Puertos utilizados por el sistema}
+\end{table}
+
+\section{Archivos relevantes para la instalación y operación}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|p{9.5cm}|}
+        \hline
+        \textbf{Archivo} & \textbf{Descripción} \\ \hline
+        \texttt{BD.sql} & Script oficial y unificado de creación de las 24 tablas de la base de datos \texttt{curia} e inserción del usuario administrador inicial \\ \hline
+        \texttt{appsettings.Development.json} & Archivo prioritario de configuración de cadena de conexión a PostgreSQL y credenciales SMTP cuando se ejecuta con \texttt{dotnet run} \\ \hline
+        \texttt{appsettings.json} & Archivo general de configuración para entorno de producción \\ \hline
+        \texttt{Program.cs} & Configuración de inicio del servidor, inyección de dependencias, política de cookies en red local y configuración de \texttt{Rotativa} \\ \hline
+        \texttt{Properties/launchSettings.json} & Definición del puerto predeterminado de ejecución (\texttt{5155}) \\ \hline
+    \end{tabular}
+    \caption{Archivos de configuración principales del proyecto}
+\end{table}

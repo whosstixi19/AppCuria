@@ -1,0 +1,103 @@
+\documentclass[11pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-noshorthands]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{grisclaro}{gray}{0.96}
+\definecolor{grisoscuro}{gray}{0.55}
+\definecolor{azulcuria}{RGB}{0,51,102}
+
+\lstdefinestyle{consola}{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{grisclaro},
+  frame=single,
+  rulecolor=\color{grisoscuro},
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true
+}
+\lstdefinestyle{codigo}{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{grisclaro},
+  frame=single,
+  rulecolor=\color{grisoscuro},
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true
+}
+\lstdefinestyle{sql}{
+  language=SQL,
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{grisclaro},
+  frame=single,
+  rulecolor=\color{grisoscuro},
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  keywordstyle=\bfseries\color{azulcuria}
+}
+\lstdefinestyle{json}{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{grisclaro},
+  frame=single,
+  rulecolor=\color{grisoscuro},
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true
+}
+
+\newtcolorbox{nota}{
+  colback=azulcuria!5, colframe=azulcuria,
+  title=Nota, fonttitle=\bfseries, boxrule=0.6pt, arc=2mm
+}
+\newtcolorbox{alerta}{
+  colback=red!5, colframe=red!70!black,
+  title=Atención, fonttitle=\bfseries, boxrule=0.6pt, arc=2mm
+}
+\newtcolorbox{consejo}{
+  colback=green!5, colframe=green!45!black,
+  title=Consejo, fonttitle=\bfseries, boxrule=0.6pt, arc=2mm
+}
+
+\newcommand{\pendiente}[1]{\textcolor{red}{[Pendiente: #1]}}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\large \textsc{Sistema de Gestión para la Curia de Cuenca}\par}
+  \vspace{6cm}
+  {\Huge \bfseries Guía de Instalación y Uso\par}
+  \vspace{1cm}
+  {\Large Manual paso a paso para la instalación, configuración y operación del sistema\par}
+  \vfill
+  {\large \today\par}
+  \vspace{0.3cm}
+  {\large Versión 0.1 (borrador en revisión)\par}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\newpage
+
+\input{capitulos/01-introduccion}
+\input{capitulos/02-requisitos}
+\input{capitulos/03-instalacion}
+\input{capitulos/04-uso}
+\input{capitulos/05-solucion-problemas}
+\input{capitulos/06-anexos}
+
+\end{document}

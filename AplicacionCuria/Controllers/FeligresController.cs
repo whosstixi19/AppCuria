@@ -34,13 +34,22 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult SearchByName(string nombre)
         {
+            var filtro = (nombre ?? "").Trim().ToLower();
             var resultados = sql.feligreses
-                .Where(f => (f.nombre + " " + f.apellido).ToLower().Contains(nombre.ToLower()))
+                .Where(f => (f.nombre + " " + f.apellido).ToLower().Contains(filtro) ||
+                            (f.cedula ?? "").ToLower().Contains(filtro))
                 .Select(f => new
                 {
                     f.id,
-                    nombre = f.nombre + " " + f.apellido,
-                    f.cedula
+                    f.nombre,
+                    f.apellido,
+                    f.cedula,
+                    f.fechanacimiento,
+                    f.direccion,
+                    f.telefono,
+                    f.email,
+                    f.estado,
+                    f.observaciones
                 })
                 .ToList();
 

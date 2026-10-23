@@ -12,18 +12,54 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetBarrios()
         {
-            var barrios = sql.barrios
-                .Select(b => new
-                {
-                    b.id,
-                    b.nombre,
-                    b.ministro_id,
-                    b.iglesia_id,
-                    b.misa_id,
-                    b.estado,
-                    b.observaciones
-                })
-                .ToList();
+            var barrios = (from b in sql.barrios
+                           join m in sql.ministros on b.ministro_id equals m.id into mj
+                           from m in mj.DefaultIfEmpty()
+                           join i in sql.iglesias on b.iglesia_id equals i.id into ij
+                           from i in ij.DefaultIfEmpty()
+                           join mi in sql.misas on b.misa_id equals mi.id into mij
+                           from mi in mij.DefaultIfEmpty()
+                           select new
+                           {
+                               b.id,
+                               b.nombre,
+                               b.ministro_id,
+                               ministro_nombre = m != null ? m.nombre + " " + m.apellido : "",
+                               b.iglesia_id,
+                               iglesia_nombre = i != null ? i.nombre : "",
+                               b.misa_id,
+                               misa_nombre = mi != null ? mi.nombre : "",
+                               b.estado,
+                               b.observaciones
+                           }).ToList();
+            return Json(barrios);
+        }
+
+        [HttpGet]
+        public IActionResult SearchByName(string nombre)
+        {
+            var filtro = (nombre ?? "").Trim().ToLower();
+            var barrios = (from b in sql.barrios
+                           join m in sql.ministros on b.ministro_id equals m.id into mj
+                           from m in mj.DefaultIfEmpty()
+                           join i in sql.iglesias on b.iglesia_id equals i.id into ij
+                           from i in ij.DefaultIfEmpty()
+                           join mi in sql.misas on b.misa_id equals mi.id into mij
+                           from mi in mij.DefaultIfEmpty()
+                           where b.nombre.ToLower().Contains(filtro)
+                           select new
+                           {
+                               b.id,
+                               b.nombre,
+                               b.ministro_id,
+                               ministro_nombre = m != null ? m.nombre + " " + m.apellido : "",
+                               b.iglesia_id,
+                               iglesia_nombre = i != null ? i.nombre : "",
+                               b.misa_id,
+                               misa_nombre = mi != null ? mi.nombre : "",
+                               b.estado,
+                               b.observaciones
+                           }).ToList();
             return Json(barrios);
         }
 

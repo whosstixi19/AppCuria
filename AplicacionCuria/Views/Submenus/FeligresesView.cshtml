@@ -3,87 +3,114 @@
     Layout = "_Layout";
 }
 
-<h2>Gestión de Feligreses</h2>
+<div class="container-fluid px-2">
+    <h2 class="text-center mb-4">Gestión de Feligreses</h2>
 
-<div class="row">
-    <div class="col-md-5">
-        <form id="formFeligres" autocomplete="off">
-            <input type="hidden" id="id" name="id" value="0" />
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre</label>
-                <input class="form-control" id="nombre" name="nombre" required maxlength="255" />
-            </div>
-            <div class="mb-3">
-                <label for="apellido" class="form-label">Apellido</label>
-                <input class="form-control" id="apellido" name="apellido" required maxlength="255" />
-            </div>
-            <div class="mb-3">
-                <label for="cedula" class="form-label">Cédula</label>
-                <input class="form-control" id="cedula" name="cedula" required maxlength="20" />
-            </div>
-            <div class="mb-3">
-                <label for="fechanacimiento" class="form-label">Fecha de nacimiento</label>
-                <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required />
-            </div>
-            <div class="mb-3">
-                <label for="direccion" class="form-label">Dirección (domicilio)</label>
-                <input class="form-control" id="direccion" name="direccion" required maxlength="255" />
-            </div>
-            <div class="mb-3">
-                <label for="telefono" class="form-label">Teléfono</label>
-                <input class="form-control" id="telefono" name="telefono" required maxlength="20" />
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="email" name="email" required maxlength="255" />
-            </div>
-            <div class="mb-3">
-                <label for="estado" class="form-label">Estado</label>
-                <select class="form-control" id="estado" name="estado" required>
-                    <option value="ACTIVO">ACTIVO</option>
-                    <option value="INACTIVO">INACTIVO</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="observaciones" class="form-label">Observaciones</label>
-                <textarea class="form-control" id="observaciones" name="observaciones" required>Sin Observaciones</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Registrar</button>
-            <button type="button" class="btn btn-secondary" id="btnNuevo">Limpiar</button>
-        </form>
-        <div id="msgFeligres" class="mt-2"></div>
-    </div>
+    <div class="row justify-content-center align-items-start g-3">
+        <!-- Formulario compacto y centrado a 2 columnas internas -->
+        <div class="col-lg-4 col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-3">
+                    <form id="formFeligres" autocomplete="off">
+                        <input type="hidden" id="id" name="id" value="0" />
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                <input class="form-control form-control-sm" id="nombre" name="nombre" required maxlength="255" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="apellido" class="form-label mb-1 fw-semibold">Apellido</label>
+                                <input class="form-control form-control-sm" id="apellido" name="apellido" required maxlength="255" />
+                            </div>
+                        </div>
 
-    <div class="col-md-7">
-        <div class="mb-3 d-flex">
-            <input type="text" id="busquedaFeligres" class="form-control me-2" placeholder="Buscar por nombre..." />
-            <button type="button" class="btn btn-primary me-2" id="btnBuscarFeligres">
-                <i class="fas fa-search"></i> Buscar
-            </button>
-            <button type="button" class="btn btn-secondary" id="btnLimpiarFeligres">
-                Limpiar
-            </button>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="cedula" class="form-label mb-1 fw-semibold">Cédula</label>
+                                <input class="form-control form-control-sm" id="cedula" name="cedula" required maxlength="20" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="fechanacimiento" class="form-label mb-1 fw-semibold">Fecha de nacimiento</label>
+                                <input type="date" class="form-control form-control-sm" id="fechanacimiento" name="fechanacimiento" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="direccion" class="form-label mb-1 fw-semibold">Dirección (domicilio)</label>
+                                <input class="form-control form-control-sm" id="direccion" name="direccion" required maxlength="255" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono</label>
+                                <input class="form-control form-control-sm" id="telefono" name="telefono" required maxlength="20" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-7 mb-2">
+                                <label for="email" class="form-label mb-1 fw-semibold">Correo electrónico</label>
+                                <input type="email" class="form-control form-control-sm" id="email" name="email" required maxlength="255" />
+                            </div>
+                            <div class="col-md-5 mb-2">
+                                <label for="estado" class="form-label mb-1 fw-semibold">Estado</label>
+                                <select class="form-control form-control-sm" id="estado" name="estado" required>
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="INACTIVO">INACTIVO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label mb-1 fw-semibold">Observaciones</label>
+                            <textarea class="form-control form-control-sm" id="observaciones" name="observaciones" rows="2" required>Sin Observaciones</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
+                            <button type="button" class="btn btn-secondary btn-sm px-4" id="btnNuevo">Limpiar</button>
+                        </div>
+                    </form>
+                    <div id="msgFeligres" class="mt-2 text-center fw-semibold"></div>
+                </div>
+            </div>
         </div>
-        <div class="table-responsive" style="overflow-x: scroll;">
-            <table class="table table-bordered table-sm" style="min-width:1400px;">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Cédula</th>
-                        <th>Fecha Nacimiento</th>
-                        <th>Dirección</th>
-                        <th>Teléfono</th>
-                        <th>Email</th>
-                        <th>Estado</th>
-                        <th>Observaciones</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaFeligreses">
-                    <!-- Se llena por JS -->
-                </tbody>
-            </table>
+
+        <!-- Tabla centrada y ajustada al 100% sin barra de desplazamiento forzada -->
+        <div class="col-lg-8 col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-3">
+                    <div class="mb-3 d-flex">
+                        <input type="text" id="busquedaFeligres" class="form-control form-control-sm me-2 mr-2" placeholder="Buscar por nombre..." />
+                        <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" id="btnBuscarFeligres">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm text-nowrap" id="btnLimpiarFeligres">
+                            Limpiar
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Cédula</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Dirección</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Estado</th>
+                                    <th>Observaciones</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaFeligreses">
+                                <!-- Se llena por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -149,21 +176,10 @@
 </div>
 
 <style>
-.table-responsive {
-    overflow-x: scroll !important;
-}
-.table-responsive::-webkit-scrollbar {
-    height: 12px;
-}
-.table-responsive table {
-    min-width: 1000px;
-}
 .table-sm th, .table-sm td {
-    padding: 0.3rem !important;
-    font-size: 0.92rem;
-}
-.table-sm {
-    font-size: 0.92rem;
+    padding: 0.35rem !important;
+    font-size: 0.86rem;
+    vertical-align: middle;
 }
 </style>
 
@@ -333,9 +349,9 @@
                     <td>${f.email ?? ""}</td>
                     <td>${f.estado ?? ""}</td>
                     <td>${f.observaciones ?? ""}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editarFeligres(${f.id})">Editar</button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarFeligres(${f.id})">Eliminar</button>
+                    <td class="text-nowrap">
+                        <button class="btn btn-warning btn-sm py-0 px-2" onclick="editarFeligres(${f.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm py-0 px-2" onclick="eliminarFeligres(${f.id})">Eliminar</button>
                     </td>
                 </tr>`;
             });
