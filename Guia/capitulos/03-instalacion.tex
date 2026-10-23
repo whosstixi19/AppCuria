@@ -2,12 +2,12 @@
 
 \section{Obtener el código fuente}
 \begin{enumerate}
-    \item Descomprima el paquete del proyecto en su carpeta de documentos o bien abra una terminal (PowerShell) para clonarlo con Git:
+    \item Descomprima el paquete del proyecto en su carpeta de documentos o bien abra una terminal (PowerShell) para clonarlo con Git desde el repositorio oficial:
     \begin{lstlisting}[style=consola]
 cd C:\Users\SuUsuario\Documents
-git clone https://github.com/Chris-Liter/AplicacionCuria.git
+git clone https://github.com/whosstixi19/AppCuria.git
 \end{lstlisting}
-    \item Verifique que dentro de la carpeta del proyecto se encuentre la subcarpeta \texttt{AplicacionCuria}, la cual contiene el archivo de proyecto \texttt{AplicacionCuria.csproj} y el script de base de datos \texttt{BD.sql}.
+    \item Verifique que dentro de la carpeta del proyecto se encuentre la subcarpeta \texttt{AplicacionCuria} (con el archivo \texttt{AplicacionCuria.csproj}) y en la raíz el script de base de datos \texttt{BD.sql}.
 \end{enumerate}
 
 \section{Configurar pgAdmin 4 y crear las tablas}
@@ -31,20 +31,27 @@ curia
     \item En la pestaña inferior \textbf{Messages} deberá mostrarse el mensaje \texttt{Query returned successfully}. Con esto quedarán creadas las 24 tablas del sistema y la cuenta de usuario administrador inicial.
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{imagenes/01-pgadmin-bd.png}
+    \caption{Creación de la base de datos \texttt{curia} y ejecución del script \texttt{BD.sql} en pgAdmin 4.}
+    \label{fig:pgadmin-bd}
+\end{figure}
+
 \begin{alerta}
 El repositorio contiene archivos históricos de versiones previas (\texttt{Tablas.sql} y \texttt{TablasNuevo.sql}). Para la instalación utilice únicamente el archivo actualizado \texttt{BD.sql}, ya que está 100\% sincronizado con todos los modelos de datos actuales del sistema. Asimismo, verifique en pgAdmin 4 que no quede seleccionado solo un fragmento de texto antes de presionar \textbf{F5}, para que se ejecute el script completo.
 \end{alerta}
 
 \section{Configurar la cadena de conexión}
-ASP.NET Core cuenta con dos archivos de configuración dentro de la carpeta \texttt{AplicacionCuria}: \texttt{appsettings.json} y \texttt{appsettings.Development.json}.
+Por motivos de seguridad, al clonar el proyecto desde GitHub el archivo \texttt{appsettings.json} viene con la cadena de conexión en blanco (\texttt{"DefaultConnection": ""}) y el archivo \texttt{appsettings.Development.json} no se incluye en el repositorio público (está listado en \texttt{.gitignore}).
 
 \begin{alerta}
-Cuando la aplicación se ejecuta mediante \texttt{dotnet run} o desde Visual Studio, ASP.NET Core opera en el entorno \texttt{Development} y \textbf{da prioridad al archivo \texttt{appsettings.Development.json}}, sobreescribiendo a \texttt{appsettings.json}. Por ello, asegúrese de que la cadena de conexión esté configurada en \texttt{appsettings.Development.json} (y replíquela también en \texttt{appsettings.json}).
+Si intenta ejecutar \texttt{dotnet run} sin antes configurar la cadena de conexión, la consola mostrará el error \texttt{System.InvalidOperationException: The ConnectionString property has not been initialized}. Además, recuerde que si existe el archivo \texttt{appsettings.Development.json}, ASP.NET Core le da prioridad sobre \texttt{appsettings.json}.
 \end{alerta}
 
 \begin{enumerate}
-    \item Abra el archivo \texttt{appsettings.Development.json} ubicado en la carpeta \texttt{AplicacionCuria}.
-    \item Verifique que la sección \texttt{ConnectionStrings} apunte a la base de datos \texttt{curia} y contenga la contraseña asignada a PostgreSQL (\texttt{Clave\_curia}):
+    \item Abra el archivo \texttt{appsettings.json} (y, si existe en su carpeta, también \texttt{appsettings.Development.json}) dentro de \texttt{AplicacionCuria}.
+    \item En la sección \texttt{ConnectionStrings}, coloque la cadena de conexión apuntando a la base de datos \texttt{curia} con la contraseña asignada a PostgreSQL (\texttt{Clave\_curia}):
 \begin{lstlisting}[style=json]
 {
   "ConnectionStrings": {
@@ -52,7 +59,7 @@ Cuando la aplicación se ejecuta mediante \texttt{dotnet run} o desde Visual Stu
   }
 }
 \end{lstlisting}
-    \item Guarde los cambios en caso de haber realizado alguna modificación.
+    \item Guarde los cambios antes de iniciar el servidor.
 \end{enumerate}
 
 \section{Ejecutar la aplicación y habilitar el acceso en red local}
@@ -99,6 +106,13 @@ hostname
 El comodín \texttt{0.0.0.0} se utiliza exclusivamente en el comando \texttt{dotnet run} de la máquina principal para indicarle que acepte conexiones por cualquiera de sus tarjetas de red. En el navegador de las demás computadoras siempre debe escribirse la dirección IPv4 real o el nombre de red de la máquina principal.
 \end{nota}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{imagenes/02-consola-dotnet.png}
+    \caption{Ejecución del servidor en PowerShell escuchando en \texttt{http://0.0.0.0:5155}.}
+    \label{fig:consola-dotnet}
+\end{figure}
+
 \section{Verificación final y credenciales iniciales de acceso}
 Al acceder a la dirección desde el navegador web (tanto en la máquina principal como desde un equipo cliente), se mostrará la pantalla de \textbf{Inicio de Sesión} de \textbf{ECLESOFT 2.0}. El script \texttt{BD.sql} incluye precreada la cuenta de administrador lista para el primer ingreso:
 
@@ -107,4 +121,9 @@ Al acceder a la dirección desde el navegador web (tanto en la máquina principa
     \item \textbf{Contraseña:} \texttt{Clave\_curia}
 \end{itemize}
 
-\pendiente{captura de pantalla de la página de inicio de sesión}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{imagenes/03-login.png}
+    \caption{Pantalla de Inicio de Sesión de ECLESOFT 2.0.}
+    \label{fig:login}
+\end{figure}

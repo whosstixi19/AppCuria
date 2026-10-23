@@ -45,3 +45,12 @@ Por seguridad, una vez puesta en marcha la aplicación en el entorno definitivo 
     \end{tabular}
     \caption{Archivos de configuración principales del proyecto}
 \end{table}
+
+\section{Procedimiento de respaldo (Backup) en pgAdmin 4}
+Dado que en el Escenario 1 la base de datos reside en la máquina principal de la Curia, se recomienda realizar respaldos periódicos siguiendo estos pasos:
+\begin{enumerate}
+    \item Abra \textbf{pgAdmin 4} y expanda \textbf{Servers} $\rightarrow$ \textbf{PostgreSQL 18} $\rightarrow$ \textbf{Databases}.
+    \item Haga clic derecho sobre la base de datos \texttt{curia} y seleccione \textbf{Backup...}.
+    \item En el campo \textbf{Filename}, elija una ruta segura (por ejemplo, una carpeta sincronizada con Google Drive/OneDrive o una memoria externa) y asigne un nombre con la fecha actual (ej. \texttt{respaldo\_curia\_2026\_10\_22.sql}).
+    \item En el campo \textbf{Format}, seleccione \textbf{Plain} (para generar un archivo \texttt{.sql} legible) o \textbf{Custom} (comprimido) y haga clic en \textbf{Backup}.
+\end{enumerate}

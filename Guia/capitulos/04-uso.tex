@@ -5,15 +5,15 @@ El sistema \textbf{ECLESOFT 2.0} sigue el patrón \textbf{MVC} (Modelo--Vista--C
 \begin{itemize}
     \item \texttt{Conexion/ConexionPostgreSQL.cs}: contexto de Entity Framework Core que enlaza las 24 tablas de la base de datos \texttt{curia}.
     \item \texttt{Models/}: clases de C\# que representan cada entidad y vista de impresión del sistema.
-    \item \texttt{Controllers/}: controladores encargados de las operaciones de registro, consulta, edición, eliminación (CRUD) y generación de documentos PDF.
-    \item \texttt{Views/Home/}: vistas contenedoras principales de cada sección de la barra de navegación.
-    \item \texttt{Views/Submenus/}: subpestañas específicas de cada módulo (por ejemplo, dentro de \textbf{Registrar} o \textbf{Sacramentos}).
-    \item \texttt{Views/Shared/}: barra de navegación principal (\texttt{\_Layout.cshtml}), formularios de edición y eliminación (\texttt{Edit*.cshtml}, \texttt{Delete*.cshtml}) y plantillas de certificados PDF (\texttt{Imprimir*.cshtml}).
+    \item \texttt{Controllers/}: controladores encargados de las operaciones de registro, búsqueda en tiempo real, edición, eliminación (CRUD) y generación de documentos PDF.
+    \item \texttt{Views/Home/}: vistas contenedoras principales de cada sección de la barra de navegación (\texttt{MenuSacramentos}, \texttt{MenuCatequesis}, \texttt{MenuCertificado}, \texttt{MenuAgenda}, \texttt{MenuAyudaSocial}, \texttt{MenuRegistrar}, \texttt{MenuPagos}).
+    \item \texttt{Views/Submenus/}: subpestañas específicas de cada módulo (catálogos de registro, formularios sacramentales y vistas de certificados).
+    \item \texttt{Views/Shared/}: diseño general (\texttt{\_Layout.cshtml}), formularios de edición y eliminación (\texttt{Edit*.cshtml}, \texttt{Delete*.cshtml}) y plantillas de certificados PDF (\texttt{Imprimir*.cshtml}).
 \end{itemize}
 
 \section{Inicio de sesión}
 \begin{enumerate}
-    \item Abra el navegador web e ingrese a la dirección del servidor (por ejemplo, \url{http://localhost:5155} en la máquina principal o \texttt{http://IP\_DEL\_SERVIDOR:5155} desde otra computadora de la red).
+    \item Abra el navegador web e ingrese a la dirección del servidor (\url{http://localhost:5155} desde la máquina principal o \texttt{http://IP\_DEL\_SERVIDOR:5155} desde otra computadora de la red).
     \item En la pantalla de \textbf{Inicio de Sesión}, ingrese las credenciales de administrador creadas por el script \texttt{BD.sql}:
     \begin{itemize}
         \item \textbf{Correo electrónico:} \texttt{admin@curia.com}
@@ -22,117 +22,256 @@ El sistema \textbf{ECLESOFT 2.0} sigue el patrón \textbf{MVC} (Modelo--Vista--C
     \item Haga clic en \textbf{Iniciar Sesión}. Al autenticarse correctamente, se mostrará la pantalla de bienvenida con su nombre de usuario, rol activo y fecha actual.
 \end{enumerate}
 
-\pendiente{captura de pantalla del inicio de sesión y pantalla de bienvenida}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{imagenes/04-bienvenida.png}
+    \caption{Pantalla de bienvenida tras iniciar sesión en ECLESOFT 2.0.}
+    \label{fig:bienvenida}
+\end{figure}
 
 \section{Estructura de la barra de navegación principal}
 Una vez iniciada la sesión, la barra superior de \textbf{ECLESOFT 2.0} presenta las siguientes secciones:
 \begin{enumerate}
     \item \textbf{Inicio:} pantalla de bienvenida e identificación del usuario activo.
-    \item \textbf{Sacramentos:} acceso a los módulos de \textbf{Bautismos} y \textbf{Matrimonios}.
-    \item \textbf{Catequesis:} gestión de alumnos de catequesis, control de inasistencias (faltas), registros de \textbf{Primera Comunión} y \textbf{Confirmación}.
-    \item \textbf{Certificados:} búsqueda, vista previa en PDF e impresión de actas, certificados sacramentales y documentos de dispensa.
-    \item \textbf{Agenda:} calendario interactivo de eventos litúrgicos y administrativos, gestión de responsables y envío automático de recordatorios por correo electrónico.
-    \item \textbf{Ayuda Social:} ficha de registro socioeconómico para beneficiarios de programas comunitarios.
+    \item \textbf{Sacramentos:} acceso a los 4 módulos sacramentales: \textbf{Bautizados}, \textbf{Primera Comunión}, \textbf{Confirmación} y \textbf{Matrimonios}.
+    \item \textbf{Catequesis:} gestión de \textbf{Registro de Alumnos de Catequesis} y \textbf{Registro de Faltas de Alumnos}.
+    \item \textbf{Certificados:} búsqueda, vista previa en PDF e impresión de certificados de \textbf{Pase de Nivel}, \textbf{Primera Comunión}, \textbf{Confirmación}, \textbf{Dispensas}, \textbf{Bautizos} y \textbf{Matrimonios}.
+    \item \textbf{Agenda:} registro y consulta de eventos parroquiales, asignación de responsables y envío automático de recordatorios por correo electrónico.
+    \item \textbf{Ayuda Social:} ficha de registro socioeconómico, croquis, representantes, historia clínica y vivienda para beneficiarios de programas pastorales.
     \item \textbf{Ayuda:} guía rápida integrada para consulta del personal.
-    \item \textbf{Registrar:} módulo central de catálogos base (\textit{Feligreses, Sacerdotes, Ministros, Parroquias, Iglesias, Barrios, Catequistas, Periodos y Misas}).
-    \item \textbf{Pagos:} control de aranceles y contribuciones vinculados a cursillos, celebraciones u otros conceptos, con generación de reportes en PDF.
+    \item \textbf{Registrar:} módulo central de catálogos base (\textit{Feligreses, Encargado de evento, Sacerdote, Parroquia, Iglesia, Ministro/Catequista, Periodo, Misa y Barrio}).
+    \item \textbf{Pagos:} registro de pagos vinculados a cursillos y celebraciones sacramentales, consulta con filtros y exportación de reportes en PDF.
     \item \textbf{Crear Usuario} \textit{(exclusivo para rol \texttt{admin})}: administración de cuentas de acceso al sistema y asignación de roles.
 \end{enumerate}
 
-\pendiente{captura de pantalla de la barra de navegación principal}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{imagenes/05-navbar.png}
+    \caption{Barra de navegación principal de ECLESOFT 2.0.}
+    \label{fig:navbar}
+\end{figure}
 
-\section{Orden recomendado de registro inicial (Catálogos Base)}
+\section{Orden recomendado de registro inicial (Módulo \textbf{Registrar})}
 \begin{alerta}
-Antes de registrar un bautismo, matrimonio o curso de catequesis, es indispensable poblar primero los catálogos base desde la pestaña \textbf{Registrar}. Si estos catálogos están vacíos, las listas desplegables de los formularios sacramentales no tendrán opciones para seleccionar.
+Antes de registrar un sacramento, un alumno de catequesis o un evento en la agenda, es indispensable poblar primero los catálogos base desde la pestaña \textbf{Registrar}. Si estos catálogos están vacíos, las listas desplegables y buscadores de autocompletado de los demás módulos no tendrán opciones disponibles.
 \end{alerta}
 
-Diríjase a la pestaña \textbf{Registrar} en la barra superior y registre los datos base siguiendo este orden lógico:
+Diríjase a la pestaña \textbf{Registrar} en la barra superior y registre los datos base en el siguiente orden lógico (debido a las relaciones entre tablas):
+
 \begin{enumerate}
-    \item \textbf{Sacerdotes:} registre los datos personales del sacerdote y cargue la imagen de su \textbf{firma digital} (la cual se estampará automáticamente al emitir certificados en PDF).
-    \item \textbf{Ministros:} registre los ministros ordenados, su fecha de ordenación y observaciones.
-    \item \textbf{Parroquias:} registre cada parroquia asignándole el sacerdote responsable previamente creado.
-    \item \textbf{Iglesias:} registre cada iglesia vinculándola con su parroquia y ministro correspondiente.
-    \item \textbf{Misas y Barrios:} registre los horarios de misas (asociados a iglesia y sacerdote) y los barrios parroquiales.
-    \item \textbf{Catequistas y Periodos:} registre a los catequistas y los periodos lectivos (con fecha de inicio y fin) necesarios para el módulo de Catequesis.
-    \item \textbf{Feligreses:} registre el padrón de feligreses con su número de cédula de 10 dígitos (utilizado para vincular padres, padrinos y testigos).
+    \item \textbf{Sacerdote:} ingrese Nombre, Apellido, Cédula, Fecha de Nacimiento, Fecha de Ordenación, Parroquia/Lugar, Teléfono, Email, Cargo, Estado y cargue la imagen de su \textbf{Firma digital} (la cual se estampará automáticamente en los certificados PDF).
+    \item \textbf{Ministro/Catequista:} esta pantalla cuenta con dos pestañas internas:
+    \begin{itemize}
+        \item \textit{Pestaña Ministros:} registre Nombre, Apellido, Cédula, Fecha de Nacimiento, Fecha de Ordenación, Teléfono, Email, Estado y Observaciones.
+        \item \textit{Pestaña Catequistas:} registre Nombre, Apellido, Cédula, Teléfono, Email, Rol, Estado y Observaciones.
+    \end{itemize}
+    \item \textbf{Parroquia:} ingrese Nombre, Dirección, Ciudad, Provincia, Código Postal, Teléfono, Email, seleccione el \textbf{Sacerdote} responsable (previamente creado), Fecha de Creación y Tipo de Parroquia.
+    \item \textbf{Iglesia:} ingrese Nombre, Ciudad, Dirección, Teléfono, Correo electrónico, seleccione el \textbf{Ministro} y la \textbf{Parroquia} a la que pertenece, Denominación, Estado y Observaciones.
+    \item \textbf{Misa:} registre el Nombre/Motivo de la misa, Fecha y Hora, seleccione la \textbf{Iglesia} y el \textbf{Sacerdote}, Tipo de Misa, Estado y Observaciones.
+    \item \textbf{Barrio:} registre el Nombre del barrio, Ubicación, seleccione el \textbf{Ministro}, la \textbf{Iglesia} y la \textbf{Misa} asociada, Fecha de Misa y Observaciones.
+    \item \textbf{Periodo:} registre el Nombre del período lectivo de catequesis (por ejemplo, \texttt{2026-2027}), Fecha de Inicio, Fecha de Fin, Estado y Observaciones.
+    \item \textbf{Encargado de evento:} registre Nombre, Correo electrónico, Teléfono y Rol de las personas que podrán ser asignadas como responsables en el módulo de \textbf{Agenda}.
+    \item \textbf{Feligreses:} registre el padrón general de feligreses (Nombre, Apellido, Cédula de 10 dígitos, Fecha de Nacimiento, Dirección, Teléfono, Correo electrónico, Estado y Observaciones). Este padrón alimenta el autocompletado de padres, padrinos, novios y testigos en los módulos sacramentales.
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/06-registrar-iglesias.png}
+    \caption{Módulo Registrar: formulario compacto y tabla de consulta centrada (Gestión de Iglesias).}
+    \label{fig:registrar-iglesias}
+\end{figure}
+
 \section{Operaciones comunes en todos los módulos}
-Todas las tablas y formularios del sistema comparten un flujo uniforme de trabajo:
+Todas las vistas del sistema mantienen un diseño centrado a dos paneles (formulario compacto a la izquierda y tabla de consulta a la derecha) con cuatro operaciones básicas:
 \begin{enumerate}
-    \item \textbf{Registrar:} complete los campos del formulario en la pestaña correspondiente y pulse el botón de guardar. El sistema validará los formatos (cédulas de 10 dígitos, correos electrónicos y campos obligatorios) y mostrará una notificación de confirmación.
-    \item \textbf{Buscar:} utilice el cuadro de búsqueda superior de cada tabla para filtrar registros en tiempo real por nombre, cédula o fecha.
-    \item \textbf{Editar:} pulse el botón \textbf{Editar} en la fila deseada; se abrirá la ventana de actualización con los datos cargados.
-    \item \textbf{Eliminar:} pulse el botón \textbf{Eliminar} en la fila correspondiente y confirme la operación.
+    \item \textbf{Registrar:} complete los campos del formulario izquierdo y pulse \textbf{Registrar}. El sistema valida campos obligatorios, cédulas y correos electrónicos antes de guardar.
+    \item \textbf{Buscar:} escriba el nombre o criterio en el cuadro superior de la tabla derecha; el sistema filtra los registros mostrando todas sus columnas completas y relaciones asociadas.
+    \item \textbf{Editar / Modificar:} pulse el botón amarillo \textbf{Editar} o \textbf{Modificar} en la fila deseada para cargar los datos en el formulario o ventana modal y guardar los cambios.
+    \item \textbf{Eliminar:} pulse el botón rojo \textbf{Eliminar} en la fila correspondiente y confirme el mensaje de seguridad.
 \end{enumerate}
 
 \section{Módulo de Sacramentos}
-Al hacer clic en \textbf{Sacramentos}, el sistema permite elegir entre \textbf{Bautismos} y \textbf{Matrimonios}.
+Al hacer clic en \textbf{Sacramentos} en la barra superior, se despliegan cuatro submenús: \textbf{Bautizados}, \textbf{Primera Comunión}, \textbf{Confirmación} y \textbf{Matrimonios}.
 
-\subsection{Bautismos}
-Cuenta con tres subpestañas secuenciales:
+\subsection{Bautizados}
+Esta vista se organiza en tres pestañas secuenciales:
 \begin{enumerate}
-    \item \textbf{Cursillo Prebautismal:} inscripción previa del niño/a, registrando los nombres de los padres y padrinos, la parroquia, teléfonos de contacto, fecha del cursillo y fecha programada de bautizo.
-    \item \textbf{Acta de Bautismo:} registro oficial del sacramento. Permite seleccionar el cursillo prebautismal aprobado, los datos del bautizado, cédulas de padres y padrinos, datos de tomo/página/acta eclesiástica, datos del Registro Civil, ministro, sacerdote, iglesia y parroquia.
-    \item \textbf{Bautismos Antiguos:} formulario diseñado para digitalizar actas históricas en papel que no pasaron por un cursillo prebautismal reciente.
+    \item \textbf{Cursillo Prebautismal:}
+    \begin{itemize}
+        \item Ingrese el nombre completo del niño o niña.
+        \item En los campos \textbf{Padre}, \textbf{Madre}, \textbf{Padrino} y \textbf{Madrina}, escriba las primeras letras del nombre para buscar y seleccionar a las personas previamente registradas en el catálogo de \textbf{Feligreses}.
+        \item Seleccione la \textbf{Parroquia}, ingrese los teléfonos de contacto, la fecha de realización del cursillo y la fecha programada para el bautismo, y pulse \textbf{Registrar}.
+    \end{itemize}
+    \item \textbf{Acta de Bautismo:}
+    \begin{itemize}
+        \item Utilice el buscador de cursillos para seleccionar un \textbf{Cursillo Prebautismal} aprobado (lo cual autocompletará los datos familiares), o bien complete los datos manualmente.
+        \item Ingrese lugar y fecha de nacimiento, fecha de bautismo, abuelos paternos y maternos, ubicación en los libros parroquiales (\textbf{Año, Tomo, Página y Acta}), datos del \textbf{Registro Civil} (Año, Tomo, Página, Acta y Código), y seleccione el \textbf{Ministro}, \textbf{Sacerdote}, \textbf{Iglesia} y \textbf{Parroquia}.
+        \item Pulse \textbf{Registrar} para asentar la partida bautismal.
+    \end{itemize}
+    \item \textbf{Antiguos:} formulario independiente pensado para digitalizar partidas históricas de bautismo en papel que no cuentan con un registro previo de cursillo prebautismal en el sistema.
 \end{enumerate}
 
-\pendiente{capturas de pantalla del módulo de Bautismos}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/07-bautizados.png}
+    \caption{Módulo de Sacramentos: Registro de Bautizados (Cursillo Prebautismal, Acta de Bautismo y Antiguos).}
+    \label{fig:bautizados}
+\end{figure}
+
+\subsection{Primera Comunión}
+\begin{enumerate}
+    \item En el panel izquierdo, complete los datos del comulgante: \textbf{Nombre, Apellido, Fecha de Nacimiento, Cédula, Dirección, Teléfono} y \textbf{Fecha de Primera Comunión}.
+    \item Seleccione la \textbf{Parroquia} y el \textbf{Sacerdote} celebrante de las listas desplegables, agregue observaciones si corresponde y pulse \textbf{Registrar}.
+    \item Utilice el buscador del panel derecho para localizar registros por nombre, modificarlos o eliminarlos.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/08-primera-comunion.png}
+    \caption{Módulo de Sacramentos: Registro y búsqueda de Primera Comunión.}
+    \label{fig:primera-comunion}
+\end{figure}
+
+\subsection{Confirmación}
+\begin{enumerate}
+    \item En el panel izquierdo, ingrese \textbf{Nombre, Apellido, Fecha de Nacimiento, Cédula, Dirección, Teléfono} y \textbf{Fecha de Confirmación}.
+    \item Seleccione la \textbf{Parroquia} y el \textbf{Sacerdote}, ingrese las observaciones y pulse \textbf{Registrar}.
+    \item En el panel derecho puede consultar por nombre, editar o eliminar cualquier confirmación registrada.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/09-confirmacion.png}
+    \caption{Módulo de Sacramentos: Registro y búsqueda de Confirmación.}
+    \label{fig:confirmacion}
+\end{figure}
 
 \subsection{Matrimonios}
-Cuenta con cuatro subpestañas:
+Se divide en cuatro pestañas que cubren todo el proceso matrimonial:
 \begin{enumerate}
-    \item \textbf{Cursillo Prematrimonial:} registro de los datos de los novios, cédulas, teléfonos, fechas de cursillo y matrimonio, y parroquia.
-    \item \textbf{Acta Prematrimonial:} expediente prematrimonial completo con datos de bautismo de ambos novios, padres, datos del Registro Civil, testigos y vinculación con el cursillo prematrimonial.
-    \item \textbf{Acta de Matrimonio:} asiento definitivo del matrimonio celebrado, vinculando el acta prematrimonial, padrinos, iglesia, ministro celebrante y ubicación en libros (tomo, página y acta).
-    \item \textbf{Matrimonios Antiguos:} digitalización de partidas matrimoniales históricas.
+    \item \textbf{Cursillo Pre Matrimonial:} registre los datos del Novio y de la Novia (con búsqueda autocompletable desde \textbf{Feligreses}, cédulas, teléfonos y fechas de nacimiento), la fecha del cursillo, la fecha prevista de matrimonio y la \textbf{Parroquia}.
+    \item \textbf{Acta Pre Matrimonial:} seleccione el cursillo prematrimonial correspondiente y complete el expediente canónico: estado civil previo, lugares y fechas de bautismo de ambos contrayentes (incluyendo tomo, página y acta de sus bautismos), nombres de los padres, datos del matrimonio civil, nombres y teléfonos de los testigos, y parroquia.
+    \item \textbf{Acta de Matrimonio:} asiento definitivo del sacramento. Seleccione el \textbf{Acta Pre Matrimonial} aprobada, indique la fecha de celebración, padrinos, \textbf{Iglesia}, \textbf{Ministro} celebrante y los datos de archivo (\textbf{Tomo, Página y Número de Acta}).
+    \item \textbf{Matrimonios Antiguos:} formulario directo para digitalizar actas matrimoniales históricas de los libros parroquiales.
 \end{enumerate}
 
-\pendiente{capturas de pantalla del módulo de Matrimonios}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/10-matrimonios.png}
+    \caption{Módulo de Sacramentos: Registro de Matrimonios (Cursillo, Acta Prematrimonial, Acta de Matrimonio y Antiguos).}
+    \label{fig:matrimonios}
+\end{figure}
 
 \section{Módulo de Catequesis}
-Desde la pestaña \textbf{Catequesis} se gestiona el proceso formativo en cuatro subpestañas:
+Al ingresar a \textbf{Catequesis}, el sistema presenta dos pestañas de gestión formativa:
+
+\subsection{Registro de Alumnos de Catequesis}
 \begin{enumerate}
-    \item \textbf{Catequesis (Alumnos):} matrícula del estudiante (con fotografía opcional, datos de representante, nivel, paralelo, periodo lectivo y asignación de uno o dos catequistas).
-    \item \textbf{Faltas:} registro y seguimiento de inasistencias por alumno y fecha.
-    \item \textbf{Primera Comunión:} registro de los alumnos que culminan el nivel correspondiente, asociando parroquia y sacerdote para su certificado.
-    \item \textbf{Confirmación:} registro de los confirmandos vinculados a su expediente de catequesis, parroquia y sacerdote.
+    \item \textbf{Fotografía:} haga clic en \textbf{Seleccionar archivo} para cargar la foto del estudiante (se mostrará una vista previa inmediata).
+    \item \textbf{Datos académicos y personales:} ingrese Nombre, Apellido, Fecha de Nacimiento, Fecha de Bautizo, seleccione el \textbf{Nivel} (\textit{Iniciación, Reconciliación, Comunión, Año Bíblico, Discipulado} o \textit{Confirmación}), el \textbf{Paralelo} (\textit{A, B, C, D}), el \textbf{Catequista} principal, un segundo catequista opcional y el \textbf{Período} lectivo.
+    \item \textbf{Datos de contacto y representante:} complete Cédula, Dirección, Teléfono, Nacionalidad, Estado Civil, Correo Electrónico, Observaciones y los \textbf{Datos del Representante} (Nombre, Teléfono y Relación con el estudiante).
+    \item Pulse \textbf{Registrar}. En el panel derecho podrá buscar alumnos (ingresando al menos 3 caracteres), visualizar su fotografía y usar los botones \textbf{Modificar} o \textbf{Eliminar}.
 \end{enumerate}
 
-\pendiente{capturas de pantalla del módulo de Catequesis}
+\subsection{Registro de Faltas de Alumnos}
+\begin{enumerate}
+    \item En el panel izquierdo, busque al estudiante por nombre o apellido y pulse el botón verde \textbf{Seleccionar} en la tabla de resultados (cambiará a \textit{Seleccionado}).
+    \item Indique la \textbf{Fecha de la Falta} y la \textbf{Observación} (motivo o justificación) y pulse \textbf{Registrar Falta}.
+    \item En el panel derecho puede consultar el historial de inasistencias por alumno, modificarlas o eliminarlas.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/11-catequesis.png}
+    \caption{Módulo de Catequesis: Registro de Alumnos y Control de Faltas.}
+    \label{fig:catequesis}
+\end{figure}
 
 \section{Módulo de Certificados e Impresión PDF}
-En la pestaña \textbf{Certificados} se emiten los documentos oficiales listos para firma o con firma digital estampada:
+Desde la pestaña \textbf{Certificados} se emiten todos los documentos oficiales en formato PDF mediante el motor \texttt{Rotativa (wkhtmltopdf)}. Cuenta con seis submenús:
 \begin{enumerate}
-    \item Seleccione la subpestaña del documento requerido (\textit{Actas de Bautismo, Bautismos Antiguos, Cursillos Prebautismales, Cursillos Prematrimoniales, Actas de Matrimonio, Certificados de Matrimonio, Catequesis, Primera Comunión, Confirmación} o dispensas de \textit{Consanguinidad, Mixta Religión y Disponibilidad de Cultos}).
-    \item Localice el registro mediante el buscador en tiempo real.
-    \item Pulse el botón \textbf{Imprimir / PDF}: el servidor generará el documento mediante \texttt{Rotativa (wkhtmltopdf)} incluyendo los datos de la parroquia y la firma del sacerdote, abriéndolo en el navegador para su descarga o impresión local.
+    \item \textbf{Pase de Nivel:} búsqueda de alumnos de catequesis y emisión del certificado de aprobación de nivel.
+    \item \textbf{Primera Comunión:} búsqueda por nombre y generación del certificado oficial de Primera Comunión con la firma digital del sacerdote.
+    \item \textbf{Confirmación:} búsqueda por nombre y emisión del certificado oficial de Confirmación.
+    \item \textbf{Dispensas:} incluye tres pestañas para redactar, registrar e imprimir en PDF:
+    \begin{itemize}
+        \item \textit{Dispensa de Consanguinidad}
+        \item \textit{Dispensa de Mixta Religión}
+        \item \textit{Dispensa de Disparidad de Cultos}
+    \end{itemize}
+    \item \textbf{Bautizos:} permite buscar e imprimir en PDF los certificados de \textit{Cursillo Prebautismal}, \textit{Acta de Bautismo} y \textit{Certificado de Bautismo} (tanto recientes como antiguos).
+    \item \textbf{Matrimonios:} permite buscar e imprimir en PDF los documentos de \textit{Cursillo Prematrimonial}, \textit{Acta Prematrimonial}, \textit{Acta de Matrimonio} y \textit{Certificado de Matrimonio}.
 \end{enumerate}
 
-\pendiente{captura de pantalla de un certificado PDF generado}
+\IfFileExists{imagenes/12-certificados-pdf.png}{%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{imagenes/12-certificados-pdf.png}
+    \caption{Módulo de Certificados y documento PDF generado con firma digital.}
+    \label{fig:certificados-pdf}
+\end{figure}
+}{}
 
 \section{Módulo de Agenda y Recordatorios por Correo}
 \begin{enumerate}
-    \item En la pestaña \textbf{Agenda}, visualice el calendario mensual, semanal o diario de actividades.
-    \item Antes de asignar encargados a un evento, puede registrarlos en el botón/sección de \textbf{Personas / Responsables de Evento} indicando su nombre, correo electrónico, teléfono y rol.
-    \item Al crear un nuevo evento en la agenda, defina el título, tipo de evento, fecha, hora, lugar, responsables y marque la casilla \textbf{Notificar} indicando los días de anticipación del recordatorio.
-    \item El servicio en segundo plano del sistema (\texttt{RecordatorioBackgroundService}) verifica automáticamente los eventos próximos y envía los recordatorios por correo electrónico mediante la configuración SMTP de \texttt{appsettings.Development.json}.
+    \item En la pestaña \textbf{Agenda}, complete el formulario izquierdo con el \textbf{Título}, \textbf{Tipo de Evento} (\textit{Bautizo, Matrimonio, Misa Especial, Otro}), \textbf{Fecha}, \textbf{Hora}, \textbf{Descripción} y \textbf{Lugar}.
+    \item En \textbf{Seleccionar Responsables}, elija una o varias personas (manteniendo presionada la tecla \texttt{Ctrl}) de la lista cargada desde el catálogo \textit{Encargado de evento}.
+    \item Seleccione el \textbf{Estado}, indique si desea \textbf{¿Enviar Recordatorio? (Sí / No)} y defina los \textbf{Días de Anticipación} (por defecto \texttt{1} día antes).
+    \item El servicio automático en segundo plano (\texttt{RecordatorioBackgroundService}) revisa periódicamente los eventos activos y envía los correos electrónicos utilizando la sección \texttt{EmailSettings} configurada en \texttt{appsettings.json} (servidor SMTP \texttt{smtp.gmail.com}, puerto \texttt{587} y Contraseña de Aplicación de Google).
 \end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/13-agenda.png}
+    \caption{Módulo de Agenda y programación de recordatorios por correo electrónico.}
+    \label{fig:agenda}
+\end{figure}
+
+\section{Módulo de Ayuda Social}
+Permite levantar la ficha socioeconómica completa de familias o personas beneficiarias:
+\begin{enumerate}
+    \item Ingrese a la pestaña \textbf{Ayuda Social}.
+    \item Complete las secciones del expediente: \textbf{Datos Generales} del beneficiario, \textbf{Croquis y Dirección domiciliaria}, \textbf{Datos de los Representantes}, \textbf{Historia Clínica / Discapacidad}, \textbf{Situación Económica} y \textbf{Condiciones de Vivienda}.
+    \item Guarde el registro y utilice el buscador integrado para consultar o actualizar fichas existentes.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/14-ayuda-social.png}
+    \caption{Módulo de Registro de Ayuda Social.}
+    \label{fig:ayuda-social}
+\end{figure}
 
 \section{Módulo de Pagos}
+Se divide en dos pestañas:
 \begin{enumerate}
-    \item Seleccione la pestaña \textbf{Pagos}.
-    \item Elija el tipo de servicio (\textit{Cursillo Prebautismal, Celebración de Bautismo, Cursillo Prematrimonial, Celebración de Matrimonio} u \textit{Otro}). El sistema cargará automáticamente las referencias disponibles para autocompletar los datos del solicitante.
-    \item Ingrese el valor, método de pago (\textit{Efectivo, Transferencia, Tarjeta}), estado y observaciones, y guarde el registro.
-    \item Utilice los filtros de la parte inferior para consultar la recaudación por fechas o exportar el reporte de pagos en formato PDF.
+    \item \textbf{Nuevo Pago:}
+    \begin{itemize}
+        \item Seleccione primero el \textbf{Tipo de Pago} (\textit{Bautismo - Cursillo, Bautismo - Celebración, Matrimonio - Cursillo} o \textit{Matrimonio - Celebración}).
+        \item En la tabla derecha (\textbf{Referencias disponibles}) aparecerán automáticamente los cursillos o actas pendientes de pago. Haga clic sobre el registro correspondiente para que el sistema autocomplete los nombres, apellidos, cédula, teléfono, dirección y concepto.
+        \item Seleccione el \textbf{Método de Pago} (\textit{Efectivo, Transferencia, Tarjeta}), ingrese el \textbf{Monto}, la \textbf{Fecha} y las \textbf{Observaciones}, y pulse \textbf{Registrar}.
+    \end{itemize}
+    \item \textbf{Ver Pagos:} permite filtrar los cobros realizados por tipo de servicio, método de pago o estado, cambiar el estado de un pago y exportar el \textbf{Reporte de Pagos en PDF}.
 \end{enumerate}
 
-\pendiente{capturas de pantalla del módulo de Pagos}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/15-pagos.png}
+    \caption{Módulo de Pagos: registro con autocompletado de referencias y consulta de cobros.}
+    \label{fig:pagos}
+\end{figure}
 
 \section{Administración de Usuarios (\textbf{Crear Usuario})}
-Disponible únicamente cuando se inicia sesión con una cuenta de rol \texttt{admin}:
+Esta sección es visible únicamente cuando se inicia sesión con una cuenta de rol \texttt{admin}:
 \begin{enumerate}
-    \item Haga clic en \textbf{Crear Usuario} en la barra superior.
-    \item Complete el formulario con nombre, apellido, correo electrónico, contraseña (mínimo 6 caracteres) y seleccione el rol (\texttt{admin} para acceso total o rol operativo para personal de secretaría).
-    \item Desde la tabla inferior puede editar los datos o cambiar la contraseña de cualquier usuario existente, o eliminar cuentas que ya no requieran acceso.
+    \item Haga clic en \textbf{Crear Usuario} en el extremo derecho de la barra superior.
+    \item Para registrar un nuevo funcionario, ingrese \textbf{Nombre, Apellido, Correo electrónico, Contraseña} y seleccione el \textbf{Rol} (\texttt{admin} para acceso total o \texttt{usuario} para personal operativo). El sistema almacena la contraseña de forma segura mediante cifrado \texttt{PBKDF2-SHA256} con sal aleatoria.
+    \item En la tabla de usuarios registrados puede pulsar \textbf{Editar} para actualizar los datos o cambiar la contraseña de un usuario, o \textbf{Eliminar} para revocar su acceso.
 \end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{imagenes/16-crear-usuario.png}
+    \caption{Módulo de Administración de Usuarios (rol \texttt{admin}).}
+    \label{fig:crear-usuario}
+\end{figure}

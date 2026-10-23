@@ -2,6 +2,16 @@
 
 \section{Problemas de instalación y conexión a base de datos}
 
+\subsection{Error \texttt{The ConnectionString property has not been initialized}}
+\begin{itemize}
+    \item \textbf{Síntoma:} al ejecutar \texttt{dotnet run} tras clonar el repositorio con Git, la consola muestra una excepción \texttt{System.InvalidOperationException: The ConnectionString property has not been initialized}.
+    \item \textbf{Causa probable:} por seguridad, el archivo \texttt{appsettings.json} se sube a GitHub con \texttt{"DefaultConnection": ""} en blanco, y el archivo \texttt{appsettings.Development.json} está excluido por \texttt{.gitignore}.
+    \item \textbf{Solución:} abra \texttt{appsettings.json} (dentro de la carpeta \texttt{AplicacionCuria}) y complete la cadena de conexión:
+    \begin{lstlisting}[style=json]
+"DefaultConnection": "Host=localhost;Port=5432;Database=curia;Username=postgres;Password=Clave_curia"
+\end{lstlisting}
+\end{itemize}
+
 \subsection{Error \texttt{3D000: database "curia" does not exist}}
 \begin{itemize}
     \item \textbf{Síntoma:} al ejecutar \texttt{dotnet run}, la consola muestra una excepción \texttt{Npgsql.PostgresException: 3D000: database "curia" does not exist}.
