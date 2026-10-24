@@ -18,17 +18,19 @@ La siguiente tabla resume las credenciales configuradas para la instalación loc
 Por seguridad, una vez puesta en marcha la aplicación en el entorno definitivo de la Curia, se recomienda crear las cuentas nominales de cada funcionario desde el módulo \textbf{Crear Usuario} y actualizar las contraseñas por defecto.
 \end{alerta}
 
-\section{Puertos utilizados en la máquina principal}
+\section{Puertos utilizados en la máquina principal y en la nube}
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|l|p{7.5cm}|}
         \hline
         \textbf{Servicio} & \textbf{Puerto} & \textbf{Descripción} \\ \hline
-        PostgreSQL & \texttt{5432} & Puerto local de conexión entre la aplicación y la base de datos \texttt{curia} \\ \hline
-        ECLESOFT 2.0 (HTTP) & \texttt{5155} & Puerto web principal de acceso desde el navegador local (\texttt{localhost:5155}) y desde las demás computadoras de la red (\texttt{http://IP\_SERVIDOR:5155}) \\ \hline
+        HTTP (Nube) & \texttt{80} & Puerto web público estándar en Google Cloud Compute Engine (\texttt{http://IP\_PUBLICA}) \\ \hline
+        PostgreSQL & \texttt{5432} & Puerto local o interno entre la aplicación y el contenedor/motor de base de datos \texttt{curia} \\ \hline
+        ECLESOFT 2.0 (LAN) & \texttt{5155} & Puerto web utilizado en la red local del Escenario 1 (\texttt{http://IP\_SERVIDOR:5155}) \\ \hline
+        SSH & \texttt{22} & Consola remota segura para administración del servidor en Google Cloud \\ \hline
         SMTP (Gmail) & \texttt{587} & Puerto de salida utilizado para el envío automático de recordatorios de la Agenda por correo electrónico \\ \hline
     \end{tabular}
-    \caption{Puertos utilizados por el sistema}
+    \caption{Puertos utilizados por el sistema en ambos escenarios}
 \end{table}
 
 \section{Archivos relevantes para la instalación y operación}
@@ -38,10 +40,12 @@ Por seguridad, una vez puesta en marcha la aplicación en el entorno definitivo 
         \hline
         \textbf{Archivo} & \textbf{Descripción} \\ \hline
         \texttt{BD.sql} & Script oficial y unificado de creación de las 24 tablas de la base de datos \texttt{curia} e inserción del usuario administrador inicial \\ \hline
-        \texttt{appsettings.Development.json} & Archivo prioritario de configuración de cadena de conexión a PostgreSQL y credenciales SMTP cuando se ejecuta con \texttt{dotnet run} \\ \hline
+        \texttt{docker-compose.yml} & Manifiesto de orquestación en la nube para levantar conjuntamente la base de datos PostgreSQL 18 y el servicio web ASP.NET Core \\ \hline
+        \texttt{AplicacionCuria/Dockerfile} & Definición de construcción multicapa (.NET 8.0 SDK y Runtime) con librerías para generación de PDFs en Linux \\ \hline
+        \texttt{appsettings.Development.json} & Archivo prioritario de configuración de cadena de conexión a PostgreSQL y credenciales SMTP cuando se ejecuta localmente \\ \hline
         \texttt{appsettings.json} & Archivo general de configuración para entorno de producción \\ \hline
-        \texttt{Program.cs} & Configuración de inicio del servidor, inyección de dependencias, política de cookies en red local y configuración de \texttt{Rotativa} \\ \hline
-        \texttt{Properties/launchSettings.json} & Definición del puerto predeterminado de ejecución (\texttt{5155}) \\ \hline
+        \texttt{Program.cs} & Configuración de inicio del servidor, detección dinámica de SO para \texttt{Rotativa} (Windows y Linux) e inyección de dependencias \\ \hline
+        \texttt{Properties/launchSettings.json} & Definición del puerto predeterminado de ejecución local (\texttt{5155}) \\ \hline
     \end{tabular}
     \caption{Archivos de configuración principales del proyecto}
 \end{table}

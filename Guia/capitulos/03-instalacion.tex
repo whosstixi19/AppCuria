@@ -127,3 +127,78 @@ Al acceder a la dirección desde el navegador web (tanto en la máquina principa
     \caption{Pantalla de Inicio de Sesión de ECLESOFT 2.0.}
     \label{fig:login}
 \end{figure}
+
+\section{Despliegue en la Nube con Docker en Google Cloud (Escenario 2)}\label{sec:despliegue-cloud}
+El Escenario 2 traslada la infraestructura a una Máquina Virtual en Google Cloud Compute Engine, orquestada mediante Docker Compose. Este modelo elimina la necesidad de mantener un servidor físico local encendido de forma permanente en las dependencias de la Curia y otorga acceso global seguro a través de una dirección IP pública.
+
+\subsection{Creación del proyecto e instancia de VM en Google Cloud}
+\begin{enumerate}
+    \item Inicie sesión en Google Cloud Console (\url{https://console.cloud.google.com}).
+    \item En la barra superior, cree o seleccione un proyecto dedicado para la aplicación (por ejemplo, \texttt{AppCuria}).
+    \item En el menú lateral o el buscador principal, diríjase a \textbf{Compute Engine} $\rightarrow$ \textbf{Instancias de VM} y presione el botón \textbf{+ Crear instancia}.
+    \item Configure los parámetros de la máquina virtual:
+    \begin{itemize}
+        \item \textbf{Nombre:} \texttt{servidor-curia} (en minúsculas y sin espacios).
+        \item \textbf{Región y Zona:} seleccione una región de bajo costo y baja latencia como \texttt{us-central1} (Iowa) o \texttt{us-east1} (Carolina del Sur).
+        \item \textbf{Serie y Tipo de máquina:} serie \textbf{E2}, seleccionando el tipo \textbf{\texttt{e2-small}} (2 vCPU, 2 GB RAM) o \textbf{\texttt{e2-medium}} (2 vCPU, 4 GB RAM).
+        \item \textbf{Disco de arranque:} haga clic en el botón \textbf{Cambiar}, seleccione \textbf{Ubuntu 24.04 LTS x86/64} (o 22.04 LTS), tipo de disco \textbf{Disco persistente equilibrado} y asigne un tamaño de \textbf{30 GB}.
+        \item \textbf{Cortafuegos (Firewall):} en la sección de red, marque las dos casillas obligatorias: \textbf{Permitir tráfico HTTP} y \textbf{Permitir tráfico HTTPS}.
+    \end{itemize}
+    \item Haga clic en \textbf{Crear} y espere aproximadamente 30 segundos hasta que la instancia muestre el indicador de estado en verde y se le asigne su \textbf{IP externa} pública de Internet.
+\end{enumerate}
+
+\subsection{Instalación de Docker y Docker Compose en el servidor}
+\begin{enumerate}
+    \item En la lista de instancias de Compute Engine, haga clic en el botón \textbf{SSH} ubicado en la fila de \texttt{servidor-curia} para abrir la consola de administración en el navegador web.
+    \item Actualice los repositorios del sistema e instale Docker Engine, Docker Compose v2 y Git ejecutando:
+    \begin{lstlisting}[style=consola]
+sudo apt-get update && sudo apt-get install -y docker.io docker-compose-v2 git
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+\end{lstlisting}
+\end{enumerate}
+
+\subsection{Clonación del repositorio y estructura de contenedores}
+\begin{enumerate}
+    \item Desde la consola SSH del servidor, clone el repositorio oficial del proyecto y acceda a su directorio:
+    \begin{lstlisting}[style=consola]
+git clone https://github.com/whosstixi19/AppCuria.git
+cd AppCuria
+\end{lstlisting}
+    \item El proyecto incorpora dos archivos diseñados para el despliegue contenerizado:
+    \begin{itemize}
+        \item \texttt{AplicacionCuria/Dockerfile}: compila la aplicación en .NET 8.0 sobre Ubuntu 22.04 e integra las librerías \texttt{wkhtmltopdf} y fuentes tipográficas necesarias para la generación de actas y certificados en PDF.
+        \item \texttt{docker-compose.yml}: orquesta dos servicios interconectados dentro de una red privada virtual de Docker:
+        \begin{itemize}
+            \item \texttt{curia-postgres}: motor PostgreSQL 18 con volumen persistente (\texttt{postgres\_data}) que inicializa de forma automática las 24 tablas y el usuario administrador montando el script \texttt{BD.sql} en la carpeta interna \texttt{/docker-entrypoint-initdb.d/}.
+            \item \texttt{curia-web}: servicio web ASP.NET Core 8 enlazado a la base de datos interna mediante variables de entorno y expuesto al exterior por los puertos HTTP 80 y 5155.
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Construcción y puesta en marcha con Docker Compose}
+\begin{enumerate}
+    \item Ejecute la construcción y el levantamiento de los contenedores en segundo plano:
+    \begin{lstlisting}[style=consola]
+sudo docker compose up -d --build
+\end{lstlisting}
+    \item Verifique que ambos contenedores se encuentren en estado activo y saludable (\textit{healthy}):
+    \begin{lstlisting}[style=consola]
+sudo docker ps
+\end{lstlisting}
+    \item Desde cualquier computadora o teléfono móvil conectado a Internet, abra el navegador web e ingrese a la dirección IP pública de la máquina virtual:
+    \begin{lstlisting}[style=consola]
+http://IP_EXTERNA_DE_GOOGLE_CLOUD
+\end{lstlisting}
+    \item El sistema presentará la pantalla de inicio de sesión de \textbf{ECLESOFT 2.0}, permitiendo el acceso con las credenciales maestras (\texttt{admin@curia.com} / \texttt{Clave\_curia}).
+\end{enumerate}
+
+\subsection{Estrategia de respaldos automatizados en la nube}
+En el Escenario 2, la información se almacena de forma persistente e independiente del ciclo de vida de los contenedores mediante el volumen Docker \texttt{postgres\_data}. Adicionalmente, para salvaguardar la información contra fallos mayores o permitir la migración de cuentas:
+\begin{enumerate}
+    \item Se establece una tarea programada en Linux (\texttt{cron}) que extrae un respaldo diario de la base de datos:
+    \begin{lstlisting}[style=consola]
+docker exec curia-postgres pg_dump -U postgres curia > /home/backups/curia_$(date +\%Y\%m\%d).sql
+\end{lstlisting}
+    \item Mediante la herramienta de sincronización \texttt{rclone} o la utilidad de línea de comandos de Google Cloud (\texttt{gcloud storage}), los archivos generados se transfieren automáticamente a un bucket de almacenamiento o a una carpeta designada en \textbf{Google Drive}, garantizando que el personal de la Curia conserve copia de los datos fuera del servidor.
+\end{enumerate}

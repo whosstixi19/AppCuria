@@ -11,12 +11,13 @@ Esta guía está pensada para dos perfiles de usuarios:
 \end{itemize}
 
 \section{Alcance}
-La guía cubre:
+La guía cubre de forma detallada dos escenarios de despliegue:
 \begin{itemize}
-    \item Los requisitos de hardware y software necesarios.
-    \item La instalación paso a paso del sistema y su base de datos.
-    \item El uso de cada módulo de la aplicación mediante instrucciones detalladas.
-    \item La solución de los problemas más frecuentes durante la instalación y el uso.
+    \item \textbf{Escenario 1 (Servidor local):} instalación física directa sobre Windows con .NET 8 y PostgreSQL 18 para operación en red de área local (LAN).
+    \item \textbf{Escenario 2 (Servidor en la Nube):} despliegue contenerizado con Docker Compose en Google Cloud Compute Engine (Ubuntu Linux) para acceso global en Internet con persistencia y respaldos automáticos.
+    \item Los requisitos de hardware, software y recursos en la nube para ambos esquemas.
+    \item El uso paso a paso de cada módulo de la aplicación mediante interfaces unificadas.
+    \item La solución de los problemas más frecuentes en la instalación local, el contenedor de Docker y la operación diaria.
 \end{itemize}
 
 \section{Convenciones utilizadas}

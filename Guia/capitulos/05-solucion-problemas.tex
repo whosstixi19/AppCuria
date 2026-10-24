@@ -51,6 +51,36 @@
     \item \textbf{Solución 2:} cambie la línea 41 de \texttt{Program.cs} a \texttt{options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;}, guarde el archivo y reinicie la aplicación con \texttt{dotnet run --urls "http://0.0.0.0:5155"}.
 \end{itemize}
 
+\section{Problemas en el despliegue en la Nube (Google Cloud y Docker)}
+
+\subsection{La dirección IP pública no responde en el navegador}
+\begin{itemize}
+    \item \textbf{Síntoma:} el navegador muestra un error de tiempo de espera agotado (\texttt{ERR\_CONNECTION\_TIMED\_OUT}) al ingresar a \texttt{http://IP\_PUBLICA}.
+    \item \textbf{Causas probables y soluciones:}
+    \begin{enumerate}
+        \item \textbf{Regla de Cortafuegos en Google Cloud:} confirme que en la configuración de la instancia \texttt{servidor-curia} esté marcada la casilla \textbf{Permitir tráfico HTTP}. Si se omitió durante la creación, edite la instancia en la consola web de Google Cloud, active la casilla y guarde los cambios.
+        \item \textbf{Contenedores detenidos:} ingrese por SSH al servidor y ejecute \texttt{sudo docker ps}. Ambos contenedores (\texttt{curia-web} y \texttt{curia-postgres}) deben figurar en estado \textit{Up}. Si no aparecen, ejecute:
+        \begin{lstlisting}[style=consola]
+cd AppCuria
+sudo docker compose up -d
+\end{lstlisting}
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Inspección de registros (Logs) y actualización de cambios}
+\begin{itemize}
+    \item \textbf{Ver registros en tiempo real:} para diagnosticar cualquier error interno de la aplicación o de conexión con la base de datos dentro del contenedor:
+    \begin{lstlisting}[style=consola]
+sudo docker logs -f curia-web
+\end{lstlisting}
+    \item \textbf{Aplicar cambios nuevos tras un \texttt{git push}:} cuando se suban actualizaciones al repositorio de GitHub, actualice el servidor en la nube ejecutando:
+    \begin{lstlisting}[style=consola]
+cd AppCuria
+git pull origin main
+sudo docker compose up -d --build
+\end{lstlisting}
+\end{itemize}
+
 \section{Problemas durante el uso de la aplicación}
 
 \subsection{Las listas desplegables aparecen vacías en Bautismos, Matrimonios o Catequesis}

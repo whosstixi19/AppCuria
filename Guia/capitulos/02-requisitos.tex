@@ -74,3 +74,26 @@ git --version
     \item Si instala Visual Studio 2022, seleccione la carga de trabajo \textbf{Desarrollo de ASP.NET y web}.
     \item Finalice la instalación y verifique que el entorno se inicia correctamente.
 \end{enumerate}
+
+\section{Requisitos para el Escenario 2 (Despliegue en la Nube con Google Cloud)}\label{sec:req-cloud}
+Para la implementación del sistema en un entorno de alta disponibilidad accesible desde cualquier red sin depender de un equipo físico local encendido, se definen los siguientes requerimientos de infraestructura en la nube:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|p{6.5cm}|}
+        \hline
+        \textbf{Componente} & \textbf{Especificación} & \textbf{Detalles} \\ \hline
+        Proveedor Cloud & Google Cloud Platform (GCP) & Proyecto independiente (ej. \texttt{AppCuria}) \\ \hline
+        Servicio & Compute Engine & Instancia de Máquina Virtual Linux \\ \hline
+        Tipo de Máquina & Serie E2 (\texttt{e2-small} o \texttt{e2-medium}) & 2 vCPUs y 2 a 4 GB de memoria RAM \\ \hline
+        Sistema Operativo & Ubuntu 24.04 LTS (o 22.04 LTS) x86/64 & Imagen oficial de servidor Linux \\ \hline
+        Disco de Arranque & 30 GB (Disco persistente equilibrado) & Almacenamiento del SO, contenedores y BD \\ \hline
+        Cortafuegos (Firewall) & HTTP (80), HTTPS (443) y SSH (22) & Tráfico web público y administración remota \\ \hline
+        Motor de Contenedores & Docker Engine + Docker Compose v2 & Orquestación de la aplicación y PostgreSQL 18 \\ \hline
+    \end{tabular}
+    \caption{Especificaciones de la máquina virtual en Google Cloud (Escenario 2)}
+\end{table}
+
+\begin{nota}
+El uso de una máquina virtual basada en Linux con Docker Compose reduce el costo operativo en más de un 60\% frente al aprovisionamiento de bases de datos administradas independientes (como Cloud SQL), permitiendo que la solución opere de forma permanente por un estimado de \$12 a \$16 USD mensuales, o de forma gratuita durante el periodo de prueba de \$300 USD ofrecido por Google Cloud.
+\end{nota}
