@@ -1,4 +1,4 @@
-﻿<title>@ViewData["Title"] - Catequesis</title>
+<title>@ViewData["Title"] - Catequesis</title>
 @{
     Layout = "_Layout";
 }
@@ -510,23 +510,29 @@
         }
     }
 
+    function cargarAlumnos() {
+        fetch('/AlumnosCatequesis/Search')
+            .then(response => response.json())
+            .then(data => renderResultados(data))
+            .catch(error => console.error('Error al cargar alumnos:', error));
+    }
+
     document.getElementById('btnBuscar').addEventListener('click', function () {
         const nombre = document.getElementById('inputNombreAlumno').value.trim();
 
-        if (nombre.length >= 3) {
+        if (nombre.length >= 1) {
             fetch(`/AlumnosCatequesis/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
                 .then(response => response.json())
                 .then(data => renderResultados(data))
                 .catch(error => console.error('Error al buscar:', error));
         } else {
-            alert("Debe ingresar al menos 3 caracteres.");
+            cargarAlumnos();
         }
     });
 
     document.getElementById('btnLimpiar').addEventListener('click', function () {
         document.getElementById('inputNombreAlumno').value = "";
-        document.getElementById('resultadosAlumnos').innerHTML = `
-            <tr><td colspan="7" class="text-center">No se encontraron resultados.</td></tr>`;
+        cargarAlumnos();
     });
 
     function renderResultados(alumnos) {
@@ -653,8 +659,8 @@
         }
     }
 
-    function ListFaltas(nombre) {
-        fetch(`/Faltas/BuscarPorNombre?nombre=${encodeURIComponent(nombre)}`)
+    function ListFaltas(nombre = "") {
+        fetch(`/Faltas/BuscarPorNombre?nombre=${encodeURIComponent(nombre || "")}`)
             .then(response => {
                 if (!response.ok) throw new Error('Error en la respuesta del servidor');
                 return response.json();
@@ -664,7 +670,7 @@
                 tbody.innerHTML = '';
 
                 if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="3">No se encontraron resultados.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center">No se encontraron resultados.</td></tr>`;
                     return;
                 }
 
@@ -673,7 +679,7 @@
                     row.innerHTML = `
                         <td>${falta.nombre}</td>
                         <td>${falta.fechafalta}</td>
-                        <td>${falta.observacion}</td>
+                        <td>${falta.observacion || ''}</td>
                         <td>
                             <a href="/Faltas/ModifyFaltaAlumnosView/${falta.id}" class="btn btn-warning btn-sm">Modificar</a>
                         </td>
@@ -700,7 +706,7 @@
         .then(result => {
             if (result.success) {
                 alert("Falta eliminada con éxito.");
-                //buscarFaltas(); // Recargar la tabla de resultados
+                ListFaltas();
             } else {
                 alert("No se pudo eliminar la falta.");
             }
@@ -747,6 +753,9 @@
                     exitoLabel.className = "text-success";
                     exitoLabel.textContent = "Alumno Registrado";
                     exitoLabel.style.display = "block";
+                    cargarAlumnos();
+                    ListParaFaltas();
+                }
 
                     document.getElementById("crearalumno").reset();
                     const vistaPrevia = document.getElementById("vistaPrevia");
@@ -815,44 +824,30 @@
     });
     function buscarAlumnos() {
         const input = document.getElementById('nombreAlumno').value.trim();
-        if (input.length < 3) {
-            alert('Por favor, escribe al menos 3 caracteres para buscar.');
-            return;
-        }
-        // Aquí va tu función original, puedes renombrarla si usas AJAX
         ListParaFaltas(input); 
     }
 
     function limpiarBusquedaAlumnos() {
         document.getElementById('nombreAlumno').value = '';
-        document.getElementById('resultadosAlumnosParaFaltas').innerHTML = `
-            <tr>
-                <td colspan="4">No se encontraron resultados.</td>
-            </tr>`;
+        ListParaFaltas();
     }
 
     function buscarFaltas() {
         const input = document.getElementById('nombreAlumnoFalta').value.trim();
-        if (input.length < 3) {
-            alert('Por favor, escribe al menos 3 caracteres para buscar.');
-            return;
-        }
-        ListFaltas(input); // Llama a tu función AJAX o controlador
+        ListFaltas(input);
     }
 
     function limpiarBusquedaFaltas() {
         document.getElementById('nombreAlumnoFalta').value = '';
-        document.getElementById('resultadosFaltas').innerHTML = `
-            <tr>
-                <td colspan="4">No se encontraron resultados.</td>
-            </tr>`;
+        ListFaltas();
     }
 
-
-
     document.addEventListener("DOMContentLoaded", function () {
-        console.log("Cargando catequistas y periodos...");
+        console.log("Cargando catequistas, periodos, alumnos y faltas...");
         cargarCatequistas();
         cargarPeriodos();
+        cargarAlumnos();
+        ListParaFaltas();
+        ListFaltas();
     });
 </script>

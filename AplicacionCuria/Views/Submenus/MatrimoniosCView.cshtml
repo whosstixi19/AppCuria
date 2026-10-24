@@ -1,4 +1,4 @@
-﻿<div class="d-flex align-items-center mb-3">
+<div class="d-flex align-items-center mb-3">
     <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
         <i class="fas fa-arrow-left me-1"></i>
         <span>Volver</span>
@@ -245,15 +245,15 @@
 
     // Buscar con mínimo 3 caracteres
     function buscarCursillo() {
-        const nombre = document.getElementById('nombrecompletos').value;
+        const nombre = document.getElementById('nombrecompletos').value.trim();
         const resultadosBody = document.getElementById('resultadosBody');
 
-        if (nombre.length < 3) {
-            alert("Debes escribir al menos 3 caracteres para buscar.");
+        if (nombre.length === 0) {
+            ListActasMatrimonio();
             return;
         }
 
-        fetch(`/CursilloPreMatrimonial/SearchByNameAprobado?nombrecompleto=${nombre}`)
+        fetch(`/CursilloPreMatrimonial/SearchByNameAprobado?nombrecompleto=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
             .then(data => {
                 resultadosBody.innerHTML = '';
@@ -281,7 +281,7 @@
     // Limpiar búsqueda y tabla
     function limpiarBusquedaCursillo() {
         document.getElementById('nombrecompletos').value = '';
-        document.getElementById('resultadosBody').innerHTML = '';
+        ListActasMatrimonio();
     }
 
     // Mostrar todos los registros aprobados
@@ -401,14 +401,14 @@
 
     function buscarActa2() {
         const nombre = document.getElementById('nombrecompletos2').value.trim();
+        listarActasParaCertificado(nombre);
+    }
+
+    function listarActasParaCertificado(nombre = "") {
         const resultadosBody = document.getElementById('Res');
+        if (!resultadosBody) return;
 
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = `<tr><td colspan="5" class="text-danger text-center">Escribe al menos 3 caracteres para buscar.</td></tr>`;
-            return;
-        }
-
-        fetch(`/ActaPreMatrimonial/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+        fetch(`/ActaPreMatrimonial/Search?nombre=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
             .then(data => {
                 resultadosBody.innerHTML = '';
@@ -418,7 +418,7 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${formatFecha(item.fecha_matrimonio)}</td>
+                                <td>${formatFecha(item.fecha_matrimonio || item.fechamatrimonio)}</td>
                                 <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
                                 <td><button class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">Seleccionar</button></td>
                             </tr>`;
@@ -441,48 +441,11 @@
 
     function limpiarBusquedaActa() {
         document.getElementById('nombrecompletos2').value = '';
-        document.getElementById('Res').innerHTML = `<tr><td colspan="5" class="text-center">Sin resultados.</td></tr>`;
+        listarActasParaCertificado('');
     }
 
     function toggleListarActas() {
-        const resultadosBody = document.getElementById('Res');
-        if (!mostrandoTodos) {
-            fetch('/ActaPreMatrimonial/Search')
-                .then(response => response.json())
-                .then(data => {
-                    resultadosBody.innerHTML = '';
-
-                    if (data.length > 0) {
-                        // Ordenar por fecha de registro
-                        // Ordenar por fecha de registro (descendente)
-                        data.sort((a, b) => new Date(b.fecharegistro) - new Date(a.fecharegistro));
-
-                        // Tomar solo los primeros 10 (ya son los más recientes)
-                        const ultimosRegistros = data.slice(0, 10);
-
-                        ultimosRegistros.forEach(item => {
-                            resultadosBody.innerHTML += `
-                                <tr>
-                                    <td>${item.nombrenovio}</td>
-                                    <td>${item.nombrenovia}</td>
-                                    <td>${formatFecha(item.fecha_matrimonio)}</td>
-                                    <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
-                                    <td>
-                                        <button class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">
-                                            Seleccionar
-                                        </button>
-                                    </td>
-                                </tr>`;
-                        });
-                    } else {
-                        resultadosBody.innerHTML = `<tr><td colspan="5" class="text-center">No se encontraron registros.</td></tr>`;
-                    }
-                    mostrandoTodos = true;
-                });
-        } else {
-            limpiarBusquedaActa();
-            mostrandoTodos = false;
-        }
+        listarActasParaCertificado('');
     }
 
     function cargarSacerdotesCursillo() {
@@ -536,14 +499,11 @@
     //////////////////////////////////////////////////////////////
 
     // Buscar Reporte de Acta de Matrimonio
-    function buscarReporteActa() {
-        const nombre = document.getElementById('nombreReporte').value.trim();
-        const sacerdoteId = document.getElementById('sacerdoteIdReporte').value;
-
-        if (nombre.length < 3) {
-            alert('Por favor, escribe al menos 3 caracteres para buscar.');
-            return;
+    function buscarReporteActa(nombre) {
+        if (nombre === undefined) {
+            nombre = document.getElementById('nombreReporte')?.value || '';
         }
+        nombre = nombre.trim();
 
         fetch(`/ActaPreMatrimonial/SearchReporte?nombre=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
@@ -554,8 +514,9 @@
     // Limpiar búsqueda de Reporte
     function limpiarBusquedaReporteActa() {
         document.getElementById('nombreReporte').value = '';
-        document.getElementById('sacerdoteIdReporte').value = '';
-        document.getElementById('ResReporte').innerHTML = "<tr><td colspan='5'>No se encontraron resultados.</td></tr>";
+        const select = document.getElementById('sacerdoteIdReporte');
+        if (select) select.value = '';
+        buscarReporteActa('');
     }
 
     let actaSeleccionada = null; // variable global para almacenar el ID seleccionado
@@ -788,6 +749,15 @@
                     });
                 });
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cargarSacerdotesCursillo();
+        cargarSacerdotesMatrimonio();
+        cargarParroquiasMatrimonio();
+        ListActasMatrimonio();
+        listarActasParaCertificado('');
+        buscarReporteActa('');
     });
 
 </script>

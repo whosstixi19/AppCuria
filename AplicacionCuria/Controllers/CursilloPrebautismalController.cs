@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -161,21 +161,26 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
+        public IActionResult SearchByName(string? nombrecompleto)
         {
-            if (string.IsNullOrWhiteSpace(nombrecompleto))
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
+
+            var query = sql.cursillosprebautismales.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
             {
-                return Json(new { success = false, message = "El parámetro nombrecompleto es requerido." });
+                query = query.Where(a => a.nombrecompletonino.ToLower().Contains(filtro));
             }
 
-            var resultados = sql.cursillosprebautismales
-                .Where(a => a.nombrecompletonino.ToLower().Contains(nombrecompleto.ToLower()))
+            var resultados = query
+                .OrderByDescending(a => a.id)
                 .Select(a => new
                 {
                     a.id,
                     a.nombrecompletonino,
                     a.telefono,
                     a.fechacursillo,
+                    a.fechabautizo,
                     a.estado,
                     parroquia = a.Parroquia != null ? a.Parroquia.nombre : "N/A"
                 })
@@ -185,22 +190,34 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchByNameAprobado(string nombrecompleto)
+        public IActionResult SearchByNameAprobado(string? nombrecompleto)
         {
-            var resultados = sql.cursillosprebautismales
-                .Where(a => a.nombrecompletonino.ToLower().Contains(nombrecompleto.ToLower()) && a.estado == "Aprobado")
-                .Select(a => new
-                {
-                    a.id,
-                    a.nombrecompletonino,
-                    a.fechabautizo,
-                    a.fechacursillo,
-                    a.estado,
-                    parroquia = a.Parroquia != null ? a.Parroquia.nombre : "N/A"
-                })
-                .ToList();
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
 
-            return Json(resultados);
+            var query = from c in sql.cursillosprebautismales
+                        where c.estado.ToLower() == "aprobado"
+                        join fp in sql.feligreses on c.nombrepadre equals fp.cedula into padreJoin
+                        from padre in padreJoin.DefaultIfEmpty()
+                        join fm in sql.feligreses on c.nombremadre equals fm.cedula into madreJoin
+                        from madre in madreJoin.DefaultIfEmpty()
+                        select new
+                        {
+                            id = c.id,
+                            nombrecompletonino = c.nombrecompletonino,
+                            fechacursillo = c.fechacursillo,
+                            fechabautizo = c.fechabautizo,
+                            estado = c.estado,
+                            nombrepadre = padre != null ? padre.nombre + " " + padre.apellido : c.nombrepadre,
+                            nombremadre = madre != null ? madre.nombre + " " + madre.apellido : c.nombremadre,
+                            parroquia = c.Parroquia != null ? c.Parroquia.nombre : "N/A"
+                        };
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(a => a.nombrecompletonino.ToLower().Contains(filtro));
+            }
+
+            return Json(query.OrderByDescending(c => c.fechacursillo).ToList());
         }
 
         #endregion

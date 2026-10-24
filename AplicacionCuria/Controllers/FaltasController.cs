@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -104,10 +104,12 @@ namespace AplicacionCuria.Controllers
         {
             var consulta = from a in sql.alumnoscatequesis
                            join f in sql.faltas on a.id equals f.alumno_id
+                           where f.estado == "ACTIVO"
+                           orderby f.fechafalta descending
                            select new
                            {
                                nombre = a.nombre + " " + a.apellido,
-                               fechafalta = f.fechafalta,
+                               fechafalta = f.fechafalta.ToString("yyyy-MM-dd"),
                                observacion = f.observacion,
                                estado = f.estado,
                                id = f.id,
@@ -119,33 +121,39 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
+        public IActionResult SearchByName(string? nombrecompleto)
         {
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
             var resultados = sql.faltas
-                .Where(f => f.observacion.ToLower().Contains(nombrecompleto.ToLower()))
+                .Where(f => string.IsNullOrEmpty(filtro) || (f.observacion ?? "").ToLower().Contains(filtro))
                 .ToList();
             return Json(resultados);
         }
 
         [HttpGet("BuscarPorNombre")]
-        public IActionResult BuscarPorNombre(string nombre)
+        public IActionResult BuscarPorNombre(string? nombre)
         {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return BadRequest("Nombre inválido.");
+            var filtro = (nombre ?? "").Trim().ToLower();
 
-            var resultado = (from f in sql.faltas
-                            join a in sql.alumnoscatequesis on f.alumno_id equals a.id
-                            where (a.nombre + " " + a.apellido).ToLower().Contains(nombre.ToLower())
-                                && f.estado == "ACTIVO"
-                            select new
-                            {
-                                id = f.id,
-                                nombre = a.nombre + " " + a.apellido,
-                                fechafalta = f.fechafalta.ToString("yyyy-MM-dd"),
-                                observacion = f.observacion
-                            }).ToList();
+            var query = from f in sql.faltas
+                        join a in sql.alumnoscatequesis on f.alumno_id equals a.id
+                        where f.estado == "ACTIVO"
+                        select new
+                        {
+                            id = f.id,
+                            alumno_id = f.alumno_id,
+                            nombre = a.nombre + " " + a.apellido,
+                            fechafalta = f.fechafalta.ToString("yyyy-MM-dd"),
+                            observacion = f.observacion,
+                            estado = f.estado
+                        };
 
-            return Json(resultado);
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(x => x.nombre.ToLower().Contains(filtro) || (x.observacion ?? "").ToLower().Contains(filtro));
+            }
+
+            return Json(query.ToList());
         }
 
         #endregion

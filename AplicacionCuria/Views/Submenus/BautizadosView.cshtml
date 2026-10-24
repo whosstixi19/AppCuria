@@ -1,4 +1,4 @@
-﻿
+
 @{
     ViewData["Title"] = "Registro de Bautizo";
     Layout = "_Layout";
@@ -1168,12 +1168,12 @@
         const nombre = document.getElementById('nombrecompleto').value.trim();
         const resultadosBody = document.getElementById('resultadosCursillo');
 
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = "<tr><td colspan='6'>Ingresa al menos 3 caracteres para buscar.</td></tr>";
+        if (nombre.length === 0) {
+            cargarCursillosRecientes();
             return;
         }
 
-        fetch(`/CursilloPrebautismal/SearchByName?nombrecompleto=${nombre}`)
+        fetch(`/CursilloPrebautismal/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
             .then(data => {
                 resultadosBody.innerHTML = '';
@@ -1214,39 +1214,38 @@
         const resultadosBody = document.getElementById('resultadosBody');
         const errorDiv = document.getElementById('errorNombre');
 
-        if (nombre.length >= 3) {
-            errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
 
-            fetch(`/ActaBautismo/SearchByName?nombrecompleto=${nombre}`)
-                .then(response => response.json())
-                .then(data => {
-                    resultadosBody.innerHTML = '';
-
-                    if (data.length > 0) {
-                        data.forEach(item => {
-                            const row = `<tr>
-                                <td>${item.nombrecompleto}</td>
-                                <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
-                                <td>${item.iglesia}</td>
-                                <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                                <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger">Eliminar</a></td>
-                            </tr>`;
-                            resultadosBody.innerHTML += row;
-                        });
-                    } else {
-                        resultadosBody.innerHTML = `<tr><td colspan="5">No se encontraron resultados.</td></tr>`;
-                    }
-                })
-                .catch(error => {
-                    resultadosBody.innerHTML = `<tr><td colspan="5">Error al buscar resultados.</td></tr>`;
-                    console.error('Error:', error);
-                });
-        } else {
-            errorDiv.style.display = 'block';
-            errorDiv.textContent = 'Ingresa al menos 3 caracteres para realizar la búsqueda.';
-            resultadosBody.innerHTML = '';
+        if (nombre.length === 0) {
+            cargarPrimerosActasBautismo();
+            return;
         }
+
+        fetch(`/ActaBautismo/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultadosBody.innerHTML = '';
+
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.nombrecompleto}</td>
+                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                            <td>${item.iglesia || item.iglesia_nombre || ''}</td>
+                            <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
+                            <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                        </tr>`;
+                        resultadosBody.innerHTML += row;
+                    });
+                } else {
+                    resultadosBody.innerHTML = `<tr><td colspan="5">No se encontraron resultados.</td></tr>`;
+                }
+            })
+            .catch(error => {
+                resultadosBody.innerHTML = `<tr><td colspan="5">Error al buscar resultados.</td></tr>`;
+                console.error('Error:', error);
+            });
     }
 
     document.getElementById('buscar-acta').addEventListener('keydown', function(event) {
@@ -1267,8 +1266,8 @@
         const nombre = document.getElementById('buscar-cursillo-input').value.trim();
         const tablaBody = document.getElementById('tabla-cursillos-body');
 
-        if (nombre.length < 3) {
-            tablaBody.innerHTML = `<tr><td colspan="3" class="text-danger">Ingresa al menos 3 caracteres.</td></tr>`;
+        if (nombre.length === 0) {
+            cargarUltimosCursillosEnActa();
             return;
         }
 
@@ -1394,13 +1393,11 @@
         const resultadosBody = document.getElementById('resultadosAntiguos');
         const mensajeError = document.getElementById('mensaje-error-busqueda');
 
-        // Limpiar mensaje anterior
         mensajeError.textContent = '';
         mensajeError.style.display = 'none';
 
-        if (nombre.length < 3) {
-            mensajeError.textContent = 'Ingrese al menos 3 caracteres para buscar.';
-            mensajeError.style.display = 'block';
+        if (nombre.length === 0) {
+            ListActasAntiguas();
             return;
         }
 

@@ -1,0 +1,39 @@
+services:
+  db-postgres:
+    image: postgres:18-alpine
+    container_name: curia-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Clave_curia
+      POSTGRES_DB: curia
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./BD.sql:/docker-entrypoint-initdb.d/01-BD.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d curia"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-curia:
+    build:
+      context: ./AplicacionCuria
+      dockerfile: Dockerfile
+    container_name: curia-web
+    restart: always
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    ports:
+      - "80:5155"
+      - "5155:5155"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: "http://+:5155"
+      ConnectionStrings__DefaultConnection: "Host=db-postgres;Port=5432;Database=curia;Username=postgres;Password=Clave_curia"
+
+volumes:
+  postgres_data:

@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -165,15 +165,21 @@ namespace AplicacionCuria.Controllers
         #endregion
 
         [HttpGet]
-        public IActionResult BuscarPorNombre(string nombre)
+        public IActionResult BuscarPorNombre(string? nombre)
         {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return Json(new List<object>());
+            var filtro = (nombre ?? "").Trim().ToLower();
 
-            var resultados = sql.actasprematrimoniales
-                .Where(a =>
-                    a.nombrenovio.ToLower().Contains(nombre.ToLower()) ||
-                    a.nombrenovia.ToLower().Contains(nombre.ToLower()))
+            var query = sql.actasprematrimoniales.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(a =>
+                    (a.nombrenovio ?? "").ToLower().Contains(filtro) ||
+                    (a.nombrenovia ?? "").ToLower().Contains(filtro));
+            }
+
+            var resultados = query
+                .OrderByDescending(a => a.id)
                 .Select(a => new
                 {
                     id = a.id,
@@ -187,27 +193,33 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult BuscarPorNombreMatrimoniales(string nombre)
+        public IActionResult BuscarPorNombreMatrimoniales(string? nombre)
         {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return Json(new List<object>());
+            var filtro = (nombre ?? "").Trim().ToLower();
 
-            var resultados = (from a in sql.actasdematrimonio
-                            join ap in sql.actasprematrimoniales
-                                on a.acta_prematrimonial_id equals ap.id
-                            where ap.nombrenovio.ToLower().Contains(nombre.ToLower()) ||
-                                    ap.nombrenovia.ToLower().Contains(nombre.ToLower())
-                            select new
-                            {
-                                id = a.id,
-                                padrino1 = a.padrino1,
-                                padrino2 = a.padrino2,
-                                fechaRegistro = a.fecharegistro,
-                                nombreNovio = ap.nombrenovio,
-                                nombreNovia = ap.nombrenovia
-                            }).ToList();
+            var query = from a in sql.actasdematrimonio
+                        join ap in sql.actasprematrimoniales
+                            on a.acta_prematrimonial_id equals ap.id
+                        select new
+                        {
+                            id = a.id,
+                            padrino1 = a.padrino1,
+                            padrino2 = a.padrino2,
+                            fechaRegistro = a.fecharegistro,
+                            nombreNovio = ap.nombrenovio,
+                            nombreNovia = ap.nombrenovia
+                        };
 
-            return Json(resultados);
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(x =>
+                    (x.nombreNovio ?? "").ToLower().Contains(filtro) ||
+                    (x.nombreNovia ?? "").ToLower().Contains(filtro) ||
+                    (x.padrino1 ?? "").ToLower().Contains(filtro) ||
+                    (x.padrino2 ?? "").ToLower().Contains(filtro));
+            }
+
+            return Json(query.OrderByDescending(x => x.id).ToList());
         }
 
         #region abrirPestanas

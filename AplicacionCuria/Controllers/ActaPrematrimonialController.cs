@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -129,20 +129,27 @@ namespace AplicacionCuria.Controllers
 
 
         [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
+        public IActionResult SearchByName(string? nombrecompleto)
         {
-            if (string.IsNullOrWhiteSpace(nombrecompleto))
-                return Json(new List<object>());
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
 
-            var resultados = sql.actasprematrimoniales
-                .Where(a => (a.nombrenovio ?? "").ToLower().Contains(nombrecompleto.ToLower())
-                        || (a.nombrenovia ?? "").ToLower().Contains(nombrecompleto.ToLower()))
+            var query = sql.actasprematrimoniales.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(a => (a.nombrenovio ?? "").ToLower().Contains(filtro)
+                                      || (a.nombrenovia ?? "").ToLower().Contains(filtro));
+            }
+
+            var resultados = query
+                .OrderByDescending(a => a.id)
                 .Select(a => new
                 {
                     a.id,
                     a.nombrenovio,
                     a.nombrenovia,
                     a.fechamatrimonio,
+                    fecha_matrimonio = a.fechamatrimonio,
                     a.fecharegistro,
                     a.estado
                 })
@@ -152,9 +159,11 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult Search()
+        public IActionResult Search(string? nombre = null)
         {
-            var todos = (from a in sql.actasdematrimonio
+            var filtro = (nombre ?? "").Trim().ToLower();
+
+            var query = from a in sql.actasdematrimonio
                         join p in sql.actasprematrimoniales
                         on a.acta_prematrimonial_id equals p.id
                         select new
@@ -163,36 +172,51 @@ namespace AplicacionCuria.Controllers
                             p.nombrenovio,
                             p.nombrenovia,
                             a.fecha_matrimonio,
+                            fechamatrimonio = a.fecha_matrimonio,
                             a.fecharegistro
-                        }).ToList();
+                        };
 
-            return Json(todos);
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(x => (x.nombrenovio ?? "").ToLower().Contains(filtro)
+                                      || (x.nombrenovia ?? "").ToLower().Contains(filtro));
+            }
+
+            return Json(query.OrderByDescending(x => x.id).ToList());
         }
 
         [HttpGet]
-        public IActionResult SearchReporte(string nombre)
+        public IActionResult SearchReporte(string? nombre = null)
         {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return Json(new { success = false, message = "Debe ingresar un nombre" });
+            var filtro = (nombre ?? "").Trim().ToLower();
 
-            var resultados = (from a in sql.actasdematrimonio
-                            join p in sql.actasprematrimoniales
-                                on a.acta_prematrimonial_id equals p.id
-                            where p.nombrenovio.ToLower().Contains(nombre.ToLower()) 
-                                    || p.nombrenovia.ToLower().Contains(nombre.ToLower())
-                            orderby a.fecharegistro descending
-                            select new
-                            {
-                                a.id,
-                                novio = p.nombrenovio,
-                                novia = p.nombrenovia,
-                                fechaMatrimonio = a.fecha_matrimonio,
-                                parroquia = "No registrada",   // Temporal
-                                sacerdote = "No asignado"     // Temporal
-                            })
-                            .Take(10)
-                            .ToList();
+            var query = from a in sql.actasdematrimonio
+                        join p in sql.actasprematrimoniales
+                            on a.acta_prematrimonial_id equals p.id
+                        join i in sql.iglesias
+                            on a.iglesia_id equals i.id into ij
+                        from i in ij.DefaultIfEmpty()
+                        join m in sql.ministros
+                            on a.ministro_id equals m.id into mj
+                        from m in mj.DefaultIfEmpty()
+                        orderby a.fecharegistro descending
+                        select new
+                        {
+                            a.id,
+                            novio = p.nombrenovio,
+                            novia = p.nombrenovia,
+                            fechaMatrimonio = a.fecha_matrimonio,
+                            parroquia = i != null ? i.nombre : "No registrada",
+                            sacerdote = m != null ? m.nombre + " " + m.apellido : "No asignado"
+                        };
 
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(x => (x.novio ?? "").ToLower().Contains(filtro)
+                                      || (x.novia ?? "").ToLower().Contains(filtro));
+            }
+
+            var resultados = query.Take(20).ToList();
             return Json(resultados);
         }
 

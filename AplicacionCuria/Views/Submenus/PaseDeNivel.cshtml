@@ -1,4 +1,4 @@
-﻿<div class="d-flex align-items-center mb-3">
+<div class="d-flex align-items-center mb-3">
     <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home"
         asp-action="MenuCertificado">
         <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
@@ -209,8 +209,8 @@
 
     function buscarPaseNivel() {
         const nombre = document.getElementById('nombrecompleto').value.trim();
-        if (nombre.length < 3) {
-            alert('Por favor, escribe al menos 3 caracteres para buscar.');
+        if (nombre.length === 0) {
+            listarTodosPaseNivel();
             return;
         }
 
@@ -222,9 +222,9 @@
 
     function limpiarBusquedaPaseNivel() {
         document.getElementById('nombrecompleto').value = '';
-        document.getElementById('resultados').innerHTML =
-            "<tr><td colspan='9'>No se encontraron resultados.</td></tr>";
-        document.getElementById('toggleListaPase').checked = false;
+        const toggle = document.getElementById('toggleListaPase');
+        if (toggle) toggle.checked = true;
+        listarTodosPaseNivel();
     }
 
     function toggleListaPaseNivel() {
@@ -235,6 +235,12 @@
             limpiarBusquedaPaseNivel();
         }
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById('toggleListaPase');
+        if (toggle) toggle.checked = true;
+        listarTodosPaseNivel();
+    });
 
     function renderResultadosPaseNivel(data) {
         const resultadosBody = document.getElementById('resultados');

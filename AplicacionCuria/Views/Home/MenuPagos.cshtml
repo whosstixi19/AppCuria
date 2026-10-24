@@ -220,9 +220,9 @@
             }
         }
 
-        // Mostrar pagos registrados
-        document.getElementById('ver-pagos-tab').addEventListener('click', function () {
+        function cargarPagos() {
             var tbody = document.getElementById('tablaPagosBody');
+            if (!tbody) return;
             tbody.innerHTML = '<tr><td colspan="8">Cargando pagos...</td></tr>';
             fetch('/Pagos/Search')
                 .then(resp => resp.json())
@@ -244,8 +244,16 @@
                             </tr>`;
                         });
                     }
+                })
+                .catch(err => {
+                    console.error('Error cargando pagos:', err);
+                    tbody.innerHTML = '<tr><td colspan="8">Error al cargar pagos.</td></tr>';
                 });
-        });
+        }
+
+        // Mostrar pagos registrados
+        document.getElementById('ver-pagos-tab').addEventListener('click', cargarPagos);
+        document.addEventListener('DOMContentLoaded', cargarPagos);
 
         // Registrar pago sin recargar
         document.getElementById('nuevoPagoForm').addEventListener('submit', async function (e) {
@@ -270,6 +278,7 @@
                 document.getElementById("Referencia_Id").value = "";
                 document.getElementById("Referencia_Tabla").value = "";
                 document.getElementById("tablaReferenciasBody").innerHTML = '<tr><td colspan="3">Seleccione un tipo de pago para ver registros.</td></tr>';
+                cargarPagos();
             } else {
                 alert(" Error al registrar:\n" + result.errors.join("\n"));
             }

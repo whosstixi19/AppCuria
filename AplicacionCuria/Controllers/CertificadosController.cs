@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -274,7 +274,8 @@ namespace AplicacionCuria.Controllers
         public async Task<IActionResult> SearchConfirmacion(string? nombre)
         {
             var query = from c in sql.confirmaciones
-                        join p in sql.parroquias on c.parroquia_id equals p.id
+                        join p in sql.parroquias on c.parroquia_id equals p.id into pj
+                        from p in pj.DefaultIfEmpty()
                         select new
                         {
                             c.id,
@@ -282,16 +283,17 @@ namespace AplicacionCuria.Controllers
                             c.apellido,
                             c.telefono,
                             c.fechanacimiento,
-                            parroquia = p.nombre,
+                            parroquia = p != null ? p.nombre : "Sin asignar",
                             c.cedula
                         };
 
             if (!string.IsNullOrWhiteSpace(nombre))
             {
-                nombre = nombre.ToLower();
+                nombre = nombre.Trim().ToLower();
                 query = query.Where(x =>
                     x.nombre.ToLower().Contains(nombre) ||
-                    x.apellido.ToLower().Contains(nombre));
+                    x.apellido.ToLower().Contains(nombre) ||
+                    (x.cedula ?? "").ToLower().Contains(nombre));
             }
 
             var resultados = await query.ToListAsync();
@@ -299,18 +301,13 @@ namespace AplicacionCuria.Controllers
         }
 
         #region listados
-        public async Task<IActionResult> SearchConfirmacion()
-        {
-            var resultados = await sql.confirmaciones.ToListAsync();
-            if (resultados.Count > 0)
-                return Json(resultados); // Envía los resultados a la vista
-
-            return Json(resultados);
-        }
         [HttpGet]
         public IActionResult SearchCByName(string nombrecompleto)
         {
-            var resultados = sql.confirmaciones.Where(a => a.nombre.ToLower().Contains(nombrecompleto.ToLower()) || a.apellido.ToLower().Contains(nombrecompleto.ToLower())).ToList();
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
+            var resultados = sql.confirmaciones
+                .Where(a => a.nombre.ToLower().Contains(filtro) || a.apellido.ToLower().Contains(filtro))
+                .ToList();
 
             return Json(resultados);
         }

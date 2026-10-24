@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -214,11 +214,40 @@ namespace AplicacionCuria.Controllers
 
 
         [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
+        public IActionResult SearchByName(string? nombrecompleto)
         {
-            var resultados = sql.agendas.Where(a => a.descripcion.ToLower().Contains(nombrecompleto.ToLower())).ToList();
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
 
-            return Json(resultados);
+            var agendas = sql.agendas
+                .AsNoTracking()
+                .Where(a => string.IsNullOrEmpty(filtro)
+                         || (a.descripcion ?? "").ToLower().Contains(filtro)
+                         || (a.titulo ?? "").ToLower().Contains(filtro)
+                         || (a.lugar ?? "").ToLower().Contains(filtro))
+                .ToList();
+
+            var todosIds = agendas
+                .Where(a => !string.IsNullOrEmpty(a.responsables_ids))
+                .SelectMany(a => a.responsables_ids.Split(',').Select(id => int.Parse(id)))
+                .Distinct()
+                .ToList();
+
+            var responsables = sql.personas_evento
+                .Where(p => todosIds.Contains(p.id))
+                .ToDictionary(p => p.id, p => p.nombre);
+
+            var resultado = agendas.Select(a => new
+            {
+                a.id,
+                a.fechaagenda,
+                a.descripcion,
+                a.hora,
+                a.lugar,
+                responsables = ConvertirIdsANombres(a.responsables_ids, responsables),
+                a.estado
+            }).ToList();
+
+            return Json(resultado);
         }
     }
 }

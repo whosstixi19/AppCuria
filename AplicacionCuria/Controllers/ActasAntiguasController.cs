@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -135,16 +135,20 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchByNames(string nombrecompleto)
+        public IActionResult SearchByNames(string? nombrecompleto)
         {
-            if (string.IsNullOrWhiteSpace(nombrecompleto))
-                return Json(new List<object>());
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
 
-            var resultados = sql.matrimoniosantiguos
-                .Where(a =>
-                    a.nombrenovio.ToLower().Contains(nombrecompleto.ToLower()) ||
-                    a.nombrenovia.ToLower().Contains(nombrecompleto.ToLower()))
-                .ToList();
+            var query = sql.matrimoniosantiguos.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(a =>
+                    (a.nombrenovio ?? "").ToLower().Contains(filtro) ||
+                    (a.nombrenovia ?? "").ToLower().Contains(filtro));
+            }
+
+            var resultados = query.OrderByDescending(a => a.id).ToList();
 
             return Json(resultados);
         }

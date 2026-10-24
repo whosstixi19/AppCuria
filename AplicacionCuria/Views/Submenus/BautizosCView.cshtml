@@ -1,4 +1,4 @@
-﻿<div class="d-flex align-items-center mb-3">
+<div class="d-flex align-items-center mb-3">
     <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
         <i class="fas fa-arrow-left me-1"></i>
         <span>Volver</span>
@@ -190,11 +190,12 @@
 
 
     function buscarCursillo() {
-        const nombre = document.getElementById('nombrecompletos').value.trim();
+        const input = document.getElementById('nombrecompletos');
+        const nombre = input.value.trim();
         const resultadosBody = document.getElementById('resultadosBody');
 
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = `<tr><td colspan="5" class="text-center">Escriba al menos 3 caracteres.</td></tr>`;
+        if (nombre.length === 0) {
+            ListCursillos();
             return;
         }
 
@@ -207,8 +208,7 @@
     function limpiarBusquedaCursillos() {
         const input = document.getElementById('nombrecompletos');
         input.value = '';
-        document.getElementById('resultadosBody').innerHTML =
-            "<tr><td colspan='5' class='text-center'>No se han realizado búsquedas.</td></tr>";
+        ListCursillos();
     }
 
     function ListCursillos() {
@@ -278,8 +278,8 @@
         const nombre = document.getElementById('nombrecompletos2').value.trim();
         const resultadosBody = document.getElementById('Res');
 
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = `<tr><td colspan="3" class="text-center">Escriba al menos 3 caracteres.</td></tr>`;
+        if (nombre.length === 0) {
+            ListActas();
             return;
         }
 
@@ -291,8 +291,7 @@
 
     function limpiarBusquedaActa() {
         document.getElementById('nombrecompletos2').value = '';
-        document.getElementById('Res').innerHTML =
-            "<tr><td colspan='3' class='text-center'>No se han realizado búsquedas.</td></tr>";
+        ListActas();
     }
 
     function ListActas() {
@@ -503,5 +502,15 @@
                     });
                 });
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const chkCursillos = document.getElementById('chkToggleCursillos');
+        if (chkCursillos) chkCursillos.checked = true;
+        ListCursillos();
+
+        const chkActas = document.getElementById('chkToggleActas');
+        if (chkActas) chkActas.checked = true;
+        ListActas();
     });
 </script>

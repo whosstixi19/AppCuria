@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -158,34 +158,34 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchAprobadoByName(string nombrecompleto)
+        public IActionResult SearchAprobadoByName(string? nombrecompleto = null, string? nombre = null)
         {
+            var filtro = (nombrecompleto ?? nombre ?? "").Trim().ToLower();
 
-            if (string.IsNullOrWhiteSpace(nombrecompleto))
+            var query = sql.cursillosprematrimoniales
+                .Where(a => (a.estado ?? "").Trim().ToLower() == "aprobado");
+
+            if (!string.IsNullOrEmpty(filtro))
             {
-                return Json(new { success = false, message = "El parámetro nombrecompleto es requerido." });
+                query = query.Where(a =>
+                    (a.nombrenovio ?? "").ToLower().Contains(filtro) ||
+                    (a.nombrenovia ?? "").ToLower().Contains(filtro));
             }
 
-            nombrecompleto = nombrecompleto.Trim().ToLower();
-
-            var resultados = sql.cursillosprematrimoniales
-                .Where(a =>
-                    ((a.nombrenovio ?? "").ToLower().Contains(nombrecompleto) ||
-                    (a.nombrenovia ?? "").ToLower().Contains(nombrecompleto)) &&
-                    (a.estado ?? "").Trim().ToLower() == "aprobado")
+            var resultados = query
+                .OrderByDescending(a => a.id)
                 .Select(a => new
                 {
                     a.id,
                     a.nombrenovio,
                     a.nombrenovia,
+                    padrino = "",
+                    madrina = "",
                     a.fechacursillo,
                     a.fechamatrimonio,
                     a.estado
-                    // NO devolvemos a.parroquia para evitar el conflicto
                 })
                 .ToList();
-
-            Console.WriteLine("[DEBUG] Resultados encontrados: " + resultados.Count);
 
             return Json(resultados);
         }
@@ -195,13 +195,17 @@ namespace AplicacionCuria.Controllers
         {
             var cursillos = sql.cursillosprematrimoniales
                 .Where(c => c.estado.Trim().ToLower() == "aprobado")
+                .OrderByDescending(c => c.id)
                 .Select(c => new
                 {
                     id = c.id,
                     nombrenovio = c.nombrenovio,
                     nombrenovia = c.nombrenovia,
+                    padrino = "",
+                    madrina = "",
                     fechacursillo = c.fechacursillo,
-                    fechamatrimonio = c.fechamatrimonio
+                    fechamatrimonio = c.fechamatrimonio,
+                    estado = c.estado
                 })
                 .ToList();
 
@@ -209,26 +213,28 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
+        public IActionResult SearchByName(string? nombrecompleto = null, string? nombre = null)
         {
-            Console.WriteLine($"=== DEBUG SearchByName ===");
-            Console.WriteLine($"nombrecompleto recibido: '{nombrecompleto}'");
+            var filtro = (nombrecompleto ?? nombre ?? "").Trim().ToLower();
 
-            if (string.IsNullOrWhiteSpace(nombrecompleto))
+            var query = sql.cursillosprematrimoniales.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filtro))
             {
-                return Json(new { success = false, message = "El parámetro nombrecompleto es requerido." });
+                query = query.Where(a =>
+                    (a.nombrenovia ?? "").ToLower().Contains(filtro) ||
+                    (a.nombrenovio ?? "").ToLower().Contains(filtro));
             }
 
-            nombrecompleto = nombrecompleto.Trim();
-
-            var resultados = sql.cursillosprematrimoniales
-                .Where(a => EF.Functions.ILike(a.nombrenovia, $"%{nombrecompleto}%") 
-                        || EF.Functions.ILike(a.nombrenovio, $"%{nombrecompleto}%"))
+            var resultados = query
+                .OrderByDescending(a => a.id)
                 .Select(a => new
                 {
                     a.id,
                     a.nombrenovio,
                     a.nombrenovia,
+                    padrino = "",
+                    madrina = "",
                     a.fechacursillo,
                     a.fechamatrimonio,
                     a.estado,
@@ -236,36 +242,19 @@ namespace AplicacionCuria.Controllers
                 })
                 .ToList();
 
-            Console.WriteLine($"Resultados encontrados: {resultados.Count}");
-
             return Json(resultados);
         }
 
         [HttpGet]
-        public IActionResult SearchByNameAprobado(string nombrecompleto)
+        public IActionResult SearchByNames(string? nombrecompleto = null, string? nombre = null)
         {
-            if (string.IsNullOrWhiteSpace(nombrecompleto))
-            {
-                return Json(new { success = false, message = "El parámetro nombrecompleto es requerido." });
-            }
+            return SearchByName(nombrecompleto, nombre);
+        }
 
-            var resultados = sql.cursillosprematrimoniales
-                .Where(a =>
-                    ((a.nombrenovio ?? "").ToLower().Contains(nombrecompleto.ToLower()) ||
-                    (a.nombrenovia ?? "").ToLower().Contains(nombrecompleto.ToLower())) &&
-                    (a.estado ?? "").ToLower() == "aprobado")
-                .Select(a => new
-                {
-                    a.id,
-                    a.nombrenovio,
-                    a.nombrenovia,
-                    a.fechacursillo,
-                    a.fechamatrimonio,
-                    a.estado
-                })
-                .ToList();
-
-            return Json(resultados);
+        [HttpGet]
+        public IActionResult SearchByNameAprobado(string? nombrecompleto = null, string? nombre = null)
+        {
+            return SearchAprobadoByName(nombrecompleto, nombre);
         }
 
 

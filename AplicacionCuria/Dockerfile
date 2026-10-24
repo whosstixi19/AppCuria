@@ -1,25 +1,32 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Etapa 1: CompilaciÃ³n (.NET 8 SDK)
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 WORKDIR /src
 
-# Copiar el archivo de proyecto y restaurar dependencia
-COPY AplicacionCuria.csproj ./
-RUN dotnet restore
+COPY ["AplicacionCuria.csproj", "./"]
+RUN dotnet restore "AplicacionCuria.csproj"
 
-# Copiar todo el código fuente y compilar la aplicación
 COPY . .
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish "AplicacionCuria.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Etapa 2: EjecuciÃ³n (.NET 8 Runtime sobre Ubuntu 22.04 con wkhtmltopdf para PDFs)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS final
 WORKDIR /app
+
+# Instalar wkhtmltopdf y fuentes para la generaciÃ³n de certificados PDF con Rotativa
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wkhtmltopdf \
+    fontconfig \
+    fonts-dejavu-core \
+    libfreetype6 \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /app/publish .
 
-# Exponer el puerto que la aplicación escucha
-EXPOSE 8080
-EXPOSE 8081
+ENV ASPNETCORE_URLS=http://+:5155
+ENV ASPNETCORE_ENVIRONMENT=Production
+EXPOSE 5155
 
-# Punto de entrada para la aplicación
 ENTRYPOINT ["dotnet", "AplicacionCuria.dll"]
-
-
-

@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -142,11 +142,15 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
+        public IActionResult SearchByName(string? nombrecompleto)
         {
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
             var resultados = sql.alumnoscatequesis
-                .Where(a => a.nombre.ToLower().Contains(nombrecompleto.ToLower()) ||
-                            a.apellido.ToLower().Contains(nombrecompleto.ToLower()))
+                .Where(a => string.IsNullOrEmpty(filtro) ||
+                            (a.nombre + " " + a.apellido).ToLower().Contains(filtro) ||
+                            a.nombre.ToLower().Contains(filtro) ||
+                            a.apellido.ToLower().Contains(filtro) ||
+                            (a.cedula ?? "").ToLower().Contains(filtro))
                 .ToList();
 
             return Json(resultados);

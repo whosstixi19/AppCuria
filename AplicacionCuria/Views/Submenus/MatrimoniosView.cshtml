@@ -1,4 +1,4 @@
-﻿<title>@ViewData["Title"] - Registro de Bautizo</title>
+<title>@ViewData["Title"] - Registro de Bautizo</title>
 @{
     Layout = "_Layout";
 }
@@ -894,19 +894,19 @@
 
 <script>
 
-    function buscarCursillos() {
-        const texto = document.getElementById('busquedaCursillo').value;
-        const mensajeError = document.getElementById('mensajeErrorCursillo');
-
-        if (texto.length < 3) {
-            mensajeError.style.display = 'block';
-            mensajeError.innerText = 'Ingresa al menos 3 letras para buscar.';
-            return;
+    function buscarCursillos(texto) {
+        if (texto === undefined) {
+            texto = document.getElementById('busquedaCursillo')?.value || '';
         }
+        texto = texto.trim();
+        const mensajeError = document.getElementById('mensajeErrorCursillo');
+        if (mensajeError) mensajeError.style.display = 'none';
 
-        mensajeError.style.display = 'none';
+        const url = texto.length > 0 
+            ? `/CursilloPreMatrimonial/SearchAprobadoByName?nombrecompleto=${encodeURIComponent(texto)}`
+            : `/CursilloPreMatrimonial/SearchAprobado`;
 
-        fetch(`/CursilloPreMatrimonial/SearchAprobadoByName?nombrecompleto=${encodeURIComponent(texto)}`)
+        fetch(url)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la respuesta del servidor');
@@ -914,8 +914,8 @@
                 return response.json();
             })
             .then(data => {
-                console.log("Resultados recibidos:", data);  // DEBUG
                 const tbody = document.getElementById("tablaCursillos");
+                if (!tbody) return;
                 tbody.innerHTML = "";
 
                 if (data.length > 0) {
@@ -936,10 +936,16 @@
             .catch(error => {
                 console.error("Error al buscar cursillos:", error);
                 const tbody = document.getElementById("tablaCursillos");
-                tbody.innerHTML = `<tr><td colspan='4' class='text-danger text-center'>${error.message}</td></tr>`;
+                if (tbody) tbody.innerHTML = `<tr><td colspan='4' class='text-danger text-center'>${error.message}</td></tr>`;
             });
     }
 
+    function limpiarBusquedaCursilloActa() {
+        const input = document.getElementById('busquedaCursillo');
+        if (input) input.value = '';
+        buscarCursillos('');
+    }
+    
     function seleccionarCursillo(id) {
         fetch(`/CursilloPreMatrimonial/GetById?id=${id}`)
             .then(response => {
@@ -949,7 +955,6 @@
                 return response.json();
             })
             .then(data => {
-                // Guardamos el ID
                 document.getElementById("cursillo_id").value = id;
 
                 const alerta = document.getElementById("alertaCursillo");
@@ -957,14 +962,12 @@
                     alerta.style.display = "none";
                 }
 
-                // Rellenamos campos del formulario
                 document.getElementById("NombreNovio").value = data.nombrenovio;
                 document.getElementById("NombreNovia").value = data.nombrenovia;
-                document.getElementById("FechaNacimientoNovio").value = data.fechanacimientonovio.substring(0, 10);
-                document.getElementById("FechaNacimientoNovia").value = data.fechanacimientonovia.substring(0, 10);
-                document.getElementById("FechaMatrimonio").value = data.fechamatrimonio.substring(0, 10);
+                document.getElementById("FechaNacimientoNovio").value = data.fechanacimientonovio ? data.fechanacimientonovio.substring(0, 10) : '';
+                document.getElementById("FechaNacimientoNovia").value = data.fechanacimientonovia ? data.fechanacimientonovia.substring(0, 10) : '';
+                document.getElementById("FechaMatrimonio").value = data.fechamatrimonio ? data.fechamatrimonio.substring(0, 10) : '';
 
-                // MOSTRAR MENSAJE DE SELECCIÓN
                 mostrarMensajeSeleccion(`Cursillo seleccionado: ${data.nombrenovio} & ${data.nombrenovia}`);
             })
             .catch(error => {
@@ -973,11 +976,9 @@
             });
     }
 
-    // NUEVA FUNCIÓN PARA MENSAJE
     function mostrarMensajeSeleccion(mensaje) {
         let div = document.getElementById("mensajeSeleccion");
         if (!div) {
-            // Si no existe el div, lo creamos
             div = document.createElement("div");
             div.id = "mensajeSeleccion";
             div.className = "alert alert-success mt-2";
@@ -986,21 +987,11 @@
         div.innerHTML = mensaje;
         div.style.display = "block";
 
-        // Ocultar después de 5 segundos
         setTimeout(() => {
             div.style.display = "none";
         }, 5000);
     }
 
-
-    function limpiarBusquedaCursilloActa() {
-        const input = document.getElementById('busquedaCursillo');
-        const tabla = document.getElementById('tablaCursillos');
-
-        input.value = '';
-        tabla.innerHTML = '<tr><td colspan="4" class="text-muted">Sin búsqueda activa.</td></tr>';
-    }
-    
     function toggleButton() {
         const select = document.getElementById("consanguinidad");
         const button = document.getElementById("printButton");
@@ -1088,6 +1079,8 @@
 
                 // Limpiar formulario
                 form.reset();
+                ListCursillo('');
+                buscarCursillos('');
 
                 // Ocultar mensaje después de 3 segundos
                 setTimeout(() => {
@@ -1155,6 +1148,8 @@
                     document.getElementById("cursillo_id").value = "";
 
                     limpiarBusquedaCursilloActa(); 
+                    ListActaPre('');
+                    ListActaPreAOfi(''); 
                     // Opcional: Si hay algún mensaje de advertencia que debe ocultarse
                     document.getElementById("mensajeErrorCursillo").style.display = "none";
 
@@ -1208,8 +1203,8 @@
                     document.getElementById("exito3").style.display = "none";
                 }, 3000);
                 this.reset();
-                limpiarBusquedaActaPrematrimonial()
-                //ListActaCreada();
+                limpiarBusquedaActaPrematrimonial();
+                ListActaCreada('');
             } else {
                 console.error(" Errores en la validación:", data.errors);
                 errorDiv.textContent = "Hubo un error al registrar el acta. Verifica los campos.";
@@ -1300,6 +1295,7 @@
 
                 // Limpiar el formulario
                 form.reset();
+                BuscarActasAntiguas('');
 
                 // Ocultar mensaje luego de 3 segundos
                 setTimeout(function () {
@@ -1323,14 +1319,13 @@
         });
     });
 
-    function ListCursillo() {
-        const nombre = document.getElementById('nombrecompleto').value.trim();
-        const resultadosBody = document.getElementById('resultadosCursillo');
-
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = "<tr><td colspan='7' class='text-danger text-center'>Ingresa al menos 3 letras para buscar.</td></tr>";
-            return;
+    function ListCursillo(nombre) {
+        if (nombre === undefined) {
+            nombre = document.getElementById('nombrecompleto')?.value || '';
         }
+        nombre = nombre.trim();
+        const resultadosBody = document.getElementById('resultadosCursillo');
+        if (!resultadosBody) return;
 
         fetch(`/CursilloPreMatrimonial/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
@@ -1361,38 +1356,34 @@
             });
     }
 
-
-    document.getElementById('busquedaCursillo').addEventListener('input', () => {
-        document.getElementById('mensajeErrorCursillo').style.display = 'none';
+    document.getElementById('busquedaCursillo')?.addEventListener('input', () => {
+        const errorCursillo = document.getElementById('mensajeErrorCursillo');
+        if (errorCursillo) errorCursillo.style.display = 'none';
     });
 
     function limpiarBusquedaCursilloGeneral() {
         document.getElementById("nombrecompleto").value = "";
-        const resultadosBody = document.getElementById("resultadosCursillo");
-        resultadosBody.innerHTML = "<tr><td colspan='7'>No se encontraron resultados.</td></tr>";
+        ListCursillo('');
     }
 
     function LimpiarBusqueda() {
         document.getElementById('nombrecompletonino').value = '';
-        document.getElementById('resultadosActas').innerHTML = '<tr><td colspan="7">Resultados limpiados.</td></tr>';
+        ListActaPre('');
     }
- 
 
-    function ListActaPre() {
-        const input = document.getElementById('nombrecompletonino');
-        const nombre = input.value.trim();
-        const mensajeError = document.getElementById('mensajeErrorNombre');
-
-        if (nombre.length < 3) {
-            mensajeError.style.display = 'block';
-            mensajeError.innerText = 'Ingresa al menos 3 letras para buscar.';
-            return;
+    function ListActaPre(nombre) {
+        if (nombre === undefined) {
+            nombre = document.getElementById('nombrecompletonino')?.value || '';
         }
+        nombre = nombre.trim();
+        const mensajeError = document.getElementById('mensajeErrorNombre');
+        if (mensajeError) mensajeError.style.display = 'none';
 
         fetch(`/ActaPrematrimonial/SearchByName?nombrecompleto=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
             .then(data => {
                 const resultados = document.getElementById('resultadosActas');
+                if (!resultados) return;
                 resultados.innerHTML = '';
 
                 if (data.length > 0) {
@@ -1416,18 +1407,18 @@
             });
     }
 
-    document.getElementById('nombrecompletonino').addEventListener('input', () => {
-        document.getElementById('mensajeErrorNombre').style.display = 'none';
+    document.getElementById('nombrecompletonino')?.addEventListener('input', () => {
+        const msg = document.getElementById('mensajeErrorNombre');
+        if (msg) msg.style.display = 'none';
     });
 
-    function ListActaPreAOfi() {
-        const nombre = document.getElementById('nombreBuscar').value.trim();
-        const resultadosBody = document.getElementById('resultadosActa');
-
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = "<tr><td colspan='4'>Ingresa al menos 3 caracteres para buscar.</td></tr>";
-            return;
+    function ListActaPreAOfi(nombre) {
+        if (nombre === undefined) {
+            nombre = document.getElementById('nombreBuscar')?.value || '';
         }
+        nombre = nombre.trim();
+        const resultadosBody = document.getElementById('resultadosActa');
+        if (!resultadosBody) return;
 
         fetch(`/ActaMatrimonial/BuscarPorNombre?nombre=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
@@ -1454,21 +1445,19 @@
                 resultadosBody.innerHTML = "<tr><td colspan='4'>Ocurrió un error al buscar.</td></tr>";
             });
     }
-    //En la vista de Acta matrimonail
+
     function limpiarBusquedaActaPrematrimonial() {
         document.getElementById('nombreBuscar').value = "";
-        document.getElementById('resultadosActa').innerHTML = "<tr><td colspan='4'>Esperando búsqueda...</td></tr>";
+        ListActaPreAOfi('');
     }
 
-
-    function ListActaCreada() {
-        const nombre = document.getElementById('fechacasadosreg').value.trim();
-        const resultadosBody = document.getElementById("resultadosActaCreadas");
-
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = "<tr><td colspan='6'>Ingresa al menos 3 caracteres para buscar.</td></tr>";
-            return;
+    function ListActaCreada(nombre) {
+        if (nombre === undefined) {
+            nombre = document.getElementById('fechacasadosreg')?.value || '';
         }
+        nombre = nombre.trim();
+        const resultadosBody = document.getElementById("resultadosActaCreadas");
+        if (!resultadosBody) return;
 
         fetch(`/ActaMatrimonial/BuscarPorNombreMatrimoniales?nombre=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
@@ -1490,28 +1479,27 @@
                         resultadosBody.innerHTML += row;
                     });
                 } else {
-                    resultadosBody.innerHTML = "<tr><td colspan='6'>No se encontraron resultados.</td></tr>";
+                    resultadosBody.innerHTML = "<tr><td colspan='7'>No se encontraron resultados.</td></tr>";
                 }
             })
             .catch(error => {
                 console.error('Error en la búsqueda:', error);
-                resultadosBody.innerHTML = "<tr><td colspan='6'>Ocurrió un error al buscar.</td></tr>";
+                resultadosBody.innerHTML = "<tr><td colspan='7'>Ocurrió un error al buscar.</td></tr>";
             });
     }
 
     function limpiarBusquedaCreadas() {
         document.getElementById('fechacasadosreg').value = "";
-        document.getElementById('resultadosActaCreadas').innerHTML = "<tr><td colspan='6'>Esperando búsqueda...</td></tr>";
+        ListActaCreada('');
     }
 
-    function BuscarActasAntiguas() {
-        const nombre = document.getElementById('nombreantiguo').value.trim();
-        const resultadosBody = document.getElementById('resultadosActaAntiguas');
-
-        if (nombre.length < 3) {
-            resultadosBody.innerHTML = "<tr><td colspan='6'> Ingrese al menos 3 caracteres para buscar.</td></tr>";
-            return;
+    function BuscarActasAntiguas(nombre) {
+        if (nombre === undefined) {
+            nombre = document.getElementById('nombreantiguo')?.value || '';
         }
+        nombre = nombre.trim();
+        const resultadosBody = document.getElementById('resultadosActaAntiguas');
+        if (!resultadosBody) return;
 
         fetch(`/ActasAntiguas/SearchByNames?nombrecompleto=${encodeURIComponent(nombre)}`)
             .then(response => response.json())
@@ -1524,7 +1512,7 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechamatrimonio || item.fecharegistro).toLocaleDateString()}</td>
                                 <td><a href="/ActasAntiguas/ModifyActasAntiguasView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                                 <td><a href="/ActasAntiguas/DeleteActasAntiguasView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
                             </tr>`;
@@ -1542,73 +1530,16 @@
 
     function LimpiarBusquedaActaAntigua() {
         document.getElementById("nombreantiguo").value = "";
-        document.getElementById("resultadosActaAntiguas").innerHTML = "<tr><td colspan='6'>Ingrese un nombre y presione Buscar.</td></tr>";
+        BuscarActasAntiguas('');
     }
 
-
-    function enviarFormulario(accion) {
-        var form = document.getElementById('formularioCursillo');
-        form.action = '/Matrimonio/' + accion; // Define la acción del formulario dinámicamente
-        form.submit(); // Envía el formulario
-    }
-
-    function mostrarLista(tipo) {
-        if (tipo === 'prematrimonial') {
-            document.getElementById('listaPrematrimonial').style.display = 'block';
-            document.getElementById('listaCreadas').style.display = 'none';
-        } else if (tipo === 'creada') {
-            document.getElementById('listaPrematrimonial').style.display = 'none';
-            document.getElementById('listaCreadas').style.display = 'block';
-        }
-    }
-
-    document.querySelectorAll("#acta-prematrimonial input, #acta-prematrimonial select, #acta-prematrimonial textarea").forEach(elemento => {
-        elemento.addEventListener("focus", function (e) {
-            const cursilloId = document.getElementById("cursillo_id").value;
-            if (!cursilloId) {
-                const tooltip = document.getElementById("tooltipCursillo");
-                const parent = e.target.offsetParent;
-                const inputRect = e.target.getBoundingClientRect();
-                const parentRect = parent.getBoundingClientRect();
-
-                // Posicionar el tooltip justo debajo del campo
-                tooltip.style.position = "absolute";
-                tooltip.style.top = (e.target.offsetTop + e.target.offsetHeight + 5) + "px";
-                tooltip.style.left = e.target.offsetLeft + "px";
-                tooltip.style.display = "block";
-
-                setTimeout(() => {
-                    tooltip.style.display = "none";
-                }, 2500);
-
-                document.getElementById("buscar-cursillo").focus();
-            }
-        });
-    });
-
-    function cargarParroquiasMatrimonio() {
-        fetch("/CursilloPreMatrimonial/GetParroquias")
-            .then(response => response.json())
-            .then(data => {
-                const select = document.getElementById("parroquia_id");
-                select.innerHTML = '<option value="">-- Seleccione una parroquia --</option>';
-                data.forEach(p => {
-                    const option = document.createElement("option");
-                    option.value = p.id;
-                    option.textContent = p.nombre;
-                    select.appendChild(option);
-                });
-            })
-            .catch(error => console.error("Error al cargar parroquias:", error));
-    }
-
-    // Llamar al cargar la página
-    document.addEventListener("DOMContentLoaded", cargarParroquiasMatrimonio);
-
-
-    // Código para guardar y restaurar pestaña activa
     document.addEventListener("DOMContentLoaded", function () {
-        window.onload = function () {
-        };
+        cargarParroquiasMatrimonio();
+        ListCursillo('');
+        buscarCursillos('');
+        ListActaPre('');
+        ListActaPreAOfi('');
+        ListActaCreada('');
+        BuscarActasAntiguas('');
     });
 </script>

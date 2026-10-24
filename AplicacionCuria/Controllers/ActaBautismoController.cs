@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,10 +61,20 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpGet]
-        public IActionResult BuscarCursillosAprobados(string nombre)
+        public IActionResult BuscarCursillosAprobados(string? nombre)
         {
-            var resultados = sql.cursillosprebautismales
-                .Where(c => c.estado == "Aprobado" && c.nombrecompletonino.ToLower().Contains(nombre.ToLower()))
+            var filtro = (nombre ?? "").Trim().ToLower();
+
+            var query = sql.cursillosprebautismales
+                .Where(c => c.estado == "Aprobado");
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(c => c.nombrecompletonino.ToLower().Contains(filtro));
+            }
+
+            var resultados = query
+                .OrderByDescending(c => c.id)
                 .Select(c => new
                 {
                     c.id,
@@ -271,23 +281,7 @@ namespace AplicacionCuria.Controllers
         {
             var resultados = (from a in sql.actasbautismo
                               join i in sql.iglesias on a.iglesia_id equals i.id
-                              select new
-                              {
-                                  a.id,
-                                  a.nombrecompleto,
-                                  a.fechabautizo,
-                                  iglesia = i.nombre
-                              }).ToList();
-
-            return Json(resultados);
-        }
-
-        [HttpGet]
-        public IActionResult SearchByName(string nombrecompleto)
-        {
-            var resultados = (from a in sql.actasbautismo
-                              join i in sql.iglesias on a.iglesia_id equals i.id
-                              where a.nombrecompleto.ToLower().Contains(nombrecompleto.ToLower())
+                              orderby a.id descending
                               select new
                               {
                                   a.id,
@@ -295,14 +289,41 @@ namespace AplicacionCuria.Controllers
                                   a.fechabautizo,
                                   a.cedulapadre,
                                   a.cedulamadre,
-                                  iglesia = i.nombre
+                                  iglesia = i.nombre,
+                                  iglesia_nombre = i.nombre
                               }).ToList();
 
             return Json(resultados);
         }
 
         [HttpGet]
-        public IActionResult SearchAll(int count = 4)
+        public IActionResult SearchByName(string? nombrecompleto)
+        {
+            var filtro = (nombrecompleto ?? "").Trim().ToLower();
+
+            var query = from a in sql.actasbautismo
+                        join i in sql.iglesias on a.iglesia_id equals i.id
+                        select new
+                        {
+                            a.id,
+                            a.nombrecompleto,
+                            a.fechabautizo,
+                            a.cedulapadre,
+                            a.cedulamadre,
+                            iglesia = i.nombre,
+                            iglesia_nombre = i.nombre
+                        };
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(a => a.nombrecompleto.ToLower().Contains(filtro));
+            }
+
+            return Json(query.OrderByDescending(a => a.id).ToList());
+        }
+
+        [HttpGet]
+        public IActionResult SearchAll(int count = 20)
         {
             var resultados = (from a in sql.actasbautismo
                               join i in sql.iglesias on a.iglesia_id equals i.id
@@ -312,14 +333,17 @@ namespace AplicacionCuria.Controllers
                                   id = a.id,
                                   nombrecompleto = a.nombrecompleto,
                                   fechabautizo = a.fechabautizo,
-                                  iglesia_nombre = i.nombre // Usa un nombre único
+                                  cedulapadre = a.cedulapadre,
+                                  cedulamadre = a.cedulamadre,
+                                  iglesia = i.nombre,
+                                  iglesia_nombre = i.nombre
                               }).Take(count).ToList();
 
             return Json(resultados);
         }
         
         [HttpGet]
-        public IActionResult SearchAllDetailed(int count = 10)
+        public IActionResult SearchAllDetailed(int count = 20)
         {
             var resultados = (from a in sql.actasbautismo
                             join i in sql.iglesias on a.iglesia_id equals i.id
@@ -329,7 +353,10 @@ namespace AplicacionCuria.Controllers
                                 id = a.id,
                                 nombrecompleto = a.nombrecompleto,
                                 fechabautizo = a.fechabautizo,
-                                iglesia = i.nombre
+                                cedulapadre = a.cedulapadre,
+                                cedulamadre = a.cedulamadre,
+                                iglesia = i.nombre,
+                                iglesia_nombre = i.nombre
                             }).Take(count).ToList();
 
             return Json(resultados);
