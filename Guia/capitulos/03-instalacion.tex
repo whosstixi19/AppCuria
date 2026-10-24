@@ -147,6 +147,13 @@ El Escenario 2 traslada la infraestructura a una Máquina Virtual en Google Clou
     \item Haga clic en \textbf{Crear} y espere aproximadamente 30 segundos hasta que la instancia muestre el indicador de estado en verde y se le asigne su \textbf{IP externa} pública de Internet.
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/17-gcp-vm.png}
+    \caption{Instancia de Máquina Virtual \texttt{servidor-curia} ejecutándose en Google Cloud Compute Engine.}
+    \label{fig:gcp-vm}
+\end{figure}
+
 \subsection{Instalación de Docker y Docker Compose en el servidor}
 \begin{enumerate}
     \item En la lista de instancias de Compute Engine, haga clic en el botón \textbf{SSH} ubicado en la fila de \texttt{servidor-curia} para abrir la consola de administración en el navegador web.
@@ -186,11 +193,42 @@ sudo docker compose up -d --build
     \begin{lstlisting}[style=consola]
 sudo docker ps
 \end{lstlisting}
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/18-docker-ps.png}
+    \caption{Contenedores \texttt{curia-web} y \texttt{curia-postgres} activos en el servidor mediante Docker Compose.}
+    \label{fig:docker-ps}
+\end{figure}
+
+\begin{enumerate}[resume]
     \item Desde cualquier computadora o teléfono móvil conectado a Internet, abra el navegador web e ingrese a la dirección IP pública de la máquina virtual:
     \begin{lstlisting}[style=consola]
 http://IP_EXTERNA_DE_GOOGLE_CLOUD
 \end{lstlisting}
     \item El sistema presentará la pantalla de inicio de sesión de \textbf{ECLESOFT 2.0}, permitiendo el acceso con las credenciales maestras (\texttt{admin@curia.com} / \texttt{Clave\_curia}).
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{imagenes/19-app-cloud.png}
+    \caption{Acceso público global a ECLESOFT 2.0 en Google Cloud a través de su dirección IP externa.}
+    \label{fig:app-cloud}
+\end{figure}
+
+\subsection{Integración y Despliegue Continuo (CI/CD con GitHub Actions)}\label{sec:cicd}
+Para automatizar las actualizaciones del sistema sin necesidad de conectarse manualmente por SSH en cada cambio de código, se implementó un flujo de trabajo en GitHub Actions (\texttt{.github/workflows/deploy.yml}):
+
+\begin{enumerate}
+    \item \textbf{Integración Continua (CI):} Ante cada confirmación (\textit{push}) en la rama principal (\texttt{main}), un entorno virtual de GitHub compila y valida la solución en .NET 8.0, asegurando la integridad del código fuente antes de cualquier pase a producción.
+    \item \textbf{Despliegue Continuo (CD):} Si la compilación es exitosa, GitHub Actions se autentica de forma segura mediante claves SSH en la máquina virtual de Google Cloud y ejecuta de forma autónoma:
+    \begin{lstlisting}[style=consola]
+cd AppCuria
+git pull origin main
+sudo docker compose up -d --build
+\end{lstlisting}
+    \item Este proceso actualiza la aplicación en la nube en menos de 90 segundos con cero tiempo de indisponibilidad para la base de datos.
 \end{enumerate}
 
 \subsection{Estrategia de respaldos automatizados en la nube}
