@@ -1,333 +1,372 @@
-﻿<title>@ViewData["Title"] - Ayuda Social</title>
 @{
+    ViewData["Title"] = "Registro de Ayuda Social";
     Layout = "_Layout";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
-    nav {
-        background-color: #f7f9fc;
-        border-bottom: 2px solid #d4af37;
-    }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-            nav ul li {
-                position: relative;
-            }
-
-                nav ul li a {
-                    color: #343a40;
-                    /* font-weight: bold; */
-                    padding: 15px 20px;
-                    text-decoration: none;
-                }
-
-                    nav ul li a:hover,
-                    nav ul li a.active {
-                        color: #d4af37;
-                    }
-
-                nav ul li ul {
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    background-color: #f7f9fc;
-                    display: none;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    padding: 0;
-                }
-
-                nav ul li:hover ul {
-                    display: block;
-                }
-
-                nav ul li ul li {
-                    width: 200px;
-                }
-
-                    nav ul li ul li a {
-                        display: block;
-                        padding: 10px;
-                        color: #343a40;
-                    }
-
-                        nav ul li ul li a:hover {
-                            background-color: #d4af37;
-                            color: #fff;
-                        }
-
-    /* Estilo responsivo */
-    media (max-width: 768px) {
-        nav ul
-
-    {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    nav ul li {
-        width: 100%;
-    }
-
-        nav ul li ul {
-            position: static;
-            box-shadow: none;
-        }
-
-    }
-
-    .menu-icon {
-        margin-right: 8px;
-    }
-
-    .christian-background {
-        background: url('https://example.com/church-background.jpg') no-repeat center center fixed;
-        background-size: cover;
-    }
-</style>
-<h1 class="mt-3 mb-3 text-center">Registro de Ayuda Social</h1>
-
-@* <ul class="nav nav-tabs" id="formTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="datos-generales-tab" data-bs-toggle="tab" data-bs-target="#nombre-direccion" type="button" role="tab" aria-controls="nombre-direccion" aria-selected="true">
-            Datos Generales
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="croquis-tab" data-bs-toggle="tab" data-bs-target="#croquis" type="button" role="tab" aria-controls="croquis" aria-selected="false">
-            Croquis
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="representantes-tab" data-bs-toggle="tab" data-bs-target="#representantes" type="button" role="tab" aria-controls="representantes" aria-selected="false">
-            Representantes
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="historia-clinica-tab" data-bs-toggle="tab" data-bs-target="#historia-clinica" type="button" role="tab" aria-controls="historia-clinica" aria-selected="false">
-            Historia Clínica
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="visitas-tab" data-bs-toggle="tab" data-bs-target="#visitas" type="button" role="tab" aria-controls="visitas" aria-selected="false">
-            Visitas Domiciliarias
-        </button>
-    </li>
-</ul> *@
-
-<div class="tab-content mt-3" id="formTabsContent">
-    <form asp-action="Create" asp-controller="Ayuda" method="post" id="form-nombre-direccion" enctype="multipart/form-data">
-        <!-- Pestaña Datos Generales -->
-        <h3>Datos Generales</h3>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="foto" class="form-label">Foto</label>
-                <img style="padding-bottom:20px" alt="" width="150" height="150" id="vistaPrevia" />
-                <input type="file" class="form-control" id="foto" name="foto" onchange="mostrarVistaPrevia(event)" />
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="apellidos" class="form-label">Apellidos</label>
-                <input type="text" class="form-control" id="apellidos" name="apellidos" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="cedula" class="form-label">Cédula</label>
-                <input type="text" class="form-control" id="cedula" name="cedula">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="edad" class="form-label">Edad</label>
-                <input type="number" class="form-control" id="edad" name="edad" min="0" required>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="genero" class="form-label">Genero</label>
-                <input type="text" class="form-control" id="genero" name="genero">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="instruccion" class="form-label">Instrucción</label>
-                <input type="text" class="form-control" id="instruccion" name="instruccion">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="estadocivil" class="form-label">Estado civil</label>
-                <input type="text" class="form-control" id="estadocivil" name="estadocivil">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="religion" class="form-label">Religión</label>
-                <input type="text" class="form-control" id="religion" name="religion">
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required>
-            </div>
-
-            <h4>Dirección</h4>
-            <div class="col-md-4 mb-3">
-                <label for="provincia" class="form-label">Provincia</label>
-                <input type="text" class="form-control" id="provincia" name="provincia">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="canton" class="form-label">Cantón</label>
-                <input type="text" class="form-control" id="canton" name="canton">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="parroquia" class="form-label">Parroquia</label>
-                <input type="text" class="form-control" id="parroquia" name="parroquia">
-            </div>
-
-
-            <div class="col-md-4 mb-3">
-                <label for="calleprincipal" class="form-label">Calle Principal</label>
-                <input type="text" class="form-control" id="calleprincipal" name="calleprincipal">
-            </div>
-            <div class="col-md-2 mb-3">
-                <label for="numero" class="form-label">Número</label>
-                <input type="text" class="form-control" id="numero" name="numero">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="callesecundaria" class="form-label">Calle Secundaria</label>
-                <input type="text" class="form-control" id="callesecundaria" name="callesecundaria">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="sector" class="form-label">Sector</label>
-                <input type="text" class="form-control" id="sector" name="sector">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="telefono" class="form-label">Teléfono</label>
-                <input type="text" class="form-control" id="telefono" name="telefono">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="referencia" class="form-label">Referencia</label>
-                <input type="text" class="form-control" id="referencia" name="referencia">
-            </div>
-
-            <h4>Discapacidad</h4>
-            <div class="col-md-3 mb-3">
-                <label for="discapacidad" class="form-label">¿Tiene discapacidad?</label>
-                <select class="form-control" id="discapacidad" name="discapacidad" onchange="toggleDiscapacidad()">
-                    <option value="false">No</option>
-                    <option value="true">Sí</option>
-                </select>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="especificardiscapacidad" class="form-label">Especifique la Discapacidad</label>
-                <input type="text" class="form-control" id="especificardiscapacidad" name="especificardiscapacidad" disabled>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="porcentajediscapacidad" class="form-label">Porcentaje</label>
-                <input type="number" class="form-control" id="porcentajediscapacidad" name="porcentajediscapacidad" min="0" max="100" disabled>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="carnetdiscapacidad" class="form-label">¿Posee Carnet?</label>
-                <select class="form-control" id="carnetdiscapacidad" name="carnetdiscapacidad" disabled>
-                    <option value="false">No</option>
-                    <option value="true">Sí</option>
-                </select>
-            </div>
-
-            <h4>Otros Datos</h4>
-            <div class="col-md-3 mb-3">
-                <label for="recibebdh" class="form-label">¿Recibe BDH?</label>
-                <select class="form-control" id="recibebdh" name="recibebdh">
-                    <option value="false">No</option>
-                    <option value="true">Sí</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="jubilacion" class="form-label">¿Está jubilado?</label>
-                <select class="form-control" id="jubilacion" name="jubilacion">
-                    <option value="false">No</option>
-                    <option value="true">Sí</option>
-                </select>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="trabaja" class="form-label">¿Dónde trabaja?</label>
-                <input type="text" class="form-control" id="trabaja" name="trabaja">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="conquienvive" class="form-label">¿Con quién vive?</label>
-                <input type="text" class="form-control" id="conquienvive" name="conquienvive">
-            </div>
-            <div class="col-md-12 mb-3p">
-                <label for="especifica_con_quien">Especifique con quién vive</label>
-                <input type="text" class="form-control" id="especifica_con_quien" name="especifica_con_quien">
-            </div>
-
-            <div class="col-md-12 mb-3">
-                <label for="tipoconstruccion" class="form-label">Tipo de construccion:</label>
-                <input type="text" class="form-control" id="tipoconstruccion" name="tipoconstruccion">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="viviendaes" class="form-label">La vivienda es:</label>
-                <input type="text" class="form-control" id="viviendaes" name="viviendaes">
-            </div>
-
-        </div>
-        <!-- Pestaña Croquis -->
-        <h3>Croquis de Ubicación</h3>
-        <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción del Croquis</label>
-            <textarea class="form-control" id="descripcion" name="descripcion" rows="5"></textarea>
-        </div>
-        @* <div class="mb-3">
-            <label for="imagenCroquis" class="form-label">Subir Imagen del Croquis</label>
-            <input type="file" class="form-control" id="imagenCroquis" name="imagenCroquis">
-        </div> *@
-
-        <!-- Pestaña Representantes -->
-        <h3>Datos de los Representantes</h3>
-        <div class="mb-3">
-            <label for="nombrerepresentante" class="form-label">Nombre del Representante</label>
-            <input type="text" class="form-control" id="nombrerepresentante" name="nombrerepresentante">
-        </div>
-        <div class="mb-3">
-            <label for="telefonorepresentante" class="form-label">Teléfono</label>
-            <input type="text" class="form-control" id="telefonorepresentante" name="telefonorepresentante">
-        </div>
-        <div class="mb-3">
-            <label for="relacion" class="form-label">Relación con el Beneficiario</label>
-            <input type="text" class="form-control" id="relacion" name="relacion">
-        </div>
-
-
-        <!-- Pestaña Historia Clínica -->
-        <h3>Historia Clínica</h3>
-        <div class="mb-3">
-            <label for="antecedentesmedicos" class="form-label">Antecedentes Médicos</label>
-            <textarea class="form-control" id="antecedentesmedicos" name="antecedentesmedicos" rows="5"></textarea>
-        </div>
-
-
-        <!-- Pestaña Visitas Domiciliarias -->
-        <h3>Registro de Visitas Domiciliarias</h3>
-        <div class="mb-3">
-            <label for="fechaVisita" class="form-label">Fecha de la Visita</label>
-            <input type="date" class="form-control" id="fechaVisita" name="fechaVisita">
-        </div>
-        <div class="mb-3">
-            <label for="observaciones" class="form-label">Observaciones</label>
-            <textarea class="form-control" id="observaciones" name="observaciones" rows="5"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Crear solicitud</button>
-    </form>
-
+<div class="mb-3 text-center">
+    <h1 class="h3 mb-0 text-primary fw-bold">Registro de Ayuda Social</h1>
+    <p class="text-muted small">Ficha socioeconómica integral del beneficiario y generación de informe</p>
 </div>
 
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+        <form asp-action="Create" asp-controller="Ayuda" method="post" id="form-ayuda-social" enctype="multipart/form-data" autocomplete="off" target="_blank">
+            <div class="card shadow-sm">
+                <!-- Pestañas de Navegación del Formulario -->
+                <div class="card-header bg-white border-bottom p-0">
+                    <ul class="nav nav-tabs card-header-tabs justify-content-center m-0" id="ayudaSocialTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-semibold small py-2 px-3" id="tab-datos-btn" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tab-datos" data-target="#tab-datos" type="button" role="tab" aria-controls="tab-datos" aria-selected="true" onclick="cambiarPestana('tab-datos-btn')">
+                                <i class="fas fa-user me-1 text-primary"></i> 1. Beneficiario
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold small py-2 px-3" id="tab-ubicacion-btn" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tab-ubicacion" data-target="#tab-ubicacion" type="button" role="tab" aria-controls="tab-ubicacion" aria-selected="false" onclick="cambiarPestana('tab-ubicacion-btn')">
+                                <i class="fas fa-map-marker-alt me-1 text-success"></i> 2. Ubicación y Vivienda
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold small py-2 px-3" id="tab-salud-btn" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tab-salud" data-target="#tab-salud" type="button" role="tab" aria-controls="tab-salud" aria-selected="false" onclick="cambiarPestana('tab-salud-btn')">
+                                <i class="fas fa-heartbeat me-1 text-danger"></i> 3. Salud y Socioeconomía
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold small py-2 px-3" id="tab-visita-btn" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tab-visita" data-target="#tab-visita" type="button" role="tab" aria-controls="tab-visita" aria-selected="false" onclick="cambiarPestana('tab-visita-btn')">
+                                <i class="fas fa-clipboard-check me-1 text-info"></i> 4. Representante y Visita
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="tab-content" id="ayudaSocialTabsContent">
+                        
+                        <!-- PESTAÑA 1: DATOS DEL BENEFICIARIO -->
+                        <div class="tab-pane fade show active" id="tab-datos" role="tabpanel" aria-labelledby="tab-datos-btn">
+                            <h5 class="text-primary fw-bold mb-3 small text-uppercase">
+                                <i class="fas fa-id-card me-1 text-primary"></i> Datos Generales del Beneficiario
+                            </h5>
+
+                            <!-- Foto centrada -->
+                            <div class="mb-3 text-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <img alt="Foto beneficiario" width="95" height="95" id="vistaPrevia" class="mb-2 rounded border bg-light" style="object-fit: cover;" />
+                                    <div class="small text-muted mb-1">Foto del Beneficiario</div>
+                                    <input type="file" class="form-control form-control-sm" id="foto" name="foto" onchange="mostrarVistaPrevia(event)" style="max-width: 260px;" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="nombre" class="form-label mb-1 fw-semibold small">Nombres</label>
+                                    <input type="text" class="form-control form-control-sm" id="nombre" name="nombre" required placeholder="Nombres completos">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="apellidos" class="form-label mb-1 fw-semibold small">Apellidos</label>
+                                    <input type="text" class="form-control form-control-sm" id="apellidos" name="apellidos" required placeholder="Apellidos completos">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="cedula" class="form-label mb-1 fw-semibold small">Cédula de Identidad</label>
+                                    <input type="text" class="form-control form-control-sm" id="cedula" name="cedula" maxlength="20" placeholder="Ej: 0102030405">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="fechanacimiento" class="form-label mb-1 fw-semibold small">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control form-control-sm" id="fechanacimiento" name="fechanacimiento" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label for="edad" class="form-label mb-1 fw-semibold small">Edad</label>
+                                    <input type="number" class="form-control form-control-sm" id="edad" name="edad" min="0" max="130" required>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label for="genero" class="form-label mb-1 fw-semibold small">Género</label>
+                                    <select class="form-select form-select-sm" id="genero" name="genero">
+                                        <option value="">Seleccione género</option>
+                                        <option value="MASCULINO">MASCULINO</option>
+                                        <option value="FEMENINO">FEMENINO</option>
+                                        <option value="OTRO">OTRO</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label for="estadocivil" class="form-label mb-1 fw-semibold small">Estado Civil</label>
+                                    <select class="form-select form-select-sm" id="estadocivil" name="estadocivil">
+                                        <option value="">Seleccione estado</option>
+                                        <option value="SOLTERO(A)">SOLTERO(A)</option>
+                                        <option value="CASADO(A)">CASADO(A)</option>
+                                        <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
+                                        <option value="VIUDO(A)">VIUDO(A)</option>
+                                        <option value="UNIÓN LIBRE">UNIÓN LIBRE</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="instruccion" class="form-label mb-1 fw-semibold small">Nivel de Instrucción</label>
+                                    <select class="form-select form-select-sm" id="instruccion" name="instruccion">
+                                        <option value="NINGUNA">NINGUNA</option>
+                                        <option value="PRIMARIA">PRIMARIA</option>
+                                        <option value="SECUNDARIA">SECUNDARIA</option>
+                                        <option value="SUPERIOR">SUPERIOR</option>
+                                        <option value="OTRA">OTRA</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="religion" class="form-label mb-1 fw-semibold small">Religión</label>
+                                    <input type="text" class="form-control form-control-sm" id="religion" name="religion" value="CATÓLICA">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="button" class="btn btn-primary btn-sm px-4" onclick="cambiarPestana('tab-ubicacion-btn')">
+                                    Siguiente: Ubicación y Vivienda <i class="fas fa-arrow-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- PESTAÑA 2: UBICACIÓN Y VIVIENDA -->
+                        <div class="tab-pane fade" id="tab-ubicacion" role="tabpanel" aria-labelledby="tab-ubicacion-btn">
+                            <h5 class="text-primary fw-bold mb-3 small text-uppercase">
+                                <i class="fas fa-map-marked-alt me-1 text-success"></i> Dirección Domiciliaria
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label for="provincia" class="form-label mb-1 fw-semibold small">Provincia</label>
+                                    <input type="text" class="form-control form-control-sm" id="provincia" name="provincia" value="Azuay">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label for="canton" class="form-label mb-1 fw-semibold small">Cantón</label>
+                                    <input type="text" class="form-control form-control-sm" id="canton" name="canton" value="Cuenca">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label for="parroquia" class="form-label mb-1 fw-semibold small">Parroquia</label>
+                                    <input type="text" class="form-control form-control-sm" id="parroquia" name="parroquia" placeholder="Ej: San Blas">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5 mb-2">
+                                    <label for="calleprincipal" class="form-label mb-1 fw-semibold small">Calle Principal</label>
+                                    <input type="text" class="form-control form-control-sm" id="calleprincipal" name="calleprincipal">
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label for="numero" class="form-label mb-1 fw-semibold small">Número / Lote</label>
+                                    <input type="text" class="form-control form-control-sm" id="numero" name="numero" placeholder="S/N">
+                                </div>
+                                <div class="col-md-5 mb-2">
+                                    <label for="callesecundaria" class="form-label mb-1 fw-semibold small">Calle Secundaria</label>
+                                    <input type="text" class="form-control form-control-sm" id="callesecundaria" name="callesecundaria">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label for="sector" class="form-label mb-1 fw-semibold small">Sector / Barrio</label>
+                                    <input type="text" class="form-control form-control-sm" id="sector" name="sector">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label for="telefono" class="form-label mb-1 fw-semibold small">Teléfono / Celular</label>
+                                    <input type="text" class="form-control form-control-sm" id="telefono" name="telefono">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label for="referencia" class="form-label mb-1 fw-semibold small">Referencia de llegada</label>
+                                    <input type="text" class="form-control form-control-sm" id="referencia" name="referencia" placeholder="Frente a la tienda, portón blanco...">
+                                </div>
+                            </div>
+
+                            <hr class="my-3 text-muted">
+
+                            <h5 class="text-primary fw-bold mb-3 small text-uppercase">
+                                <i class="fas fa-home me-1 text-primary"></i> Características de la Vivienda y Croquis
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="viviendaes" class="form-label mb-1 fw-semibold small">Tenencia de la Vivienda</label>
+                                    <select class="form-select form-select-sm" id="viviendaes" name="viviendaes">
+                                        <option value="Propia">Propia</option>
+                                        <option value="Arrendada">Arrendada</option>
+                                        <option value="Prestada">Prestada</option>
+                                        <option value="Cedida por familiares">Cedida por familiares</option>
+                                        <option value="Otra">Otra</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="tipoconstruccion" class="form-label mb-1 fw-semibold small">Tipo de Construcción</label>
+                                    <select class="form-select form-select-sm" id="tipoconstruccion" name="tipoconstruccion">
+                                        <option value="Ladrillo / Hormigón">Ladrillo / Hormigón</option>
+                                        <option value="Madera">Madera</option>
+                                        <option value="Adobe / Tapial">Adobe / Tapial</option>
+                                        <option value="Mixta">Mixta</option>
+                                        <option value="Otra">Otra</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label mb-1 fw-semibold small">Descripción del Croquis / Accesos</label>
+                                <textarea class="form-control form-control-sm" id="descripcion" name="descripcion" rows="2" placeholder="Indicaciones para llegar, líneas de bus o referencias del camino..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="button" class="btn btn-secondary btn-sm px-4" onclick="cambiarPestana('tab-datos-btn')">
+                                    <i class="fas fa-arrow-left me-1"></i> Anterior: Beneficiario
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm px-4" onclick="cambiarPestana('tab-salud-btn')">
+                                    Siguiente: Salud y Socioeconomía <i class="fas fa-arrow-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- PESTAÑA 3: SALUD Y SITUACIÓN SOCIOECONÓMICA -->
+                        <div class="tab-pane fade" id="tab-salud" role="tabpanel" aria-labelledby="tab-salud-btn">
+                            <!-- Discapacidad -->
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                <h6 class="text-secondary fw-bold mb-2 small"><i class="fas fa-wheelchair me-1 text-primary"></i> Condición de Discapacidad</h6>
+                                <div class="row">
+                                    <div class="col-md-3 mb-2">
+                                        <label for="discapacidad" class="form-label mb-1 fw-semibold small">¿Tiene discapacidad?</label>
+                                        <select class="form-select form-select-sm" id="discapacidad" name="discapacidad" onchange="toggleDiscapacidad()">
+                                            <option value="false">No</option>
+                                            <option value="true">Sí</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="especificardiscapacidad" class="form-label mb-1 fw-semibold small">Especificar Discapacidad</label>
+                                        <input type="text" class="form-control form-control-sm" id="especificardiscapacidad" name="especificardiscapacidad" disabled placeholder="Física, auditiva, visual...">
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        <label for="porcentajediscapacidad" class="form-label mb-1 fw-semibold small">Porcentaje (%)</label>
+                                        <input type="number" class="form-control form-control-sm" id="porcentajediscapacidad" name="porcentajediscapacidad" min="0" max="100" disabled placeholder="0">
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label for="carnetdiscapacidad" class="form-label mb-1 fw-semibold small">¿Posee Carnet?</label>
+                                        <select class="form-select form-select-sm" id="carnetdiscapacidad" name="carnetdiscapacidad" disabled>
+                                            <option value="false">No</option>
+                                            <option value="true">Sí</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ocupación y Convivencia -->
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                <h6 class="text-secondary fw-bold mb-2 small"><i class="fas fa-hand-holding-usd me-1 text-warning"></i> Ingresos y Ocupación</h6>
+                                <div class="row">
+                                    <div class="col-md-3 mb-2">
+                                        <label for="recibebdh" class="form-label mb-1 fw-semibold small">¿Recibe BDH / Bono?</label>
+                                        <select class="form-select form-select-sm" id="recibebdh" name="recibebdh">
+                                            <option value="false">No</option>
+                                            <option value="true">Sí</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label for="jubilacion" class="form-label mb-1 fw-semibold small">¿Está jubilado?</label>
+                                        <select class="form-select form-select-sm" id="jubilacion" name="jubilacion">
+                                            <option value="false">No</option>
+                                            <option value="true">Sí</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="trabaja" class="form-label mb-1 fw-semibold small">Ocupación / Dónde trabaja</label>
+                                        <input type="text" class="form-control form-control-sm" id="trabaja" name="trabaja" placeholder="Ocupación actual o independiente">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="conquienvive" class="form-label mb-1 fw-semibold small">¿Con quién vive?</label>
+                                        <input type="text" class="form-control form-control-sm" id="conquienvive" name="conquienvive" placeholder="Hijos, pareja, solo(a)...">
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="especifica_con_quien" class="form-label mb-1 fw-semibold small">Detalle del grupo familiar</label>
+                                        <input type="text" class="form-control form-control-sm" id="especifica_con_quien" name="especifica_con_quien" placeholder="Nombres o número de miembros">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Salud y Antecedentes -->
+                            <div class="mb-3">
+                                <label for="antecedentesmedicos" class="form-label mb-1 fw-semibold small"><i class="fas fa-notes-medical me-1 text-danger"></i> Antecedentes Médicos / Diagnósticos</label>
+                                <textarea class="form-control form-control-sm" id="antecedentesmedicos" name="antecedentesmedicos" rows="2" placeholder="Enfermedades crónicas, tratamientos actuales, medicamentos requeridos..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="button" class="btn btn-secondary btn-sm px-4" onclick="cambiarPestana('tab-ubicacion-btn')">
+                                    <i class="fas fa-arrow-left me-1"></i> Anterior: Ubicación
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm px-4" onclick="cambiarPestana('tab-visita-btn')">
+                                    Siguiente: Representante y Visita <i class="fas fa-arrow-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- PESTAÑA 4: REPRESENTANTE Y VISITA DOMICILIARIA -->
+                        <div class="tab-pane fade" id="tab-visita" role="tabpanel" aria-labelledby="tab-visita-btn">
+                            <!-- Representante -->
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                <h6 class="text-secondary fw-bold mb-2 small"><i class="fas fa-user-shield me-1 text-primary"></i> Datos del Representante o Contacto de Emergencia</h6>
+                                <div class="row">
+                                    <div class="col-md-5 mb-2">
+                                        <label for="nombrerepresentante" class="form-label mb-1 fw-semibold small">Nombre del Representante</label>
+                                        <input type="text" class="form-control form-control-sm" id="nombrerepresentante" name="nombrerepresentante" placeholder="Nombre completo">
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label for="telefonorepresentante" class="form-label mb-1 fw-semibold small">Teléfono</label>
+                                        <input type="text" class="form-control form-control-sm" id="telefonorepresentante" name="telefonorepresentante" placeholder="Contacto telefónico">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="relacion" class="form-label mb-1 fw-semibold small">Relación / Parentesco</label>
+                                        <input type="text" class="form-control form-control-sm" id="relacion" name="relacion" placeholder="Hijo(a), Hermano(a), Vecino(a)...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Visita Domiciliaria -->
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                <h6 class="text-secondary fw-bold mb-2 small"><i class="fas fa-calendar-check me-1 text-success"></i> Visita Domiciliaria y Observaciones</h6>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="fechaVisita" class="form-label mb-1 fw-semibold small">Fecha de la Visita</label>
+                                        <input type="date" class="form-control form-control-sm" id="fechaVisita" name="fechavisita" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                    </div>
+                                    <div class="col-md-8 mb-2">
+                                        <label for="observaciones" class="form-label mb-1 fw-semibold small">Observaciones del Trabajador Social / Parroquia</label>
+                                        <textarea class="form-control form-control-sm" id="observaciones" name="observaciones" rows="3" placeholder="Conclusiones de la visita, prioridad de ayuda, necesidades inmediatas..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción Final -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 pt-2 border-top">
+                                <button type="button" class="btn btn-secondary btn-sm px-4" onclick="cambiarPestana('tab-salud-btn')">
+                                    <i class="fas fa-arrow-left me-1"></i> Anterior: Salud
+                                </button>
+                                <div class="d-flex gap-2">
+                                    <button type="reset" class="btn btn-outline-secondary btn-sm px-3" onclick="resetFormulario()">
+                                        <i class="fas fa-eraser me-1"></i> Limpiar
+                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold">
+                                        <i class="fas fa-file-pdf me-1"></i> Generar Solicitud / Reporte PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
-
-
     function mostrarVistaPrevia(event) {
         const archivo = event.target.files[0];
         if (archivo) {
@@ -344,8 +383,69 @@
         document.getElementById("especificardiscapacidad").disabled = !discapacidad;
         document.getElementById("porcentajediscapacidad").disabled = !discapacidad;
         document.getElementById("carnetdiscapacidad").disabled = !discapacidad;
+
+        if (!discapacidad) {
+            document.getElementById("especificardiscapacidad").value = "";
+            document.getElementById("porcentajediscapacidad").value = "";
+            document.getElementById("carnetdiscapacidad").value = "false";
+        }
     }
 
+    function cambiarPestana(tabButtonId) {
+        const triggerEl = document.getElementById(tabButtonId);
+        if (!triggerEl) return;
 
+        // 1. Obtener el selector del panel objetivo
+        const targetSelector = triggerEl.getAttribute('data-bs-target') || triggerEl.getAttribute('data-target') || triggerEl.getAttribute('href');
+        const targetPane = targetSelector ? document.querySelector(targetSelector) : null;
 
+        // 2. Activar la pestaña en el encabezado
+        document.querySelectorAll('#ayudaSocialTabs .nav-link').forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-selected', 'false');
+        });
+        triggerEl.classList.add('active');
+        triggerEl.setAttribute('aria-selected', 'true');
+
+        // 3. Activar el panel correspondiente
+        document.querySelectorAll('#ayudaSocialTabsContent .tab-pane').forEach(pane => {
+            pane.classList.remove('show', 'active');
+        });
+        if (targetPane) {
+            targetPane.classList.add('show', 'active');
+        }
+
+        // 4. Invocar API de Bootstrap si está presente (para compatibilidad con plugins externos)
+        try {
+            if (window.jQuery && typeof jQuery(triggerEl).tab === 'function') {
+                jQuery(triggerEl).tab('show');
+            } else if (window.bootstrap && typeof bootstrap.Tab === 'function') {
+                new bootstrap.Tab(triggerEl).show();
+            }
+        } catch (e) {
+            console.warn('Bootstrap tab helper:', e);
+        }
+
+        // 5. Scroll suave al inicio del formulario
+        const cardHeader = document.querySelector('.card-header');
+        if (cardHeader) {
+            cardHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    function resetFormulario() {
+        const vistaPrevia = document.getElementById('vistaPrevia');
+        if (vistaPrevia) vistaPrevia.src = "";
+        toggleDiscapacidad();
+        cambiarPestana('tab-datos-btn');
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('#ayudaSocialTabs .nav-link').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                cambiarPestana(this.id);
+            });
+        });
+    });
 </script>
