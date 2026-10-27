@@ -1,93 +1,93 @@
 
-<div class="d-flex align-items-center mb-3">
-    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
-        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
-        <span>Volver</span>
-    </a>    <h1 class="ms-3">Primera Comunión</h1>
+<div class="mb-3 text-center">
+    <h1 class="h3 mb-0 text-primary fw-bold">Certificados de Primera Comunión</h1>
 </div>
 
-<div>
-    <form id="buscar-alumno">
-        <h3>Búsqueda de Alumnos</h3>
-        <input type="hidden" id="alumnoId" name="alumnoid">
-        
+<div class="card shadow-sm">
+    <div class="card-body p-3">
+        <form id="buscar-alumno">
+            <h5 class="card-title text-primary fw-bold mb-3">
+                <i class="fas fa-bread-slice me-1 text-warning"></i> Búsqueda de Certificados de Primera Comunión
+            </h5>
+            <input type="hidden" id="alumnoId" name="alumnoid">
 
-        <div class="mb-3 d-flex gap-2 align-items-center">
-            <button type="button" id="btnImprimirPrimeraComunion" class="btn btn-primary">
-                <i class="fas fa-print"></i> Imprimir
-            </button>
-        </div>
-        <div class="mt-3">
-            <div class="mb-3 d-flex gap-2 align-items-center">
-                <input type="text" class="form-control w-50" id="nombrecompleto" name="nombrecompleto"
-                    placeholder="Escribe un nombre...">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <button type="button" id="btnImprimirPrimeraComunion" class="btn btn-primary btn-sm">
+                    <i class="fas fa-print me-1"></i> Imprimir Primera Comunión
+                </button>
+            </div>
 
-                <button type="button" class="btn btn-primary" onclick="buscarPrimeraComunion()">
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                <input type="text" class="form-control form-control-sm" style="max-width: 350px;" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
+
+                <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="buscarPrimeraComunion()">
                     <i class="fas fa-search me-1"></i> Buscar
                 </button>
 
-                <button type="button" class="btn btn-secondary" onclick="limpiarBusqueda()">
+                <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusqueda()">
                     Limpiar
                 </button>
 
                 <div class="form-check form-switch ms-3">
                     <input type="checkbox" class="form-check-input" id="toggleLista" onchange="toggleListaCompleta()">
-                    <label class="form-check-label ms-2" for="toggleLista">
+                    <label class="form-check-label small ms-1" for="toggleLista">
                         Mostrar todos
                     </label>
                 </div>
             </div>
-            <h4>Resultados de la búsqueda:</h4>
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Cédula</th>
-                        <th>Telefono</th>
-                        <th>Fecha nacimiento</th>
-                        <th>Parroquia</th>
+            <h5 class="card-title text-primary fw-bold mb-2 small text-uppercase">
+                <i class="fas fa-list me-1 text-primary"></i> Resultados de la búsqueda
+            </h5>
 
-                        <th>Seleccionar</th>
-                    </tr>
-                </thead>
-                <tbody id="resultados">
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var alumno in Model)
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cédula</th>
+                            <th>Teléfono</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Parroquia</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultados">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var alumno in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (alumno.foto != null && alumno.foto.Length > 0)
+                                        {
+                                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)" alt="Foto de @alumno.nombre" width="60" height="60" class="rounded" />
+                                        }
+                                        else
+                                        {
+                                            <span>Sin foto</span>
+                                        }
+                                    </td>
+                                    <td>@alumno.nombre</td>
+                                    <td>@alumno.apellido</td>
+                                    <td>@alumno.cedula</td>
+                                    <td>@alumno.parroquia</td>
+                                    <td>@alumno.telefono</td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>
-                                    @if (alumno.foto != null && alumno.foto.Length > 0)
-                                    {
-                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)" alt="Foto de @alumno.nombre" width="100" height="100" />
-                                    }
-                                    else
-                                    {
-                                        <span>Sin foto</span>
-                                    }
-                                </td>
-                                <td>@alumno.nombre</td>
-                                <td>@alumno.apellido</td>
-                                <td>@alumno.cedula</td>
-                                <td>@alumno.parroquia</td>
-                                <td>@alumno.telefono</td>
-
+                                <td colspan="7">No se encontraron resultados.</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4">No se encontraron resultados.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </form>
-
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

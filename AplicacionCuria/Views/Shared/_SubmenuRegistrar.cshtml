@@ -1,0 +1,78 @@
+@{
+    var activeSub = ViewData["ActiveMenu"] as string ?? "";
+}
+
+<div class="registrar-subnav-container">
+    <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom" style="border-bottom: 2px solid #D4AF37 !important;">
+        <nav class="d-flex align-items-center flex-wrap gap-2">
+            <a href="@Url.Action("FeligresesView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Feligreses" ? "active" : "")">
+                <i class="fas fa-user me-1"></i> Feligreses
+            </a>
+            <a href="@Url.Action("EncargadosView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Encargado" ? "active" : "")">
+                <i class="fas fa-user-check me-1"></i> Encargados
+            </a>
+            <a href="@Url.Action("SacerdoteView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Sacerdote" ? "active" : "")">
+                <i class="fas fa-church me-1"></i> Sacerdotes
+            </a>
+            <a href="@Url.Action("ParroquiaView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Parroquia" ? "active" : "")">
+                <i class="fas fa-cross me-1"></i> Parroquias
+            </a>
+            <a href="@Url.Action("IglesiaView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Iglesia" ? "active" : "")">
+                <i class="fas fa-building me-1"></i> Iglesias
+            </a>
+            <a href="@Url.Action("MinistrosCatequistasView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Ministro" ? "active" : "")">
+                <i class="fas fa-user-tie me-1"></i> Ministro / Catequista
+            </a>
+            <a href="@Url.Action("PeriodosView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Periodo" ? "active" : "")">
+                <i class="fas fa-calendar-alt me-1"></i> Periodos
+            </a>
+            <a href="@Url.Action("MisaView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Misa" ? "active" : "")">
+                <i class="fas fa-pray me-1"></i> Misas
+            </a>
+            <a href="@Url.Action("BarrioView", "Submenus")" 
+               class="registrar-nav-link @(activeSub == "Barrio" ? "active" : "")">
+                <i class="fas fa-map-marker-alt me-1"></i> Barrios
+            </a>
+        </nav>
+        <div class="d-none d-xl-flex align-items-center text-muted small">
+            <i class="fas fa-database me-1 text-warning"></i>
+            <span>Catálogos Diocesanos</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .registrar-subnav-container {
+        margin: -1rem -1.5rem 1.5rem -1.5rem;
+    }
+    .registrar-nav-link {
+        color: #495057;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.88rem;
+        padding: 0.4rem 0.65rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+    .registrar-nav-link:hover {
+        color: #003366;
+    }
+    .registrar-nav-link.active {
+        color: #003366;
+        font-weight: 700;
+        border-bottom: 2px solid #D4AF37;
+        background-color: rgba(212, 175, 55, 0.08);
+        border-radius: 4px 4px 0 0;
+    }
+</style>

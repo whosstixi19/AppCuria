@@ -1,75 +1,120 @@
-﻿
-<div class="d-flex align-items-center mb-3">
-    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
-        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
-        <span>Volver</span>
-    </a>    <h1 class="ms-3">Dispensas</h1>
+
+<div class="mb-3 text-center">
+    <h1 class="h3 mb-0 text-primary fw-bold">Certificados de Dispensas</h1>
 </div>
 
-<div class="container mt-4">
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <form id="formSolteria" method="post" asp-controller="Certificados" asp-action="ImprimirCertificadoSolteria">
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form id="formSolteria" method="post" asp-controller="Certificados" asp-action="ImprimirCertificadoSolteria" autocomplete="off">
+                    <h5 class="card-title text-primary fw-bold mb-3">
+                        <i class="fas fa-file-contract me-1 text-primary"></i> Certificado de Soltería / Dispensas
+                    </h5>
 
-                <!-- DATOS DEL NOVIO/A -->
-                <h4>Datos del Novio/a</h4>
-                <p>
-                    Nombres y Apellidos del Novio/a: 
-                    <input type="text" name="nombreNovio" class="form-control" required />
-                </p>
-                <p>
-                    Domicilio: 
-                    <input type="text" name="domicilioNovio" class="form-control" required />
-                </p>
-                <p>
-                    Cédula: 
-                    <input type="text" name="cedulaNovio" class="form-control" required />
-                </p>
-                <p>
-                    Nombres y Apellidos de la Pareja: 
-                    <input type="text" name="nombrePareja" class="form-control" required />
-                </p>
+                    <!-- DATOS DEL NOVIO/A -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-user-friends me-1 text-primary"></i> Datos de los Contrayentes</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Nombres y Apellidos del Novio/a</label>
+                                <input type="text" name="nombreNovio" class="form-control form-control-sm" required />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Cédula del Novio/a</label>
+                                <input type="text" name="cedulaNovio" class="form-control form-control-sm" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Domicilio</label>
+                                <input type="text" name="domicilioNovio" class="form-control form-control-sm" required />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Nombres y Apellidos de la Pareja</label>
+                                <input type="text" name="nombrePareja" class="form-control form-control-sm" required />
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- DATOS DE LOS TESTIGOS -->
-                <h4>Datos adicionales del certificado</h4>
-                <p>Testigo 1: <input type="text" name="testigo1" class="form-control" /></p>
-                <p>Dirección: <input type="text" name="direccion1" class="form-control" /></p>
-                <p>Cédula: <input type="text" name="cedula1" class="form-control" /></p>
-                <p>Teléfono: <input type="text" name="telefono1" class="form-control" /></p>
-                <p>Testigo 2: <input type="text" name="testigo2" class="form-control" /></p>
-                <p>Dirección 2: <input type="text" name="direccion2" class="form-control" /></p>
-                <p>Cédula: <input type="text" name="cedula2" class="form-control" /></p>
-                <p>Teléfono: <input type="text" name="telefono2" class="form-control" /></p>
+                    <!-- DATOS DE LOS TESTIGOS -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-users me-1 text-primary"></i> Testigos</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Testigo 1</label>
+                                <input type="text" name="testigo1" class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Cédula Testigo 1</label>
+                                <input type="text" name="cedula1" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Dirección Testigo 1</label>
+                                <input type="text" name="direccion1" class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Teléfono Testigo 1</label>
+                                <input type="text" name="telefono1" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <hr class="my-2 text-muted" />
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Testigo 2</label>
+                                <input type="text" name="testigo2" class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Cédula Testigo 2</label>
+                                <input type="text" name="cedula2" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Dirección Testigo 2</label>
+                                <input type="text" name="direccion2" class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label mb-1 fw-semibold small">Teléfono Testigo 2</label>
+                                <input type="text" name="telefono2" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- SELECTS -->
-                <p>
-                    Seleccionar Feligreses de:
-                    <select class="form-select" id="Parroquia" name="parroquia">
-                        <option value="">Seleccione Feligreses de:</option>
-                    </select>
-                </p>
-                <p>
-                    Seleccione Impedimento:
-                    <select class="form-select" id="Impedimento" name="impedimento" required>
-                        <option value="">Seleccione Impedimento</option>
-                        <option value="SI">SI</option>
-                        <option value="NO">NO</option>
-                    </select>
-                </p>
+                    <!-- SELECTS & OBSERVACIÓN -->
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label mb-1 fw-semibold small">Seleccionar Feligreses de:</label>
+                            <select class="form-select form-select-sm" id="Parroquia" name="parroquia">
+                                <option value="">Seleccione Feligreses de:</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label mb-1 fw-semibold small">Seleccione Impedimento</label>
+                            <select class="form-select form-select-sm" id="Impedimento" name="impedimento" required>
+                                <option value="">Seleccione Impedimento</option>
+                                <option value="SI">SI</option>
+                                <option value="NO">NO</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <p>
-                    Observación:
-                    <textarea class="form-control" name="observacion" rows="3"></textarea>
-                </p>
+                    <div class="mb-3">
+                        <label class="form-label mb-1 fw-semibold small">Observación</label>
+                        <textarea class="form-control form-control-sm" name="observacion" rows="2"></textarea>
+                    </div>
 
-                <input type="hidden" name="fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
 
-                <div class="mb-3 d-flex gap-2 align-items-center">
-                    <button type="button" id="btnImprimirSolteria" class="btn btn-primary">
-                        <i class="fas fa-print"></i> Imprimir
-                    </button>
-                </div>
-            </form>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" id="btnImprimirSolteria" class="btn btn-primary btn-sm px-4">
+                            <i class="fas fa-print me-1"></i> Imprimir Certificado
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

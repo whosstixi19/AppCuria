@@ -1,0 +1,57 @@
+@{
+    var activeSub = ViewData["ActiveSubmenu"] as string ?? "";
+}
+
+<div class="sacramentos-subnav-container">
+    <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom" style="border-bottom: 2px solid #D4AF37 !important;">
+        <nav class="d-flex align-items-center gap-3">
+            <a href="@Url.Action("BautizadosView", "Submenus")" 
+               class="sacramentos-nav-link @(activeSub == "Bautizados" ? "active" : "")">
+                <i class="fas fa-water me-1"></i> Bautizados
+            </a>
+            <a href="@Url.Action("PrimeraComunionView", "Submenus")" 
+               class="sacramentos-nav-link @(activeSub == "PrimeraComunion" ? "active" : "")">
+                <i class="fas fa-bread-slice me-1"></i> Primera Comunión
+            </a>
+            <a href="@Url.Action("ConfirmacionView", "Submenus")" 
+               class="sacramentos-nav-link @(activeSub == "Confirmacion" ? "active" : "")">
+                <i class="fas fa-dove me-1"></i> Confirmación
+            </a>
+            <a href="@Url.Action("MatrimoniosView", "Submenus")" 
+               class="sacramentos-nav-link @(activeSub == "Matrimonios" ? "active" : "")">
+                <i class="fas fa-ring me-1"></i> Matrimonios
+            </a>
+        </nav>
+        <div class="d-none d-lg-flex align-items-center text-muted small">
+            <i class="fas fa-book-bible me-1 text-warning"></i>
+            <span>Libro Parroquial Arquidiocesano</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sacramentos-subnav-container {
+        margin: -1rem -1.5rem 1.5rem -1.5rem;
+    }
+    .sacramentos-nav-link {
+        color: #495057;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+    .sacramentos-nav-link:hover {
+        color: #003366;
+    }
+    .sacramentos-nav-link.active {
+        color: #003366;
+        font-weight: 700;
+        border-bottom: 2px solid #D4AF37;
+        background-color: rgba(212, 175, 55, 0.08);
+        border-radius: 4px 4px 0 0;
+    }
+</style>

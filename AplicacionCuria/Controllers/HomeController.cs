@@ -37,7 +37,7 @@ namespace AplicacionCuria.Controllers
         }
         public IActionResult MenuSacramentos()
         {
-            return View();
+            return RedirectToAction("BautizadosView", "Submenus");
         }
 
         public IActionResult MenuCertificado()
@@ -57,7 +57,7 @@ namespace AplicacionCuria.Controllers
 
         public IActionResult MenuRegistrar()
         {
-            return View();
+            return RedirectToAction("FeligresesView", "Submenus");
         }
 
         public IActionResult MenuPagos()

@@ -1,9 +1,5 @@
-<div class="d-flex align-items-center mb-3">
-    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuCertificado">
-        <i class="fas fa-arrow-left me-1"></i>
-        <span>Volver</span>
-    </a>
-    <h1 class="ms-3">Bautizos</h1>
+<div class="mb-3 text-center">
+    <h1 class="h3 mb-0 text-primary fw-bold">Certificados de Bautizos</h1>
 </div>
 
 <!-- Tabs -->
@@ -24,129 +20,138 @@
 <div class="tab-content" id="bautizoTabsContent">
     <!-- Cursillo Prebautismal -->
     <div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
-        <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
+        <div class="card shadow-sm">
+            <div class="card-body p-3">
+                <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <button type="button" id="btnImprimirBautismo" class="btn btn-primary btn-sm">
+                            <i class="fas fa-print me-1"></i> Imprimir Bautismo
+                        </button>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="small fw-semibold text-secondary">Tipo de certificado:</span>
+                            <div class="form-check form-check-inline mb-0">
+                                <input class="form-check-input" type="radio" name="tipoCertificado" id="certPadres" value="padres" checked>
+                                <label class="form-check-label small" for="certPadres">Padres</label>
+                            </div>
+                            <div class="form-check form-check-inline mb-0">
+                                <input class="form-check-input" type="radio" name="tipoCertificado" id="certPadrinos" value="padrinos">
+                                <label class="form-check-label small" for="certPadrinos">Padrinos</label>
+                            </div>
+                        </div>
+                    </div>
 
-        <button type="button" id="btnImprimirBautismo" class="btn btn-primary">
-            <i class="fas fa-print"></i> Imprimir Bautismo
-        </button>
+                    <div class="row g-2 mb-3 align-items-center">
+                        <div class="col-md-5">
+                            <label for="sacerdoteId" class="form-label mb-1 fw-semibold small">Seleccionar Sacerdote</label>
+                            <select class="form-select form-select-sm" id="sacerdoteId" name="sacerdoteId">
+                                <option value="">-- Cargando sacerdotes... --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="nombrecompletos" class="form-label mb-1 fw-semibold small">Buscar Niño/Niña</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control form-control-sm" id="nombrecompletos" name="nombrecompletos" placeholder="Escribe un nombre...">
+                                <input type="hidden" id="alumnoId" name="alumnoId">
+                                <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="buscarCursillo()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaCursillos()">
+                                    Limpiar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-check form-switch pt-4">
+                                <input class="form-check-input" type="checkbox" id="chkToggleCursillos" onchange="toggleCursillos()">
+                                <label class="form-check-label small ms-1" for="chkToggleCursillos">10 últimos</label>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Tipo de certificado:</label>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="tipoCertificado" id="certPadres" value="padres" checked>
-                <label class="form-check-label" for="certPadres">Padres</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="tipoCertificado" id="certPadrinos" value="padrinos">
-                <label class="form-check-label" for="certPadrinos">Padrinos</label>
+                    <h5 class="card-title text-primary fw-bold mb-2 small text-uppercase">
+                        <i class="fas fa-list me-1 text-primary"></i> Cursillos Aprobados
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nombre Completo</th>
+                                    <th>Fecha Cursillo</th>
+                                    <th>Padre</th>
+                                    <th>Madre</th>
+                                    <th>Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultadosBody">
+                                <!-- Cursillos cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="mt-3">
-            <label for="sacerdoteId" class="form-label">Seleccionar Sacerdote:</label>
-            <select class="form-select w-50" id="sacerdoteId" name="sacerdoteId">
-                <option value="">-- Cargando sacerdotes... --</option>
-            </select>
-        </div>
-
-        <div class="mt-3">
-            <div class="mb-3 d-flex gap-2 align-items-center">
-                <input type="text" class="form-control w-50" id="nombrecompletos" name="nombrecompletos" placeholder="Escribe un nombre de un niño/niña">
-                <input type="hidden" id="alumnoId" name="alumnoId">
-                <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" onclick="buscarCursillo()">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" onclick="limpiarBusquedaCursillos()">
-                    <i class="fas fa-times"></i> Limpiar
-                </button>
-
-                <div class="form-check form-switch ms-3">
-                    <input class="form-check-input" type="checkbox" id="chkToggleCursillos" onchange="toggleCursillos()">
-                    <label class="form-check-label ms-2" for="chkToggleCursillos">
-                        Mostrar 10 ultimos
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <h3>Cursillos Aprobados:</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nombre Completo</th>
-                        <th>Fecha de Cursillo</th>
-                        <th>Padre</th>
-                        <th>Madre</th>
-                        <th>Seleccionar</th>
-                    </tr>
-                </thead>
-                <tbody id="resultadosBody">
-                    <!-- Cursillos cargados dinámicamente -->
-                </tbody>
-                </table>
-            </div>
-        </form>
     </div>
 
     <!-- Acta de Bautismo -->
     <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-tab">
-        <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
-            <input type="hidden" id="alumnoid2" name="alumnoid2">
-            <button type="button" id="btnImprimirActaBautismo" class="btn btn-primary">
-                <i class="fas fa-print"></i> Imprimir Acta Bautismo
-            </button>
-
-            <div class="mt-3">
-                <label for="sacerdoteIdActa" class="form-label">Seleccionar Sacerdote:</label>
-                <select class="form-select w-50" id="sacerdoteIdActa" name="sacerdoteId">
-                    <option value="">-- Seleccione un sacerdote --</option>
-                </select>
-            </div>
-
-            <div class="mt-3">
-                <div class="d-flex gap-2 align-items-center">
-                    <input type="text" class="form-control w-50" id="nombrecompletos2" 
-                        name="nombrecompletos2" placeholder="Escribe un nombre del niño/niña">
+        <div class="card shadow-sm">
+            <div class="card-body p-3">
+                <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
                     <input type="hidden" id="alumnoid2" name="alumnoid2">
-                    
-                    <!-- Botón de buscar -->
-                    <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" onclick="buscarActa2()">
-                        <i class="fas fa-search"></i> Buscar
-                    </button>
-                    
-                    <!-- Botón de limpiar -->
-                    <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" onclick="limpiarBusquedaActa()">
-                        <i class="fas fa-times"></i> Limpiar
-                    </button>
-
-                    <!-- Toggle Mostrar Todos -->
-                    <div class="form-check form-switch ms-3">
-                        <input class="form-check-input" type="checkbox" id="chkToggleActas" onchange="toggleActas()">
-                        <label class="form-check-label ms-2" for="chkToggleActas">
-                            Mostrar 10 ultimos
-                        </label>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <button type="button" id="btnImprimirActaBautismo" class="btn btn-primary btn-sm">
+                            <i class="fas fa-print me-1"></i> Imprimir Acta Bautismo
+                        </button>
                     </div>
-                </div>
-            </div>
 
-            <div class="mb-3">
-                <h3>Resultados de la búsqueda:</h3>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nombre Completo</th>
-                            <th>Fecha de Bautismo</th>
-                            <th>Iglesia</th>
-                            <th>Seleccionar</th>
-                        </tr>
-                    </thead>
-                    <tbody id="Res">
-                        <!-- Resultados de búsqueda cargados dinámicamente -->
-                    </tbody>
-                </table>
+                    <div class="row g-2 mb-3 align-items-center">
+                        <div class="col-md-5">
+                            <label for="sacerdoteIdActa" class="form-label mb-1 fw-semibold small">Seleccionar Sacerdote</label>
+                            <select class="form-select form-select-sm" id="sacerdoteIdActa" name="sacerdoteId">
+                                <option value="">-- Seleccione un sacerdote --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="nombrecompletos2" class="form-label mb-1 fw-semibold small">Buscar Niño/Niña</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control form-control-sm" id="nombrecompletos2" name="nombrecompletos2" placeholder="Escribe un nombre...">
+                                <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="buscarActa2()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaActa()">
+                                    Limpiar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-check form-switch pt-4">
+                                <input class="form-check-input" type="checkbox" id="chkToggleActas" onchange="toggleActas()">
+                                <label class="form-check-label small ms-1" for="chkToggleActas">10 últimos</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="card-title text-primary fw-bold mb-2 small text-uppercase">
+                        <i class="fas fa-list me-1 text-primary"></i> Resultados de la búsqueda
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nombre Completo</th>
+                                    <th>Fecha de Bautismo</th>
+                                    <th>Iglesia</th>
+                                    <th>Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Res">
+                                <!-- Resultados de búsqueda cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

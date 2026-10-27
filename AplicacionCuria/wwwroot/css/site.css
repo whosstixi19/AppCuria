@@ -19,4 +19,30 @@ html {
 
 body {
   margin-bottom: 60px;
+  overflow-x: hidden;
+}
+
+/* Estandarización de tablas y contenedores para evitar desbordamiento horizontal */
+.table-responsive {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto;
+}
+
+.table-responsive table {
+  width: 100% !important;
+  margin-bottom: 0 !important;
+}
+
+/* Diseño de tarjetas compactas estandarizadas estilo Feligreses */
+.card-curia-form {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  background-color: #ffffff;
+}
+
+.card-curia-table {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  background-color: #ffffff;
 }

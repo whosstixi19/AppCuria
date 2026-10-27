@@ -1,106 +1,106 @@
-<div class="d-flex align-items-center mb-3">
-    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home"
-        asp-action="MenuCertificado">
-        <i class="fas fa-arrow-left me-1"></i> <!-- Icono de flecha hacia la izquierda -->
-        <span>Volver</span>
-    </a>
-    <h1 class="ms-3">Pase de nivel</h1>
+<div class="mb-3 text-center">
+    <h1 class="h3 mb-0 text-primary fw-bold">Certificados de Pase de Nivel</h1>
 </div>
 
-<div>
-    <form id="buscar-alumno">
-        <h3>Búsqueda de Alumnos</h3>
-        <input type="hidden" id="alumnoId" name="alumnoid">
+<div class="card shadow-sm">
+    <div class="card-body p-3">
+        <form id="buscar-alumno">
+            <h5 class="card-title text-primary fw-bold mb-3">
+                <i class="fas fa-graduation-cap me-1 text-primary"></i> Búsqueda de Certificados de Pase de Nivel
+            </h5>
+            <input type="hidden" id="alumnoId" name="alumnoid">
 
-        <div class="mb-3 d-flex gap-2 align-items-center">
-            <button type="button" id="btnImprimir" class="btn btn-primary">
-                <i class="fas fa-print"></i> Imprimir
-            </button>
-        </div>
-
-        <div class="mb-3 d-flex gap-2 align-items-center">
-            <input type="text" class="form-control w-50" id="nombrecompleto" name="nombrecompleto"
-                placeholder="Escribe un nombre...">
-
-            <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center"
-                    onclick="buscarPaseNivel()">
-                <i class="fas fa-search me-1"></i> Buscar
-            </button>
-
-            <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center"
-                    onclick="limpiarBusquedaPaseNivel()">
-                Limpiar
-            </button>
-
-            <div class="form-check form-switch ms-3">
-                <input class="form-check-input" type="checkbox" id="toggleListaPase" onchange="toggleListaPaseNivel()">
-                <label class="form-check-label ms-2" for="toggleListaPase">
-                    Mostrar todos
-                </label>
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <button type="button" id="btnImprimir" class="btn btn-primary btn-sm">
+                    <i class="fas fa-print me-1"></i> Imprimir Pase de Nivel
+                </button>
             </div>
-        </div>
 
-        <div class="mt-3">
-            <label for="sacerdoteIdCertificado" class="form-label">Seleccionar Sacerdote:</label>
-            <select class="form-select w-50" id="sacerdoteIdCertificado" name="sacerdoteId">
-                <option value="">-- Seleccione un sacerdote --</option>
-            </select>
-        </div>
+            <div class="row g-2 mb-3 align-items-center">
+                <div class="col-md-4">
+                    <label for="sacerdoteIdCertificado" class="form-label mb-1 fw-semibold small">Seleccionar Sacerdote</label>
+                    <select class="form-select form-select-sm" id="sacerdoteIdCertificado" name="sacerdoteId">
+                        <option value="">-- Seleccione un sacerdote --</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="nombrecompleto" class="form-label mb-1 fw-semibold small">Buscar Alumno</label>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control form-control-sm" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
+                        <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="buscarPaseNivel()">
+                            <i class="fas fa-search me-1"></i> Buscar
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaPaseNivel()">
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="form-check form-switch pt-4">
+                        <input class="form-check-input" type="checkbox" id="toggleListaPase" onchange="toggleListaPaseNivel()">
+                        <label class="form-check-label small ms-1" for="toggleListaPase">
+                            Mostrar todos
+                        </label>
+                    </div>
+                </div>
+            </div>
 
-        <div class="mt-3">
-            <h4>Resultados de la búsqueda:</h4>
+            <h5 class="card-title text-primary fw-bold mb-2 small text-uppercase">
+                <i class="fas fa-list me-1 text-primary"></i> Resultados de la búsqueda
+            </h5>
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Foto</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Cédula</th>
-                        <th>Nivel</th>
-                        <th>Telefono</th>
-                        <th>Fecha nacimiento</th>
-                        <th>Dirección</th>
-                        <th>Seleccionar</th>
-                    </tr>
-                </thead>
-                <tbody id="resultados">
-                    @if (Model != null && Model?.Any())
-                    {
-                        @foreach (var alumno in Model)
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cédula</th>
+                            <th>Nivel</th>
+                            <th>Teléfono</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Dirección</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultados">
+                        @if (Model != null && Model?.Any())
+                        {
+                            @foreach (var alumno in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (alumno.foto != null && alumno.foto.Length > 0)
+                                        {
+                                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)"
+                                                alt="Foto de @alumno.nombre" width="60" height="60" class="rounded" />
+                                        }
+                                        else
+                                        {
+                                            <span>Sin foto</span>
+                                        }
+                                    </td>
+                                    <td>@alumno.nombre</td>
+                                    <td>@alumno.apellido</td>
+                                    <td>@alumno.cedula</td>
+                                    <td>@alumno.nivel</td>
+                                    <td>@alumno.direccion</td>
+                                    <td>@alumno.telefono</td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>
-                                    @if (alumno.foto != null && alumno.foto.Length > 0)
-                                    {
-                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(alumno.foto)"
-                                            alt="Foto de @alumno.nombre" width="100" height="100" />
-                                    }
-                                    else
-                                    {
-                                        <span>Sin foto</span>
-                                    }
-                                </td>
-                                <td>@alumno.nombre</td>
-                                <td>@alumno.apellido</td>
-                                <td>@alumno.cedula</td>
-                                <td>@alumno.nivel</td>
-                                <td>@alumno.direccion</td>
-                                <td>@alumno.telefono</td>
+                                <td colspan="9">No se encontraron resultados.</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4">No se encontraron resultados.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </form>
-
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

@@ -1,863 +1,202 @@
-<title>@ViewData["Title"] - Registro de Bautizo</title>
 @{
+    ViewData["Title"] = "Registro de Matrimonio";
+    ViewData["ActiveSubmenu"] = "Matrimonios";
     Layout = "_Layout";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<partial name="_SubmenuSacramentos" />
 
-<!-- Contenedor principal para el título y el botón -->
-<div class="d-flex align-items-center mb-3">
-    <a class="btn btn-secondary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="MenuSacramentos" aria-label="Regresar al menú de sacramentos">
-        <i class="fas fa-arrow-left me-1"></i>
-        <span>Volver</span>
-    </a>
-    <h1 class="ms-3">Registro de Matrimonio</h1>
+<!-- Contenedor principal para el título -->
+<div class="mb-3 text-center">
+    <h1 class="h3 mb-0 text-primary fw-bold">Gestión de Matrimonios</h1>
 </div>
 
 <!-- Sistema de pestañas -->
-<ul class="nav nav-tabs" id="formTabs" role="tablist">
+<ul class="nav nav-tabs justify-content-center mb-3" id="formTabs" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="cursillo-tab" data-toggle="tab" data-target="#cursillo" type="button" role="tab" aria-controls="cursillo" aria-selected="true">
+        <button class="nav-link active" id="cursillo-tab" data-bs-toggle="tab" data-bs-target="#cursillo" data-toggle="tab" data-target="#cursillo" type="button" role="tab" aria-controls="cursillo" aria-selected="true">
             Cursillo Pre Matrimonial
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="acta-prematrimonial-tab" data-toggle="tab" data-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false">
+        <button class="nav-link" id="acta-prematrimonial-tab" data-bs-toggle="tab" data-bs-target="#acta" data-toggle="tab" data-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false">
             Acta Pre Matrimonial
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="acta-matrimonio-tab" data-toggle="tab" data-target="#matrimonial" type="button" role="tab" aria-controls="matrimonial" aria-selected="false">
+        <button class="nav-link" id="acta-matrimonio-tab" data-bs-toggle="tab" data-bs-target="#matrimonial" data-toggle="tab" data-target="#matrimonial" type="button" role="tab" aria-controls="matrimonial" aria-selected="false">
             Acta de Matrimonio
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="antiguos-tab" data-toggle="tab" data-target="#antiguos" type="button" role="tab" aria-controls="antiguos" aria-selected="false">
+        <button class="nav-link" id="antiguos-tab" data-bs-toggle="tab" data-bs-target="#antiguos" data-toggle="tab" data-target="#antiguos" type="button" role="tab" aria-controls="antiguos" aria-selected="false">
             Matrimonios Antiguos
         </button>
     </li>
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
 </ul>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <div class="tab-content mt-3" id="formTabsContent">
     <!-- Formulario Cursillo Pre Matrimonial -->
     <div class="tab-pane fade show active" id="cursillo" role="tabpanel" aria-labelledby="cursillo-tab">
-        <div class="row">
-            <div class="col-md-6">
-                <form asp-action="Create" asp-controller="CursilloPreMatrimonial" method="post" id="formularioCursillo">
-                    <h2>Registro de Cursillo Pre Matrimonial</h2>
-                    <div class="row">
-                        <!-- Columna para datos del Novio -->
-                        <div class="col-md-6">
-                            <h4>Datos del Novio</h4>
-                            <div class="mb-3">
-                                <label for="cursillo_nombrenovio">Nombre del Novio:</label>
-                                <input type="text" id="cursillo_nombrenovio" name="nombrenovio" required class="form-control">
+        <div class="row justify-content-center align-items-start g-3">
+            <!-- Formulario a la izquierda -->
+            <div class="col-lg-5 col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <form asp-action="Create" asp-controller="CursilloPreMatrimonial" method="post" id="formularioCursillo" autocomplete="off">
+                            <h5 class="card-title text-primary fw-bold mb-3">
+                                <i class="fas fa-heart me-1 text-danger"></i> Registro de Cursillo Pre Matrimonial
+                            </h5>
+
+                            <!-- Datos del Novio -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-male me-1 text-primary"></i> Datos del Novio</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cursillo_nombrenovio" class="form-label mb-1 fw-semibold small">Nombre del Novio</label>
+                                        <input type="text" id="cursillo_nombrenovio" name="nombrenovio" required class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cursillo_cedulanovio" class="form-label mb-1 fw-semibold small">Cédula del Novio</label>
+                                        <input type="text" id="cursillo_cedulanovio" name="cedulanovio" required class="form-control form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="cursillo_telefononovio" class="form-label mb-1 fw-semibold small">Teléfono del Novio</label>
+                                        <input type="tel" id="cursillo_telefononovio" name="telefononovio" required class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="fechanacimientonovio" class="form-label mb-1 fw-semibold small">F. Nacimiento Novio</label>
+                                        <input type="date" id="fechanacimientonovio" name="fechanacimientonovio" required class="form-control form-control-sm">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="cursillo_cedulanovio">Cédula del Novio:</label>
-                                <input type="text" id="cursillo_cedulanovio" name="cedulanovio" required class="form-control">
+
+                            <!-- Datos de la Novia -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-female me-1 text-danger"></i> Datos de la Novia</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cursillo_nombrenovia" class="form-label mb-1 fw-semibold small">Nombre de la Novia</label>
+                                        <input type="text" id="cursillo_nombrenovia" name="nombrenovia" required class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cursillo_cedulanovia" class="form-label mb-1 fw-semibold small">Cédula de la Novia</label>
+                                        <input type="text" id="cursillo_cedulanovia" name="cedulanovia" required class="form-control form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="cursillo_telefononovia" class="form-label mb-1 fw-semibold small">Teléfono de la Novia</label>
+                                        <input type="tel" id="cursillo_telefononovia" name="telefononovia" required class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="fechanacimientonovia" class="form-label mb-1 fw-semibold small">F. Nacimiento Novia</label>
+                                        <input type="date" id="fechanacimientonovia" name="fechanacimientonovia" required class="form-control form-control-sm">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="cursillo_telefononovio">Teléfono del Novio:</label>
-                                <input type="tel" id="cursillo_telefononovio" name="telefononovio" required class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="fechanacimientonovio">Fecha de Nacimiento del Novio:</label>
-                                <input type="date" id="fechanacimientonovio" name="fechanacimientonovio" required class="form-control">
-                            </div>
-                        </div>
 
-                        <!-- Columna para datos de la Novia -->
-                        <div class="col-md-6">
-                            <h4>Datos de la Novia</h4>
-                            <div class="mb-3">
-                                <label for="cursillo_nombrenovia">Nombre de la Novia:</label>
-                                <input type="text" id="cursillo_nombrenovia" name="nombrenovia" required class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="cursillo_cedulanovia">Cédula de la Novia:</label>
-                                <input type="text" id="cursillo_cedulanovia" name="cedulanovia" required class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="cursillo_telefononovia">Teléfono de la Novia:</label>
-                                <input type="tel" id="cursillo_telefononovia" name="telefononovia" required class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="fechanacimientonovia">Fecha de Nacimiento de la Novia:</label>
-                                <input type="date" id="fechanacimientonovia" name="fechanacimientonovia" required class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="fechacursillo">Fecha de Cursillo:</label>
-                        <input type="date" id="fechacursillo" name="fechacursillo" required class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="fechamatrimonio">Fecha de Matrimonio:</label>
-                        <input type="date" id="fechamatrimonio" name="fechamatrimonio" required class="form-control">
-                    </div>
-
-                    @* <div class="mb-3 d-flex align-items-center">
-                        <label for="consanguinidad" class="mr-2">¿Son de Consanguinidad?</label>
-                        <button type="submit" class="btn btn-primary" id="printButton" asp-action="Consanguinidad" asp-controller="Matrimonio">Especificar Consanguinidad</button>
-                    </div>
-
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="mixtareligion" class="mr-2">¿Son de Religiones Mixtas?</label>
-                        <button type="submit" class="btn btn-primary" id="botonMixta" asp-action="ReligionMixta" asp-controller="Matrimonio">Especificar Religiones</button>
-                    </div>
-
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="disponibilidadcultos" class="mr-2">¿Disponibilidad de Cultos?</label>
-                        <button type="submit" class="btn btn-primary" id="botonCultos" asp-action="Cultos" asp-controller="Matrimonio">Especificar Cultos</button>
-                    </div> *@
-
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="consanguinidad" class="mr-2">¿Son de Consanguinidad?</label>
-                        <button type="button" class="btn btn-primary" id="printButton" onclick="enviarFormulario('Consanguinidad')">Especificar Consanguinidad</button>
-                    </div>
-
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="mixtareligion" class="mr-2">¿Son de Religiones Mixtas?</label>
-                        <button type="button" class="btn btn-primary" id="botonMixta" onclick="enviarFormulario('ReligionMixta')">Especificar Religiones</button>
-                    </div>
-
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="disponibilidadcultos" class="mr-2">¿Disponibilidad de Cultos?</label>
-                        <button type="button" class="btn btn-primary" id="botonCultos" onclick="enviarFormulario('Cultos')">Especificar Cultos</button>
-                    </div>
-
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="estado" class="form-label">Estado del Cursillo</label>
-                        <select class="form-select" id="estado" name="estado" required>
-                            <option value="Cursando">Cursando</option>
-                            <option value="Aprobado">Aprobado</option>
-                            <option value="Retirado">Retirado</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="parroquia_id" class="form-label">Seleccionar Parroquia:</label>
-                        <select class="form-select w-50" id="parroquia_id" name="parroquia">
-                            <option value="">-- Seleccione una parroquia --</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="observaciones" class="form-label">Observaciones</label>
-                        <textarea class="form-control" id="observaciones" name="observaciones" rows="3" placeholder="Ingrese observaciones..."></textarea>
-                    </div>
-
-                    <button  type="submit" class="btn btn-primary mt-3">Registrar Cursillo</button>
-                    <label id="exito" class="text-success" style="display: none;">Cursillo Registrado</label>
-                </form>
-                <!-- Segunda columna con detalles e formulario de búsqueda -->
-            </div>
-            <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
-                <form id="buscar-cursillo" >
-                    <div class="mb-3">
-                        <label for="nombrecompletonino" class="form-label">Nombre completo del novio/novia</label>
-                        <input type="text" class="form-control" id="nombrecompleto" name="nombrecompleto" placeholder="Escribe un nombre...">
-                    </div>
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-primary" onclick="ListCursillo()">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCursilloGeneral()">
-                            <i class="fas fa-times"></i> Limpiar
-                        </button>
-                    </div>
-                    
-                    <div class="mb-3">
-                        
-                            <h3>Resultados de la búsqueda:</h3>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre del novio</th>
-                                        <th>Nombre de la novia</th>
-                                        <th>Fecha de Cursillo</th>
-                                        <th>Fecha de Matrimonio</th>
-                                        <th>Estado</th>
-                                        <th>Modificar</th>
-                                        <th>Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="resultadosCursillo">
-                                @if (Model != null && Model.Any())
-                                {
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.nombrenovio</td>
-                                            <td>@item.nombrenovia</td>
-                                            <td>@item.fechacursillo.ToString("dd/MM/yyyy")</td>
-                                            <td>@item.fechamatrimonio.ToString("dd/MM/yyyy")</td>
-                                            <td>@item.estado</td>
-                                            <td>
-                                                <a asp-action="ModifyCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
-                                            </td>
-                                            <td>
-                                                <a asp-action="DeleteCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <p>No se encontraron resultados.</p>
-                                }
-                                </tbody>
-                            </table>
-                        
-                    </div>
-                </form>
-            </div>
-        </div>
-
-    </div>
-   
-
-    <!-- Formulario Acta de PreMatrimonio -->
-    <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-prematrimonial-tab">
-        <div class="row">
-            <!-- Formulario de creación a la izquierda -->
-            <div class="col-md-6">
-                <form asp-action="Create" asp-controller="ActaPrematrimonial" method="post" id="acta-prematrimonial">
-                    <h2>Registro de Acta Pre Matrimonial</h2>
-                    <div id="tooltipCursillo" class="invalid-tooltip" style="display: none; position: absolute; z-index: 10;">
-                    Primero debes seleccionar un cursillo.
-                    </div>
-                    <div class="row">
-                        <!-- Columna para datos del Novio -->
-                        <div class="col-md-6">
-
-                    <h5>Datos del Novio</h5>
-                    <div class="mb-3">
-@*                         <label for="NombreNovio">Nombre del Novio:</label>
-                                *@                        
-                         <input type="text" id="NombreNovio" name="nombrenovio" class="form-control" placeholder="Nombre del Novio" required />
-                    </div>
-                    <div class="mb-3">
-@*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
-                                *@                        
-                         <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo del Novio" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-@*                         <label for="PadreNovio">Padre del Novio:</label>
-                                *@                        
-                         <input type="text" id="nombrepadrenovio" placeholder="Padre del Novio" name="nombrepadrenovio" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-@*                         <label for="MadreNovio">:</label>
-                                *@                        
-                         <input type="text" id="nombremadrenovio" name="nombremadrenovio" placeholder="Madre del Novio" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="FechaNacimientoNovio">Fecha de Nacimiento del Novio:</label>
-                        <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="FechaBautizoNovio">Fecha de Bautizo del Novio:</label>
-                        <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control" />
-                    </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>Datos de la Novia</h4>
-                    <div class="mb-3">
-@*                         <label for="NombreNovia">Nombre de la Novia:</label>
- *@                        <input type="text" id="NombreNovia" name="nombrenovia" class="form-control" placeholder="Nombre de la Novia" required />
-                    </div>
-                    <div class="mb-3">
-@*                         <label for="LugarBautizoNovia">Lugar de Bautizo de la Novia:</label>
-                                *@                        
-                         <input type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo de la Novia" name="lugarbautizonovia" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-@*                         <label for="PadreNovia">Padre de la Novia:</label>
-                                *@                        
-                                
-                         <input type="text" id="nombrepadrenovia" placeholder="Padre de la Novia" name="nombrepadrenovia" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-@*                         <label for="MadreNovia">Madre de la Novia:</label>
-                                *@                       
-                         <input type="text" id="nombremadrenovia" placeholder="Madre de la Novia" name="nombremadrenovia" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="FechaNacimientoNovia">Fecha de Nacimiento de la Novia:</label>
-                        <input type="date" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="FechaBautizoNovia">Fecha de Bautizo de la Novia:</label>
-                        <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control" />
-                    </div>
-                        </div>
-                    <h5>Información del Matrimonio</h5>
-                    <div class="mb-3">
-                        <label for="FechaMatrimonio">Fecha del Matrimonio:</label>
-                        <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="ministro_id">Ministro:</label>
-                        <select id="ministro_id" name="ministro_id" class="form-control" required>
-                            <option value="">Seleccione un ministro</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="iglesia_id">Iglesia:</label>
-                        <select id="iglesia_id" name="iglesia_id" class="form-control" required>
-                            <option value="">Seleccione una iglesia</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="Testigo1">Testigo 1:</label>
-                        <input type="text" id="testigo1" name="testigo1" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="testigo2">Testigo 2:</label>
-                        <input type="text" id="testigo2" name="testigo2" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="testigo3">Testigo 3:</label>
-                        <input type="text" id="testigo3" name="testigo3" class="form-control" placeholder="(Opcional)"/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="testigo4">Testigo 4:</label>
-                        <input type="text" id="testigo4" name="testigo4" class="form-control" placeholder="(Opcional)"/>
-                    </div>
-                    @* <div class="mb-3">
-                        <label for="LugarMatrimonio">Lugar del Matrimonio:</label>
-                        <input type="text" id="LugarMatrimonio" name="lugarmatrimonio" class="form-control" />
-                    </div> *@
-                    @* <div class="mb-3">
-                        <label for="Celebrante">Celebrante del Matrimonio:</label>
-                        <input type="text" id="Celebrante" name="Celebrante" class="form-control" />
-                    </div> *@
-
-                    <h4>Registro Civil</h4>
-                    <div class="mb-3">
-                        <label for="FechaRegistroCivil">Fecha del Registro Civil:</label>
-                        <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="LugarRegistroCivil">Lugar del Registro Civil:</label>
-                        <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="NumeroActaRegistroCivil">Número de Acta del Registro Civil:</label>
-                        <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="NumeroActaRegistroCivil">Número de Página del Registro Civil:</label>
-                        <input type="text" id="NumeroActaRegistroCivil" name="numeropaginaregistrocivil" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="NumeroActaRegistroCivil">Número de Tomo del Registro Civil:</label>
-                        <input type="text" id="NumeroActaRegistroCivil" name="numertomoregistrocivil" class="form-control" />
-                    </div>
-
-                    <h4>Registro Eclesiástico</h4>
-                    <div class="mb-3">
-                        <label for="Tomo">Tomo:</label>
-                        <input type="text" id="Tomo" name="tomo" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Pagina">Página:</label>
-                        <input type="text" id="Pagina" name="pagina" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Acta">Número de Acta:</label>
-                        <input type="text" id="Acta" name="acta" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="FechaRegistroParroquial">Fecha de Registro Parroquial:</label>
-                        <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control" />
-                    </div>
-                        <div class="mb-3">
-                            <label for="Observaciones">Observaciones:</label>
-                            <input type="text" id="Observaciones" name="observaciones" class="form-control" />
-                        </div>
-                    </div>
-
-                    <input type="hidden" id="cursillo_id" name="cursillo_id" />
-                    <input type="hidden" id="CursilloIdSeleccionado" name="CursilloIdSeleccionado" />
-                    <button type="submit" class="btn btn-primary">Registrar</button>
-                    <div id="alertaCursillo" class="alert alert-danger" role="alert" style="display: none;">
-                        Debes seleccionar un cursillo antes de registrar el acta.
-                    </div>
-                    <label id="exito2" class="text-success" style="display: none;">Acta Registrado</label>
-
-                </form>
-            </div>
-
-            <!-- Detalles a la derecha -->
-            <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
-
-                <!-- TABLA DE CURSILLOS PARA SELECCIONAR -->
-                <div class="mb-3">
-                    <h4>Seleccionar Cursillo</h4>
-
-                    <input type="text" class="form-control mb-2" id="busquedaCursillo" placeholder="Selecciona el cursillo correspondiente al acta que estás registrando.">
-                    <!-- Mensaje de advertencia en rojo, oculto por defecto -->
-                    <div id="mensajeErrorCursillo" class="text-danger mb-2" style="display: none;">
-                        Ingresa un valor o nombre.
-                    </div>
-                    <!-- Botones -->
-                    <button type="button" class="btn btn-primary" onclick="buscarCursillos()">
-                        <i class="fas fa-search"></i> Buscar 
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCursilloActa()">
-                        <i class="fas fa-times"></i> Limpiar
-                    </button>
-
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Nombre Novio</th>
-                                <th>Nombre Novia</th>
-                                <th>Fecha Cursillo</th>
-                                <th>Seleccionar</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaCursillos">
-                            <!-- Se llena con JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-5">
-                    <h4>Registros de Actas Pre Matrimoniales</h4>
-                </div>
-                <!-- Formulario de búsqueda de actas -->
-                <form asp-action="Search" method="get" id="buscar-cursillo" asp-controller="CursilloPreMatrimonial">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="nombrecompletonino" name="nombrecompletonino" placeholder="Buscar por nombre del novio/novia...">
-                        <div id="mensajeErrorNombre" class="text-danger mt-1" style="display: none;">
-                            Ingresa un valor o nombre.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-primary" onclick="ListActaPre()">
-                            <i class="fas fa-search"></i> Buscar 
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="LimpiarBusqueda()">
-                            <i class="fas fa-times"></i> Limpiar
-                        </button>
-                    </div>
-                    <div class="mb-3">
-
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Nombre Novio</th>
-                                    <th>Nombre Novia</th>
-                                    <th>Fecha de Matrimonio</th>
-                                    <th>Estado</th>
-                                    <th>Modificar</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="resultadosActas">
-                                @if (Model != null)
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.nombrenovio</td>
-                                            <td>@item.nombrenovia</td>
-                                            <td>@item.fechamatrimonio.ToString("dd/MM/yyyy")</td>
-                                            <td>@item.estado</td>
-                                            <td>
-                                                <a asp-action="ModifyActaPrematrimonialView" asp-controller="ActaPrematrimonial" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
-                                            </td>
-                                            <td>
-                                                <a asp-action="DeleteActaPrematrimonialView" asp-controller="ActaPrematrimonial" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr><td colspan="7">No se encontraron resultados.</td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <div class="tab-pane fade" id="matrimonial" role="tabpanel" aria-labelledby="acta-matrimonio-tab">
-        <div class="row">
-            <!-- Formulario de creación a la izquierda -->
-            <div class="col-md-6">
-                <form asp-action="Create" asp-controller="ActaMatrimonial" method="post" id="form-acta-matrimonial">
-                    <h2>Registro de Acta de Matrimonio</h2>
-                    <div class="row">
-                        <h5 class="mt-3">Padrinos del Matrimonio</h5>
-
+                            <!-- Fechas -->
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <input type="text" id="padrino1" name="padrino1" placeholder="Padrino 1" class="form-control" required />
+                                <div class="col-md-6 mb-2">
+                                    <label for="fechacursillo" class="form-label mb-1 fw-semibold small">Fecha de Cursillo</label>
+                                    <input type="date" id="fechacursillo" name="fechacursillo" required class="form-control form-control-sm">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <input type="text" id="padrino2" name="padrino2" placeholder="Padrino 2" class="form-control" required/>
+                                <div class="col-md-6 mb-2">
+                                    <label for="fechamatrimonio" class="form-label mb-1 fw-semibold small">Fecha de Matrimonio</label>
+                                    <input type="date" id="fechamatrimonio" name="fechamatrimonio" required class="form-control form-control-sm">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <input type="text" id="padrino3" name="padrino3" placeholder="Padrino 3 (Opcional)" class="form-control" />
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <input type="text" id="padrino4" name="padrino4" placeholder="Padrino 4 (Opcional)" class="form-control" />
-                                </div>
-                                <input type="hidden" id="acta_prematrimonial_id" name="acta_prematrimonial_id" />
-                                <input type="hidden" id="hidden_iglesia_id" name="iglesia_id" />
-                                <input type="hidden" id="hidden_ministro_id" name="ministro_id" />
-                                <input type="hidden" name="pagina" id="pagina">
-                                <input type="hidden" name="tomo" id="tomo">
-                                <input type="hidden" name="acta" id="input-acta" />
-                                <input type="hidden" name="fecha_matrimonio" id="fecha_matrimonio" class="form-control" />
-
-
                             </div>
 
-                        <div class="mb-3">
-                            <label for="fecharegistro" class="form-label">Fecha de registro:</label>
-                            <input type="date" id="fecharegistro" name="fecharegistro" class="form-control" placeholder="dd/mm/aaaa" required />
-                        </div>
-                        <div class="mb-3">
-                            <label for="observaciones" class="form-label">Observaciones:</label>
-                            <textarea id="observaciones" name="observaciones" class="form-control" rows="3" placeholder="Escribe alguna observación si es necesaria"></textarea>
-                        </div>
-                       
-                    <button type="submit" class="btn btn-primary">Registrar Acta</button>
-                    <div id="errorActaMessage" class="alert alert-danger mt-3 d-none" role="alert">
-                        Debes seleccionar un acta prematrimonial antes de registrar.
+                            <!-- Botones de especificaciones adicionales -->
+                            <div class="d-flex flex-wrap gap-2 mb-2 justify-content-between">
+                                <button type="button" class="btn btn-outline-primary btn-sm flex-fill" id="printButton" onclick="enviarFormulario('Consanguinidad')">
+                                    Consanguinidad
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm flex-fill" id="botonMixta" onclick="enviarFormulario('ReligionMixta')">
+                                    Religiones Mixtas
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm flex-fill" id="botonCultos" onclick="enviarFormulario('Cultos')">
+                                    Cultos
+                                </button>
+                            </div>
+
+                            <!-- Estado y Parroquia -->
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="estado" class="form-label mb-1 fw-semibold small">Estado del Cursillo</label>
+                                    <select class="form-select form-select-sm" id="estado" name="estado" required>
+                                        <option value="Cursando">Cursando</option>
+                                        <option value="Aprobado">Aprobado</option>
+                                        <option value="Retirado">Retirado</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="parroquia_id" class="form-label mb-1 fw-semibold small">Parroquia</label>
+                                    <select class="form-select form-select-sm" id="parroquia_id" name="parroquia">
+                                        <option value="">-- Seleccione una parroquia --</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="observaciones" class="form-label mb-1 fw-semibold small">Observaciones</label>
+                                <textarea class="form-control form-control-sm" id="observaciones" name="observaciones" rows="2" placeholder="Ingrese observaciones..."></textarea>
+                            </div>
+
+                            <!-- Botones de acción centrados -->
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar Cursillo</button>
+                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                            </div>
+                            <div id="exito" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Cursillo Registrado</div>
+                        </form>
                     </div>
-                    </div> 
-                    <label id="exito3" class="text-success" style="display: none;">Acta Registrada</label>
-
-                </form>
-            </div>
-
-            <!-- Detalles a la derecha -->
-            <div class="col-md-6 mt-4 mt-md-0">
-                <form asp-action="Search" method="get" id="buscar-actamatri" asp-controller="ActaMatrimonial">
-
-                    <!-- Sección de selección de lista mediante RadioButton -->
-                    <div class="mb-3">
-                        <label class="form-label">Selecciona el tipo de lista a mostrar:</label><br>
-                        <input type="radio" id="actasPrematrimoniales" name="tipoActa" value="prematrimonial" checked onclick="mostrarLista('prematrimonial')" />
-                        <label for="actasPrematrimoniales">Actas Prematrimoniales</label>
-
-                        <input type="radio" id="actasCreadas" name="tipoActa" value="creada" onclick="mostrarLista('creada')" />
-                        <label for="actasCreadas">Actas Creadas</label>
-                    </div>
-
-                    
-
-                    <!-- Botón de búsqueda -->
-                  @*   <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                    </div> *@
-
-                    <!-- Resultados de Actas Prematrimoniales -->
-                    <div class="mb-3" id="listaPrematrimonial">
-                        <!-- Campo de búsqueda -->
-                        <div class="mb-3">
-                            <label for="nombreBuscar" class="form-label">Buscar por nombre del novio o novia</label>
-                            <input type="text" class="form-control" id="nombreBuscar" name="nombreBuscar" placeholder="Ej: Carlos o María" />
-                            <button type="button" class="btn btn-primary" onclick="ListActaPreAOfi()">Buscar</button>
-                            <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaActaPrematrimonial()">Limpiar</button>
-                        </div>
-                        <h3>Resultados de Actas Prematrimoniales:</h3>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Nombre Novio</th>
-                                    <th>Nombre Novia</th>
-                                    <th>Fecha de Matrimonio</th>
-                                    <th>Acción</th> 
-                                </tr>
-                            </thead>
-                            <tbody id="resultadosActa">
-                                @if (Model?.ActasPrematrimoniales != null)
-                                {
-                                    @foreach (var item in Model.ActasPrematrimoniales)
-                                    {
-                                        <tr>
-                                            <td>@item.NombreNovio</td>
-                                            <td>@item.NombreNovia</td>
-                                            <td>@item.FechaMatrimonio.ToString("dd/MM/yyyy")</td>
-                                            <td><button type="button" onclick="seleccionarActaPreYEnviar(${item.id})" class="btn btn-success">Seleccionar</button></td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="3">No se encontraron resultados.</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Resultados de Actas Creadas -->
-                    <div class="mb-3" id="listaCreadas" style="display: none;">
-                        <!-- Campo de búsqueda -->
-                        <div class="mb-3 d-flex gap-2">
-                            <input type="text" class="form-control" id="fechacasadosreg" placeholder="Buscar por nombre del novio o novia" />
-                            <button type="button" class="btn btn-primary" onclick="ListActaCreada()">Buscar</button>
-                            <button type="button" class="btn btn-secondary" onclick="limpiarBusquedaCreadas()">Limpiar</button>
-                        </div>
-                        <h3>Resultados de Actas Creadas:</h3>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Novio</th>
-                                    <th>Novia</th>
-                                    <th>Padrino 1</th>
-                                    <th>Padrino 2</th>
-                                    <th>Fecha de registro</th>
-                                    <th>Modificar</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="resultadosActaCreadas">
-                                @if (Model != null)
-                                {
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.padrino1</td>
-                                            <td>@item.padrino2</td>
-                                            <td>@(item.fecharegistro?.ToString("dd/MM/yyyy") ?? "Sin fecha")</td>
-                                            <td>
-                                                <a asp-action="ModifyActamatrimonialView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
-                                            </td>
-                                            <td>
-                                                <a asp-action="DeleteActamatrimonialView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="3">No se encontraron resultados.</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Formulario Matrimonios Antiguos -->
-    <div class="tab-pane fade" id="antiguos" role="tabpanel" aria-labelledby="antiguos-tab">
-        <div class="container mt-5">
-            <div class="row">
-                <!-- Formulario de creación a la izquierda -->
-                <div class="col-md-6">
-                    <form asp-action="Create" asp-controller="ActasAntiguas" method="post" id="acta-antig">
-                        <h2>Registro de Matrimonios Antiguos</h2>
-                        <div class="row">
-                            <!-- Columna para datos del Novio -->
-                            <div class="col-md-6">
-
-                                <h5>Datos del Novio</h5>
-                                <div class="mb-3">
-                                    @*                         <label for="NombreNovio">Nombre del Novio:</label>
-                                    *@
-                                    <input type="text" id="NombreNovio" name="nombrenovio" class="form-control" placeholder="Nombre del Novio" required />
-                                </div>
-                                <div class="mb-3">
-                                    @*                         <label for="LugarBautizoNovio">Lugar de Bautizo del Novio:</label>
-                                    *@
-                                    <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo del Novio" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    @*                         <label for="PadreNovio">Padre del Novio:</label>
-                                    *@
-                                    <input type="text" id="cedulapadrenovio" placeholder="Padre del Novio" name="cedulapadrenovio" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    @*                         <label for="MadreNovio">:</label>
-                                    *@
-                                    <input type="text" id="cedulamadrenovio" name="cedulamadrenovio" placeholder="Madre del Novio" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="FechaNacimientoNovio">Fecha de Nacimiento del Novio:</label>
-                                    <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="FechaBautizoNovio">Fecha de Bautizo del Novio:</label>
-                                    <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h4>Datos de la Novia</h4>
-                                <div class="mb-3">
-                                    @*                         <label for="NombreNovia">Nombre de la Novia:</label>
-                                    *@                        <input type="text" id="NombreNovia" name="nombrenovia" class="form-control" placeholder="Nombre de la Novia" required />
-                                </div>
-                                <div class="mb-3">
-                                    @*                         <label for="LugarBautizoNovia">Lugar de Bautizo de la Novia:</label>
-                                    *@
-                                    <input type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo de la Novia" name="lugarbautizonovia" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    @*                         <label for="PadreNovia">Padre de la Novia:</label>
-                                    *@
-
-                                    <input type="text" id="cedulapadrenovia" placeholder="Padre de la Novia" name="cedulapadrenovia" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    @*                         <label for="MadreNovia">Madre de la Novia:</label>
-                                    *@
-                                    <input type="text" id="cedulamadrenovia" placeholder="Madre de la Novia" name="cedulamadrenovia" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="FechaNacimientoNovia">Fecha de Nacimiento de la Novia:</label>
-                                    <input type="date" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="FechaBautizoNovia">Fecha de Bautizo de la Novia:</label>
-                                    <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control" />
-                                </div>
-                            </div>
-                            <h5>Información del Matrimonio</h5>
-                            <div class="mb-3">
-                                <label for="FechaMatrimonio">Fecha del Matrimonio:</label>
-                                <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="ministro_id">Ministro que ofició la ceremonia:</label>
-                                <select id="ministro_id_antiguo" name="ministro_id" class="form-control" required>
-                                    <option value="">Seleccione un ministro</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="iglesia_id">Iglesia en la que se celebró:</label>
-                                <select name="iglesia_id" id="iglesia_id_antiguo" class="form-control" required>
-                                    <option value="">Seleccione una iglesia</option>
-                                </select>
-                            </div>
-
-                            <h4>Registro Civil</h4>
-                            <div class="mb-3">
-                                <label for="FechaRegistroCivil">Fecha del Registro Civil:</label>
-                                <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="LugarRegistroCivil">Lugar del Registro Civil:</label>
-                                <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="NumeroActaRegistroCivil">Número de Acta del Registro Civil:</label>
-                                <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="Testigo1">Cedula del Testigo 1:</label>
-                                <input type="text" id="cedulatestigo1" name="cedulatestigo1" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="cedulatestigo2">Cedula del Testigo 2:</label>
-                                <input type="text" id="cedulatestigo2" name="cedulatestigo2" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="cedulatestigo3">Cedula del Testigo 3:</label>
-                                <input type="text" id="cedulatestigo3" name="cedulatestigo3" class="form-control" placeholder="Opcional" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="cedulatestigo4">Cedula del Testigo 4:</label>
-                                <input type="text" id="cedulatestigo4" name="cedulatestigo4" class="form-control" placeholder="Opcional" />
-                            </div>
-
-
-                            <h4>Registro Eclesiástico</h4>
-                            <div class="mb-3">
-                                <label for="Tomo">Tomo:</label>
-                                <input type="text" id="Tomo" name="tomo" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="Pagina">Página:</label>
-                                <input type="text" id="Pagina" name="pagina" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="Acta">Número de Acta:</label>
-                                <input type="text" id="Acta" name="acta" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="FechaRegistroParroquial">Fecha de Registro Parroquial:</label>
-                                <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="Observaciones">Observaciones:</label>
-                                <input type="text" id="Observaciones" name="observaciones" class="form-control" />
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary mt-3">Registrar Matrimonio Antiguo</button>
-
-                        <label id="exito4" class="text-success" style="display: none;">Acta antigua Registrada</label>
-
-                    </form>
                 </div>
+            </div>
 
-                <!-- Detalles y búsqueda a la derecha -->
-                <div class="col-md-6 mb-3">
+            <!-- Búsqueda y tabla a la derecha -->
+            <div class="col-lg-7 col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <h5 class="card-title text-primary fw-bold mb-3">
+                            <i class="fas fa-search me-1 text-primary"></i> Búsqueda de Cursillos Pre Matrimoniales
+                        </h5>
+                        <form id="buscar-cursillo" onsubmit="event.preventDefault(); ListCursillo();">
+                            <div class="mb-3 d-flex">
+                                <input type="text" class="form-control form-control-sm me-2 mr-2" id="nombrecompleto" name="nombrecompleto" placeholder="Nombre completo del novio/novia...">
+                                <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" onclick="ListCursillo()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaCursilloGeneral()">
+                                    Limpiar
+                                </button>
+                            </div>
 
-                    <!-- Formulario de búsqueda -->
-                    <h4>Buscar Matrimonio Antiguo</h4>
-                    <form id="buscar-antiguo">
-                        <div class="mb-3">
-                            <label for="nombreantiguo" class="form-label">Nombre novio o novia</label>
-                            <input type="text" class="form-control" id="nombreantiguo" name="nombreantiguo" placeholder="Ej: Rosa o Antonio">
-                        </div>
-                        <div class="mb-3 d-flex gap-2">
-                            <button type="button" class="btn btn-primary" onclick="BuscarActasAntiguas()">
-                                <i class="fas fa-search"></i> Buscar
-                            </button>
-                            <button type="button" class="btn btn-secondary" onclick="LimpiarBusquedaActaAntigua()">
-                                Limpiar
-                            </button>
-                        </div>
-                        <div class="mb-3">
-
-                            <h3>Resultados de la búsqueda:</h3>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre del novio</th>
-                                        <th>Nombre de la novia</th>
-                                        <th>Fecha de registro</th>
-                                        <th>Modificar</th>
-                                        <th>Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="resultadosActaAntiguas">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Novio</th>
+                                            <th>Novia</th>
+                                            <th>F. Cursillo</th>
+                                            <th>F. Matrimonio</th>
+                                            <th>Estado</th>
+                                            <th>Modificar</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resultadosCursillo">
                                     @if (Model != null && Model.Any())
                                     {
                                         @foreach (var item in Model)
@@ -865,26 +204,761 @@
                                             <tr>
                                                 <td>@item.nombrenovio</td>
                                                 <td>@item.nombrenovia</td>
-                                                <td>@item.fecharegistro.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.fechacursillo.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.fechamatrimonio.ToString("dd/MM/yyyy")</td>
                                                 <td>@item.estado</td>
                                                 <td>
-                                                    <a asp-action="ModifyCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-warning">Actualizar</a>
+                                                    <a asp-action="ModifyCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
                                                 </td>
                                                 <td>
-                                                    <a asp-action="DeleteCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-danger" id="btnEliminar">Eliminar</a>
+                                                    <a asp-action="DeleteCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
                                                 </td>
                                             </tr>
                                         }
                                     }
                                     else
                                     {
-                                        <p>No se encontraron resultados.</p>
+                                        <tr><td colspan="7">No se encontraron resultados.</td></tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+    <!-- Formulario Acta de PreMatrimonio -->
+    <div class="tab-pane fade" id="acta" role="tabpanel" aria-labelledby="acta-prematrimonial-tab">
+        <div class="row justify-content-center align-items-start g-3">
+            <!-- Formulario de creación a la izquierda -->
+            <div class="col-lg-5 col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <form asp-action="Create" asp-controller="ActaPrematrimonial" method="post" id="acta-prematrimonial" autocomplete="off">
+                            <h5 class="card-title text-primary fw-bold mb-3">
+                                <i class="fas fa-ring me-1 text-warning"></i> Registro de Acta Pre Matrimonial
+                            </h5>
+                            <div id="tooltipCursillo" class="alert alert-warning py-1 px-2 small mb-2" style="display: none;">
+                                Primero debes seleccionar un cursillo de la lista de la derecha.
+                            </div>
+
+                            <!-- Datos del Novio -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-male me-1 text-primary"></i> Datos del Novio</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="NombreNovio" class="form-label mb-1 fw-semibold small">Nombre del Novio</label>
+                                        <input type="text" id="NombreNovio" name="nombrenovio" class="form-control form-control-sm" placeholder="Nombre del Novio" required />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="LugarBautizoNovio" class="form-label mb-1 fw-semibold small">Lugar de Bautizo</label>
+                                        <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar Bautizo" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="nombrepadrenovio" class="form-label mb-1 fw-semibold small">Padre del Novio</label>
+                                        <input type="text" id="nombrepadrenovio" placeholder="Padre del Novio" name="nombrepadrenovio" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="nombremadrenovio" class="form-label mb-1 fw-semibold small">Madre del Novio</label>
+                                        <input type="text" id="nombremadrenovio" name="nombremadrenovio" placeholder="Madre del Novio" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaNacimientoNovio" class="form-label mb-1 fw-semibold small">F. Nacimiento Novio</label>
+                                        <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaBautizoNovio" class="form-label mb-1 fw-semibold small">F. Bautizo Novio</label>
+                                        <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Datos de la Novia -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-female me-1 text-danger"></i> Datos de la Novia</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="NombreNovia" class="form-label mb-1 fw-semibold small">Nombre de la Novia</label>
+                                        <input type="text" id="NombreNovia" name="nombrenovia" class="form-control form-control-sm" placeholder="Nombre de la Novia" required />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="LugarBautizoNovia" class="form-label mb-1 fw-semibold small">Lugar de Bautizo</label>
+                                        <input type="text" id="LugarBautizoNovia" placeholder="Lugar Bautizo" name="lugarbautizonovia" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="nombrepadrenovia" class="form-label mb-1 fw-semibold small">Padre de la Novia</label>
+                                        <input type="text" id="nombrepadrenovia" placeholder="Padre de la Novia" name="nombrepadrenovia" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="nombremadrenovia" class="form-label mb-1 fw-semibold small">Madre de la Novia</label>
+                                        <input type="text" id="nombremadrenovia" placeholder="Madre de la Novia" name="nombremadrenovia" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaNacimientoNovia" class="form-label mb-1 fw-semibold small">F. Nacimiento Novia</label>
+                                        <input type="date" id="FechaNacimientoNovia" name="fechanacimientonovia" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaBautizoNovia" class="form-label mb-1 fw-semibold small">F. Bautizo Novia</label>
+                                        <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información del Matrimonio -->
+                            <div class="mb-2">
+                                <label for="FechaMatrimonio" class="form-label mb-1 fw-semibold small">Fecha del Matrimonio</label>
+                                <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control form-control-sm" required />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="ministro_id" class="form-label mb-1 fw-semibold small">Ministro</label>
+                                    <select id="ministro_id" name="ministro_id" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione un ministro</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="iglesia_id" class="form-label mb-1 fw-semibold small">Iglesia</label>
+                                    <select id="iglesia_id" name="iglesia_id" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione una iglesia</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Testigos -->
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="testigo1" class="form-label mb-1 fw-semibold small">Testigo 1</label>
+                                    <input type="text" id="testigo1" name="testigo1" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="testigo2" class="form-label mb-1 fw-semibold small">Testigo 2</label>
+                                    <input type="text" id="testigo2" name="testigo2" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="testigo3" class="form-label mb-1 fw-semibold small">Testigo 3 (opc)</label>
+                                    <input type="text" id="testigo3" name="testigo3" class="form-control form-control-sm" placeholder="(Opcional)"/>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="testigo4" class="form-label mb-1 fw-semibold small">Testigo 4 (opc)</label>
+                                    <input type="text" id="testigo4" name="testigo4" class="form-control form-control-sm" placeholder="(Opcional)"/>
+                                </div>
+                            </div>
+
+                            <!-- Registro Civil -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-university me-1"></i> Registro Civil</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="FechaRegistroCivil" class="form-label mb-1 fw-semibold small">Fecha Reg. Civil</label>
+                                        <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="LugarRegistroCivil" class="form-label mb-1 fw-semibold small">Lugar Reg. Civil</label>
+                                        <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-1">
+                                        <label for="NumeroActaRegistroCivil" class="form-label mb-1 fw-semibold small">N° Acta</label>
+                                        <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-1">
+                                        <label class="form-label mb-1 fw-semibold small">Página</label>
+                                        <input type="text" id="NumeroPaginaRegistroCivil" name="numeropaginaregistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-1">
+                                        <label class="form-label mb-1 fw-semibold small">Tomo</label>
+                                        <input type="text" id="NumeroTomoRegistroCivil" name="numertomoregistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Registro Eclesiástico -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-church me-1"></i> Registro Eclesiástico</h6>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="Tomo" class="form-label mb-1 fw-semibold small">Tomo</label>
+                                        <input type="text" id="Tomo" name="tomo" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="Pagina" class="form-label mb-1 fw-semibold small">Página</label>
+                                        <input type="text" id="Pagina" name="pagina" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="Acta" class="form-label mb-1 fw-semibold small">N° Acta</label>
+                                        <input type="text" id="Acta" name="acta" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="mb-1">
+                                    <label for="FechaRegistroParroquial" class="form-label mb-1 fw-semibold small">Fecha de Registro Parroquial</label>
+                                    <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Observaciones" class="form-label mb-1 fw-semibold small">Observaciones</label>
+                                <textarea id="Observaciones" name="observaciones" class="form-control form-control-sm" rows="2"></textarea>
+                            </div>
+
+                            <input type="hidden" id="cursillo_id" name="cursillo_id" />
+                            <input type="hidden" id="CursilloIdSeleccionado" name="CursilloIdSeleccionado" />
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
+                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                            </div>
+                            <div id="alertaCursillo" class="alert alert-danger py-1 px-2 small mt-2 text-center" role="alert" style="display: none;">
+                                Debes seleccionar un cursillo antes de registrar el acta.
+                            </div>
+                            <div id="exito2" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Acta Registrada</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles a la derecha -->
+            <div class="col-lg-7 col-md-7">
+                <!-- TABLA DE CURSILLOS PARA SELECCIONAR -->
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body p-3">
+                        <h5 class="card-title text-primary fw-bold mb-2">
+                            <i class="fas fa-check-circle me-1 text-primary"></i> Seleccionar Cursillo Pre Matrimonial
+                        </h5>
+                        <div class="d-flex mb-2">
+                            <input type="text" class="form-control form-control-sm me-2 mr-2" id="busquedaCursillo" placeholder="Buscar cursillo por novio o novia...">
+                            <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" onclick="buscarCursillos()">
+                                <i class="fas fa-search"></i> Buscar 
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaCursilloActa()">
+                                Limpiar
+                            </button>
+                        </div>
+                        <div id="mensajeErrorCursillo" class="text-danger small mb-2" style="display: none;">
+                            Ingresa un valor o nombre.
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Novio</th>
+                                        <th>Novia</th>
+                                        <th>F. Cursillo</th>
+                                        <th>Seleccionar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCursillos">
+                                    <!-- Se llena con JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de búsqueda de actas -->
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <h5 class="card-title text-primary fw-bold mb-2">
+                            <i class="fas fa-search me-1 text-primary"></i> Registros de Actas Pre Matrimoniales
+                        </h5>
+                        <div class="mb-2 d-flex">
+                            <input type="text" class="form-control form-control-sm me-2 mr-2" id="nombrecompletonino" name="nombrecompletonino" placeholder="Buscar por nombre del novio/novia...">
+                            <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" onclick="ListActaPre()">
+                                <i class="fas fa-search"></i> Buscar 
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="LimpiarBusqueda()">
+                                Limpiar
+                            </button>
+                        </div>
+                        <div id="mensajeErrorNombre" class="text-danger small mb-2" style="display: none;">
+                            Ingresa un valor o nombre.
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Novio</th>
+                                        <th>Novia</th>
+                                        <th>F. Matrimonio</th>
+                                        <th>Estado</th>
+                                        <th>Modificar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultadosActas">
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.nombrenovio</td>
+                                                <td>@item.nombrenovia</td>
+                                                <td>@item.fechamatrimonio.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.estado</td>
+                                                <td>
+                                                    <a asp-action="ModifyActaPrematrimonialView" asp-controller="ActaPrematrimonial" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
+                                                </td>
+                                                <td>
+                                                    <a asp-action="DeleteActaPrematrimonialView" asp-controller="ActaPrematrimonial" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="6">No se encontraron resultados.</td></tr>
                                     }
                                 </tbody>
                             </table>
-
                         </div>
-                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-pane fade" id="matrimonial" role="tabpanel" aria-labelledby="acta-matrimonio-tab">
+        <div class="row justify-content-center align-items-start g-3">
+            <!-- Formulario de creación a la izquierda -->
+            <div class="col-lg-5 col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <form asp-action="Create" asp-controller="ActaMatrimonial" method="post" id="form-acta-matrimonial" autocomplete="off">
+                            <h5 class="card-title text-primary fw-bold mb-3">
+                                <i class="fas fa-certificate me-1 text-primary"></i> Registro de Acta de Matrimonio
+                            </h5>
+
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-users me-1 text-primary"></i> Padrinos del Matrimonio</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="padrino1" class="form-label mb-1 fw-semibold small">Padrino 1</label>
+                                        <input type="text" id="padrino1" name="padrino1" placeholder="Padrino 1" class="form-control form-control-sm" required />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="padrino2" class="form-label mb-1 fw-semibold small">Padrino 2</label>
+                                        <input type="text" id="padrino2" name="padrino2" placeholder="Padrino 2" class="form-control form-control-sm" required/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="padrino3" class="form-label mb-1 fw-semibold small">Padrino 3 (opc)</label>
+                                        <input type="text" id="padrino3" name="padrino3" placeholder="Padrino 3 (Opcional)" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="padrino4" class="form-label mb-1 fw-semibold small">Padrino 4 (opc)</label>
+                                        <input type="text" id="padrino4" name="padrino4" placeholder="Padrino 4 (Opcional)" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="acta_prematrimonial_id" name="acta_prematrimonial_id" />
+                            <input type="hidden" id="hidden_iglesia_id" name="iglesia_id" />
+                            <input type="hidden" id="hidden_ministro_id" name="ministro_id" />
+                            <input type="hidden" name="pagina" id="pagina">
+                            <input type="hidden" name="tomo" id="tomo">
+                            <input type="hidden" name="acta" id="input-acta" />
+                            <input type="hidden" name="fecha_matrimonio" id="fecha_matrimonio" class="form-control" />
+
+                            <div class="mb-2">
+                                <label for="fecharegistro" class="form-label mb-1 fw-semibold small">Fecha de registro</label>
+                                <input type="date" id="fecharegistro" name="fecharegistro" class="form-control form-control-sm" placeholder="dd/mm/aaaa" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="observaciones" class="form-label mb-1 fw-semibold small">Observaciones</label>
+                                <textarea id="observaciones" name="observaciones" class="form-control form-control-sm" rows="2" placeholder="Escribe alguna observación si es necesaria"></textarea>
+                            </div>
+                           
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar Acta</button>
+                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                            </div>
+                            <div id="errorActaMessage" class="alert alert-danger py-1 px-2 small mt-2 text-center d-none" role="alert">
+                                Debes seleccionar un acta prematrimonial antes de registrar.
+                            </div>
+                            <div id="exito3" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Acta Registrada</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles a la derecha -->
+            <div class="col-lg-7 col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <form asp-action="Search" method="get" id="buscar-actamatri" asp-controller="ActaMatrimonial">
+                            <!-- Sección de selección de lista mediante RadioButton -->
+                            <div class="mb-3 d-flex align-items-center gap-3">
+                                <span class="fw-semibold small text-secondary">Tipo de lista:</span>
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" id="actasPrematrimoniales" name="tipoActa" value="prematrimonial" checked onclick="mostrarLista('prematrimonial')" />
+                                    <label class="form-check-label small" for="actasPrematrimoniales">Actas Prematrimoniales</label>
+                                </div>
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" id="actasCreadas" name="tipoActa" value="creada" onclick="mostrarLista('creada')" />
+                                    <label class="form-check-label small" for="actasCreadas">Actas Creadas</label>
+                                </div>
+                            </div>
+
+                            <!-- Resultados de Actas Prematrimoniales -->
+                            <div id="listaPrematrimonial">
+                                <div class="mb-3 d-flex">
+                                    <input type="text" class="form-control form-control-sm me-2 mr-2" id="nombreBuscar" name="nombreBuscar" placeholder="Buscar por nombre del novio o novia..." />
+                                    <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" onclick="ListActaPreAOfi()">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaActaPrematrimonial()">
+                                        Limpiar
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Nombre Novio</th>
+                                                <th>Nombre Novia</th>
+                                                <th>Fecha Matrimonio</th>
+                                                <th>Acción</th> 
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resultadosActa">
+                                            @if (Model?.ActasPrematrimoniales != null)
+                                            {
+                                                @foreach (var item in Model.ActasPrematrimoniales)
+                                                {
+                                                    <tr>
+                                                        <td>@item.NombreNovio</td>
+                                                        <td>@item.NombreNovia</td>
+                                                        <td>@item.FechaMatrimonio.ToString("dd/MM/yyyy")</td>
+                                                        <td><button type="button" onclick="seleccionarActaPreYEnviar(${item.id})" class="btn btn-success btn-sm">Seleccionar</button></td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="4">No se encontraron resultados.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Resultados de Actas Creadas -->
+                            <div id="listaCreadas" style="display: none;">
+                                <div class="mb-3 d-flex">
+                                    <input type="text" class="form-control form-control-sm me-2 mr-2" id="fechacasadosreg" placeholder="Buscar por nombre del novio o novia..." />
+                                    <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" onclick="ListActaCreada()">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="limpiarBusquedaCreadas()">
+                                        Limpiar
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Padrino 1</th>
+                                                <th>Padrino 2</th>
+                                                <th>F. Registro</th>
+                                                <th>Modificar</th>
+                                                <th>Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resultadosActaCreadas">
+                                            @if (Model != null)
+                                            {
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@item.padrino1</td>
+                                                        <td>@item.padrino2</td>
+                                                        <td>@(item.fecharegistro?.ToString("dd/MM/yyyy") ?? "Sin fecha")</td>
+                                                        <td>
+                                                            <a asp-action="ModifyActamatrimonialView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
+                                                        </td>
+                                                        <td>
+                                                            <a asp-action="DeleteActamatrimonialView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5">No se encontraron resultados.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario Matrimonios Antiguos -->
+    <div class="tab-pane fade" id="antiguos" role="tabpanel" aria-labelledby="antiguos-tab">
+        <div class="row justify-content-center align-items-start g-3">
+            <!-- Formulario de creación a la izquierda -->
+            <div class="col-lg-5 col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <form asp-action="Create" asp-controller="ActasAntiguas" method="post" id="acta-antig" autocomplete="off">
+                            <h5 class="card-title text-primary fw-bold mb-3">
+                                <i class="fas fa-history me-1 text-primary"></i> Registro de Matrimonios Antiguos
+                            </h5>
+
+                            <!-- Datos del Novio -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-male me-1 text-primary"></i> Datos del Novio</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="NombreNovio" class="form-label mb-1 fw-semibold small">Nombre del Novio</label>
+                                        <input type="text" id="NombreNovio" name="nombrenovio" class="form-control form-control-sm" placeholder="Nombre del Novio" required />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="LugarBautizoNovio" class="form-label mb-1 fw-semibold small">Lugar de Bautizo</label>
+                                        <input type="text" id="LugarBautizoNovio" name="lugarbautizonovio" placeholder="Lugar de Bautizo" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cedulapadrenovio" class="form-label mb-1 fw-semibold small">Cédula Padre</label>
+                                        <input type="text" id="cedulapadrenovio" placeholder="Padre del Novio" name="cedulapadrenovio" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cedulamadrenovio" class="form-label mb-1 fw-semibold small">Cédula Madre</label>
+                                        <input type="text" id="cedulamadrenovio" name="cedulamadrenovio" placeholder="Madre del Novio" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaNacimientoNovio" class="form-label mb-1 fw-semibold small">F. Nacimiento Novio</label>
+                                        <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovio" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaBautizoNovio" class="form-label mb-1 fw-semibold small">F. Bautizo Novio</label>
+                                        <input type="date" id="FechaBautizoNovio" name="fechabautizonovio" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Datos de la Novia -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-female me-1 text-danger"></i> Datos de la Novia</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="NombreNovia" class="form-label mb-1 fw-semibold small">Nombre de la Novia</label>
+                                        <input type="text" id="NombreNovia" name="nombrenovia" class="form-control form-control-sm" placeholder="Nombre de la Novia" required />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="LugarBautizoNovia" class="form-label mb-1 fw-semibold small">Lugar de Bautizo</label>
+                                        <input type="text" id="LugarBautizoNovia" placeholder="Lugar de Bautizo" name="lugarbautizonovia" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cedulapadrenovia" class="form-label mb-1 fw-semibold small">Cédula Padre</label>
+                                        <input type="text" id="cedulapadrenovia" placeholder="Padre de la Novia" name="cedulapadrenovia" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cedulamadrenovia" class="form-label mb-1 fw-semibold small">Cédula Madre</label>
+                                        <input type="text" id="cedulamadrenovia" placeholder="Madre de la Novia" name="cedulamadrenovia" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaNacimientoNovia" class="form-label mb-1 fw-semibold small">F. Nacimiento Novia</label>
+                                        <input type="date" id="FechaNacimientoNovio" name="fechanacimientonovia" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="FechaBautizoNovia" class="form-label mb-1 fw-semibold small">F. Bautizo Novia</label>
+                                        <input type="date" id="FechaBautizoNovia" name="fechabautizonovia" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información del Matrimonio -->
+                            <div class="mb-2">
+                                <label for="FechaMatrimonio" class="form-label mb-1 fw-semibold small">Fecha del Matrimonio</label>
+                                <input type="date" id="FechaMatrimonio" name="fechamatrimonio" class="form-control form-control-sm" required />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="ministro_id_antiguo" class="form-label mb-1 fw-semibold small">Ministro</label>
+                                    <select id="ministro_id_antiguo" name="ministro_id" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione un ministro</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="iglesia_id_antiguo" class="form-label mb-1 fw-semibold small">Iglesia</label>
+                                    <select name="iglesia_id" id="iglesia_id_antiguo" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione una iglesia</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Registro Civil -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-university me-1"></i> Registro Civil</h6>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="FechaRegistroCivil" class="form-label mb-1 fw-semibold small">Fecha Reg. Civil</label>
+                                        <input type="date" id="FechaRegistroCivil" name="fecharegistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="LugarRegistroCivil" class="form-label mb-1 fw-semibold small">Lugar</label>
+                                        <input type="text" id="LugarRegistroCivil" name="lugarregistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="NumeroActaRegistroCivil" class="form-label mb-1 fw-semibold small">N° Acta</label>
+                                        <input type="text" id="NumeroActaRegistroCivil" name="numeroactaregistrocivil" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Testigos -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-users me-1 text-primary"></i> Testigos</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cedulatestigo1" class="form-label mb-1 fw-semibold small">Cédula Testigo 1</label>
+                                        <input type="text" id="cedulatestigo1" name="cedulatestigo1" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label for="cedulatestigo2" class="form-label mb-1 fw-semibold small">Cédula Testigo 2</label>
+                                        <input type="text" id="cedulatestigo2" name="cedulatestigo2" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-1">
+                                        <label for="cedulatestigo3" class="form-label mb-1 fw-semibold small">Cédula Testigo 3 (opc)</label>
+                                        <input type="text" id="cedulatestigo3" name="cedulatestigo3" class="form-control form-control-sm" placeholder="Opcional" />
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <label for="cedulatestigo4" class="form-label mb-1 fw-semibold small">Cédula Testigo 4 (opc)</label>
+                                        <input type="text" id="cedulatestigo4" name="cedulatestigo4" class="form-control form-control-sm" placeholder="Opcional" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Registro Eclesiástico -->
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-church me-1"></i> Registro Eclesiástico</h6>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="Tomo" class="form-label mb-1 fw-semibold small">Tomo</label>
+                                        <input type="text" id="Tomo" name="tomo" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="Pagina" class="form-label mb-1 fw-semibold small">Página</label>
+                                        <input type="text" id="Pagina" name="pagina" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="Acta" class="form-label mb-1 fw-semibold small">N° Acta</label>
+                                        <input type="text" id="Acta" name="acta" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                                <div class="mb-1">
+                                    <label for="FechaRegistroParroquial" class="form-label mb-1 fw-semibold small">Fecha de Registro Parroquial</label>
+                                    <input type="date" id="FechaRegistroParroquial" name="fecharegistro" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Observaciones" class="form-label mb-1 fw-semibold small">Observaciones</label>
+                                <textarea id="Observaciones" name="observaciones" class="form-control form-control-sm" rows="2"></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar Matrimonio Antiguo</button>
+                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                            </div>
+                            <div id="exito4" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Acta antigua Registrada</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles y búsqueda a la derecha -->
+            <div class="col-lg-7 col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <h5 class="card-title text-primary fw-bold mb-3">
+                            <i class="fas fa-search me-1 text-primary"></i> Búsqueda de Matrimonios Antiguos
+                        </h5>
+                        <form id="buscar-antiguo" onsubmit="event.preventDefault(); BuscarActasAntiguas();">
+                            <div class="mb-3 d-flex">
+                                <input type="text" class="form-control form-control-sm me-2 mr-2" id="nombreantiguo" name="nombreantiguo" placeholder="Nombre novio o novia (Ej: Rosa o Antonio)...">
+                                <button type="button" class="btn btn-primary btn-sm me-2 mr-2 text-nowrap" onclick="BuscarActasAntiguas()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="LimpiarBusquedaActaAntigua()">
+                                    Limpiar
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-sm text-center align-middle mb-0" style="font-size: 0.86rem; width: 100%;">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Novio</th>
+                                            <th>Novia</th>
+                                            <th>F. Registro</th>
+                                            <th>Modificar</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resultadosActaAntiguas">
+                                        @if (Model != null && Model.Any())
+                                        {
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>@item.nombrenovio</td>
+                                                    <td>@item.nombrenovia</td>
+                                                    <td>@item.fecharegistro.ToString("dd/MM/yyyy")</td>
+                                                    <td>
+                                                        <a asp-action="ModifyCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
+                                                    </td>
+                                                    <td>
+                                                        <a asp-action="DeleteCursilloMatView" asp-controller="CursilloPreMatrimonial" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td colspan="5">No se encontraron resultados.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
