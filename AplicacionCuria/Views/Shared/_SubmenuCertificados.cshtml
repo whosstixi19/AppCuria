@@ -1,0 +1,66 @@
+@{
+    var activeSub = ViewData["ActiveSubmenu"] as string ?? "";
+}
+
+<div class="certificados-subnav-container">
+    <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom" style="border-bottom: 2px solid #D4AF37 !important;">
+        <nav class="d-flex align-items-center flex-wrap gap-2">
+            <a href="@Url.Action("BautizosCView", "Submenus")" 
+               class="certificados-nav-link @(activeSub == "Bautizos" ? "active" : "")">
+                <i class="fas fa-water me-1"></i> Bautizos
+            </a>
+            <a href="@Url.Action("PrimeraComunionCView", "Submenus")" 
+               class="certificados-nav-link @(activeSub == "PrimeraComunion" ? "active" : "")">
+                <i class="fas fa-bread-slice me-1"></i> Primera Comunión
+            </a>
+            <a href="@Url.Action("ConfirmacionCView", "Submenus")" 
+               class="certificados-nav-link @(activeSub == "Confirmacion" ? "active" : "")">
+                <i class="fas fa-dove me-1"></i> Confirmación
+            </a>
+            <a href="@Url.Action("MatrimoniosCView", "Submenus")" 
+               class="certificados-nav-link @(activeSub == "Matrimonios" ? "active" : "")">
+                <i class="fas fa-ring me-1"></i> Matrimonios
+            </a>
+            <a href="@Url.Action("DispensasCView", "Submenus")" 
+               class="certificados-nav-link @(activeSub == "Dispensas" ? "active" : "")">
+                <i class="fas fa-file-signature me-1"></i> Dispensas
+            </a>
+            <a href="@Url.Action("PaseDeNivelView", "Submenus")" 
+               class="certificados-nav-link @(activeSub == "PaseDeNivel" ? "active" : "")">
+                <i class="fas fa-graduation-cap me-1"></i> Pase de Nivel
+            </a>
+        </nav>
+        <div class="d-none d-lg-flex align-items-center text-muted small">
+            <i class="fas fa-certificate me-1 text-warning"></i>
+            <span>Certificados y Actas Oficiales</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .certificados-subnav-container {
+        margin: -1rem -1.5rem 1.5rem -1.5rem;
+    }
+    .certificados-nav-link {
+        color: #495057;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.92rem;
+        padding: 0.45rem 0.75rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+    }
+    .certificados-nav-link:hover {
+        color: #003366;
+        background-color: rgba(0, 51, 102, 0.05);
+    }
+    .certificados-nav-link.active {
+        color: #003366;
+        font-weight: 700;
+        border-bottom-color: #003366;
+        background-color: rgba(0, 51, 102, 0.08);
+    }
+</style>

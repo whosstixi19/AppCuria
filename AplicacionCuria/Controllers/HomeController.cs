@@ -42,7 +42,7 @@ namespace AplicacionCuria.Controllers
 
         public IActionResult MenuCertificado()
         {
-            return View();
+            return RedirectToAction("BautizosCView", "Submenus");
         }
 
         public IActionResult MenuAgenda()
