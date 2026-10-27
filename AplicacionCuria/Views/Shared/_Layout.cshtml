@@ -11,13 +11,90 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+    <style>
+        /* Estilos de la barra de navegación superior */
+        .navbar .navbar-nav .nav-link {
+            font-weight: 500;
+            font-size: 0.90rem;
+            padding: 0.42rem 0.75rem !important;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            color: #495057 !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin: 0 1px;
+            text-decoration: none !important;
+            border-bottom: 2px solid transparent;
+        }
 
+        .navbar .navbar-nav .nav-link i {
+            font-size: 0.92rem;
+            color: #6c757d;
+            transition: color 0.2s ease;
+        }
+
+        .navbar .navbar-nav .nav-link:hover {
+            color: #003366 !important;
+            background-color: #f1f4f9;
+        }
+
+        .navbar .navbar-nav .nav-link:hover i {
+            color: #003366;
+        }
+
+        /* Indicador de SECCIÓN ACTIVA */
+        .navbar .navbar-nav .nav-link.active,
+        .navbar .navbar-nav .nav-link.active-section {
+            color: #003366 !important;
+            background-color: #e8f0fe !important;
+            font-weight: 700 !important;
+            border-bottom: 2.5px solid #003366 !important;
+            box-shadow: 0 2px 4px rgba(0, 51, 102, 0.08);
+        }
+
+        .navbar .navbar-nav .nav-link.active i,
+        .navbar .navbar-nav .nav-link.active-section i {
+            color: #003366 !important;
+        }
+    </style>
 </head>
 <body>
+    @{
+        var currentCtrl = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();
+        var currentAct = (ViewContext.RouteData.Values["action"]?.ToString() ?? "").ToLowerInvariant();
+        var currentPath = (Context.Request.Path.Value ?? "").ToLowerInvariant();
+
+        bool isInicio = (currentCtrl == "home" && (currentAct == "index" || currentAct == "")) || currentPath == "/" || currentPath == "/home" || currentPath == "/home/index";
+
+        bool isSacramentos = (currentCtrl == "home" && currentAct == "menusacramentos") ||
+                             (currentCtrl == "submenus" && (currentAct == "bautizadosview" || currentAct == "primeracomunionview" || currentAct == "confirmacionview" || currentAct == "matrimoniosview")) ||
+                             currentPath.Contains("menusacramentos") || currentPath.Contains("bautizadosview") || (currentPath.Contains("matrimoniosview") && !currentPath.Contains("matrimoniosc"));
+
+        bool isCatequesis = (currentCtrl == "home" && currentAct == "menucatequesis") || currentPath.Contains("catequesis");
+
+        bool isCertificados = (currentCtrl == "home" && currentAct == "menucertificado") ||
+                              (currentCtrl == "submenus" && (currentAct == "bautizoscview" || currentAct == "primeracomunioncview" || currentAct == "confirmacioncview" || currentAct == "matrimonioscview" || currentAct == "dispensascview" || currentAct == "pasedenivelview")) ||
+                              currentCtrl == "certificados" || currentPath.Contains("menucertificado") || currentPath.Contains("certificado") || currentPath.Contains("bautizosc") || currentPath.Contains("dispensasc") || currentPath.Contains("pasedenivel");
+
+        bool isAgenda = (currentCtrl == "home" && currentAct == "menuagenda") || currentCtrl == "agenda" || currentPath.Contains("agenda");
+
+        bool isAyudaSocial = (currentCtrl == "home" && currentAct == "menuayudasocial") || currentCtrl == "ayudasocial" || currentPath.Contains("ayudasocial");
+
+        bool isAyuda = (currentCtrl == "home" && currentAct == "menuayuda") || currentPath.EndsWith("/home/menuayuda");
+
+        bool isRegistrar = (currentCtrl == "home" && currentAct == "menuregistrar") ||
+                           (currentCtrl == "submenus" && (currentAct == "feligresesview" || currentAct == "encargadosview" || currentAct == "sacerdoteview" || currentAct == "parroquiaview" || currentAct == "iglesiaview" || currentAct == "ministroscatequistasview" || currentAct == "periodosview" || currentAct == "misaview" || currentAct == "barrioview" || currentAct == "responsableseventosview")) ||
+                           currentPath.Contains("menuregistrar") || currentPath.Contains("feligres") || currentPath.Contains("sacerdote") || currentPath.Contains("parroquia") || currentPath.Contains("iglesia") || currentPath.Contains("periodos") || currentPath.Contains("misa") || currentPath.Contains("barrio");
+
+        bool isPagos = (currentCtrl == "home" && currentAct == "menupagos") || currentCtrl == "pagos" || currentPath.Contains("pagos");
+
+        bool isUsuarios = currentCtrl == "usuarios" || currentPath.Contains("usuarios");
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="#">ECLESOFT <span class="text-muted">2.0</span></a>
+                <a class="navbar-brand fw-bold text-dark" asp-controller="Home" asp-action="Index">ECLESOFT <span class="text-primary">2.0</span></a>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,58 +107,58 @@
                         {
                             <!-- Grupo 1: Secciones principales -->
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <a class="nav-link @(isInicio ? "active active-section" : "")" asp-controller="Home" asp-action="Index">
                                     <i class="fas fa-home"></i> Inicio
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuSacramentos">
+                                <a class="nav-link @(isSacramentos ? "active active-section" : "")" asp-controller="Home" asp-action="MenuSacramentos">
                                     <i class="fas fa-cross"></i> Sacramentos
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuCatequesis">
+                                <a class="nav-link @(isCatequesis ? "active active-section" : "")" asp-controller="Home" asp-action="MenuCatequesis">
                                     <i class="fas fa-book"></i> Catequesis
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuCertificado">
+                                <a class="nav-link @(isCertificados ? "active active-section" : "")" asp-controller="Home" asp-action="MenuCertificado">
                                     <i class="fas fa-certificate"></i> Certificados
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuAgenda">
+                                <a class="nav-link @(isAgenda ? "active active-section" : "")" asp-controller="Home" asp-action="MenuAgenda">
                                     <i class="fas fa-calendar"></i> Agenda
                                 </a>
                             </li>
 
                             <!-- Grupo 2: Soporte -->
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuAyudaSocial">
+                                <a class="nav-link @(isAyudaSocial ? "active active-section" : "")" asp-controller="Home" asp-action="MenuAyudaSocial">
                                     <i class="fas fa-hands-helping"></i> Ayuda Social
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuAyuda">
+                                <a class="nav-link @(isAyuda ? "active active-section" : "")" asp-controller="Home" asp-action="MenuAyuda">
                                     <i class="fas fa-question-circle"></i> Ayuda
                                 </a>
                             </li>
 
                             <!-- Grupo 3: Admin -->
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuRegistrar">
-                                    <i class="fas fa-user-plus"></i> Registrar
+                                <a class="nav-link @(isRegistrar ? "active active-section" : "")" asp-controller="Home" asp-action="MenuRegistrar">
+                                    <i class="fas fa-database"></i> Registrar
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="MenuPagos">
+                                <a class="nav-link @(isPagos ? "active active-section" : "")" asp-controller="Home" asp-action="MenuPagos">
                                     <i class="fas fa-credit-card"></i> Pagos
                                 </a>
                             </li>
                             @if (User.IsInRole("admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Usuarios" asp-action="CrearUsuario">
+                                    <a class="nav-link @(isUsuarios ? "active active-section" : "")" asp-controller="Usuarios" asp-action="CrearUsuario">
                                         <i class="fas fa-user-cog"></i> Crear Usuario
                                     </a>
                                 </li>
@@ -188,6 +265,23 @@
 @*     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
  *@    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+    <script>
+        // Asegurar que el elemento de menú activo permanezca resaltado
+        document.addEventListener("DOMContentLoaded", function () {
+            var path = window.location.pathname.toLowerCase();
+            if (!document.querySelector('.navbar-nav .nav-link.active-section')) {
+                var links = document.querySelectorAll('.navbar-nav .nav-link');
+                links.forEach(function (link) {
+                    var href = link.getAttribute('href');
+                    if (href && href !== '#' && href !== '/' && path.startsWith(href.toLowerCase())) {
+                        link.classList.add('active', 'active-section');
+                    } else if ((path === '/' || path === '/home' || path === '/home/index') && href && href.toLowerCase().includes('/home/index')) {
+                        link.classList.add('active', 'active-section');
+                    }
+                });
+            }
+        });
+    </script>
     
     @await RenderSectionAsync("Scripts", required: false)
 </body>
