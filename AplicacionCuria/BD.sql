@@ -22,6 +22,8 @@ CREATE TABLE usuarios (
 -- Usuario Administrador listo para iniciar sesión:
 -- Correo:     admin@curia.com
 -- Contraseña: Clave_curia
+--             *** TEMPORAL *** La aplicación obliga a definirla nueva en
+--             el primer inicio de sesión (no usar la temporal en producción).
 INSERT INTO usuarios (correo, nombre, apellido, rol, estado, pass, salt, iterations)
 VALUES (
     'admin@curia.com',

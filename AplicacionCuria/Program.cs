@@ -18,6 +18,9 @@ builder.Services
     .AddControllersWithViews(options =>
     {
         options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
+
+        // Contraseña temporal del primer login: obligar a cambiarla
+        options.Filters.Add<AplicacionCuria.Security.DebeCambiarClaveFilter>();
     });
 builder.Services.AddAntiforgery();
 

@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Cambiar contraseña";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow rounded-3">
+                <div class="card-body">
+                    <img src="~/imagenes/logoiglesia.jpg" alt="Logo Iglesia" width="120" class="mb-3 d-block mx-auto" />
+                    <h3 class="text-center mb-2">Cambiar contraseña</h3>
+                    <p class="text-center text-muted mb-4">
+                        Estás usando una contraseña temporal.
+                        Define tu nueva contraseña para continuar.
+                    </p>
+
+                    <form asp-controller="Auth" asp-action="CambiarClave" method="post">
+                        <div class="mb-3">
+                            <label for="Clave" class="form-label">Nueva contraseña</label>
+                            <input type="password" class="form-control" id="Clave" name="Clave" minlength="8" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Confirmar" class="form-label">Confirmar contraseña</label>
+                            <input type="password" class="form-control" id="Confirmar" name="Confirmar" minlength="8" required />
+                            @if (ViewBag.Error != null)
+                            {
+                                <span class="text-danger">@ViewBag.Error</span>
+                            }
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Guardar contraseña</button>
+                        </div>
+                    </form>
+
+                    <form asp-controller="Auth" asp-action="Logout" method="post" class="text-center mt-3">
+                        <button type="submit" class="btn btn-link btn-sm text-muted">Cerrar sesión sin cambiar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
