@@ -15,6 +15,12 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult DescargarPdf(string fileName)
         {
+            // Solo se permiten los PDF que genera este controlador (path traversal bloqueado)
+            if (string.IsNullOrWhiteSpace(fileName) ||
+                fileName.Contains('/') || fileName.Contains('\\') || fileName.Contains("..") ||
+                !fileName.StartsWith("Certificado_") || !fileName.EndsWith(".pdf"))
+                return BadRequest("Nombre de archivo no válido.");
+
             var filePath = Path.Combine(Path.GetTempPath(), fileName);
             if (!System.IO.File.Exists(filePath))
                 return NotFound("Archivo no encontrado.");
