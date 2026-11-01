@@ -228,10 +228,12 @@
                                                 <a asp-action="EditarUsuario" asp-route-id="@user.id" class="btn btn-outline-primary btn-sm py-0 px-2" title="Editar usuario">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a asp-action="EliminarUsuario" asp-route-id="@user.id" class="btn btn-outline-danger btn-sm py-0 px-2" title="Eliminar usuario"
-                                                   onclick="return confirm('¿Está seguro de que desea eliminar al usuario @user.nombre @user.apellido (@user.correo)? Esta acción no se puede deshacer.');">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
+                                                <form asp-action="EliminarUsuario" asp-route-id="@user.id" method="post" class="d-inline"
+                                                      onsubmit="return confirm('¿Está seguro de que desea eliminar al usuario @user.nombre @user.apellido (@user.correo)? Esta acción no se puede deshacer.');">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" title="Eliminar usuario">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>

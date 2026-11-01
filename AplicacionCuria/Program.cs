@@ -13,7 +13,13 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 // Servicios principales
-builder.Services.AddControllersWithViews();
+// Filtro global anti-CSRF: valida el token en todas las peticiones POST/PUT/DELETE/PATCH
+builder.Services
+    .AddControllersWithViews(options =>
+    {
+        options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
+    });
+builder.Services.AddAntiforgery();
 
 // Base de datos PostgreSQL
 builder.Services.AddDbContext<ConexionPostgreSQL>(options =>

@@ -135,7 +135,7 @@ namespace AplicacionCuria.Controllers
             return RedirectToAction("CrearUsuario");
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> EliminarUsuario(int id)
         {
             var usuario = sql.usuarios.FirstOrDefault(u => u.id == id);

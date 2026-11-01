@@ -114,6 +114,7 @@ namespace AplicacionCuria.Controllers
             return sql.primerascomuniones.Any(e => e.id == id);
         }
 
+        [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usuario = await sql.primerascomuniones.FindAsync(id);
