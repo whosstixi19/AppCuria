@@ -31,8 +31,10 @@ builder.Services.Configure<EmailSettings>(
 );
 builder.Services.AddSingleton<EmailService>();
 
-// BackgroundService y HttpClient
-builder.Services.AddHttpClient();
+// Notificaciones: servicio de recordatorios (controlador + proceso de fondo)
+builder.Services.AddScoped<RecordatorioService>();
+
+// BackgroundService
 builder.Services.AddHostedService<RecordatorioBackgroundService>();
 
 // Autenticación con cookies

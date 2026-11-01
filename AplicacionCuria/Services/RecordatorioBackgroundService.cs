@@ -1,45 +1,35 @@
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AplicacionCuria.Services
 {
-    public class RecordatorioBackgroundService : BackgroundService
+    public class RecordatorioBackgroundService(IServiceScopeFactory scopeFactory) : BackgroundService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public RecordatorioBackgroundService(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    var client = _httpClientFactory.CreateClient();
-                    var response = await client.GetAsync("http://localhost:5155/Notificaciones/EnviarRecordatorios");
+                    using var scope = scopeFactory.CreateScope();
+                    var recordatorios = scope.ServiceProvider.GetRequiredService<RecordatorioService>();
+                    var enviados = await recordatorios.EnviarRecordatoriosHoyAsync();
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        Console.WriteLine($"[OK] Recordatorios enviados: {DateTime.Now}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[ERROR] No se pudieron enviar los recordatorios: {response.StatusCode}");
-                    }
+                    Console.WriteLine($"[OK] Recordatorios enviados: {DateTime.Now} ({enviados})");
+
+                    // Revisar de nuevo mañana
+                    await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Cierre de la aplicación: salir sin error
+                    break;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[ERROR] BackgroundService: {ex.Message}");
+                    // Fallo transitorio (SMTP caído, etc.: reintentar pronto, no esperar 24h)
+                    Console.WriteLine($"[ERROR] RecordatorioBackgroundService: {ex.Message}");
+                    await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
                 }
-
-                // Esperar 24 horas
-                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
         }
     }
