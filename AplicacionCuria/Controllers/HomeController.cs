@@ -102,31 +102,6 @@ namespace AplicacionCuria.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginRequest request)
-        {
-            var cliente = sql.usuarios.FirstOrDefault(c => c.correo == request.Email);
-            if (cliente == null)
-            {
-                return NotFound(new { Message = "Cliente no encontrado" });
-            }
-            var isPasswordValid = PasswordHelper.VerifyPassword(request.Password, cliente.salt, cliente.pass);
-
-            if (!isPasswordValid)
-            {
-                return Unauthorized(new { Message = "Contraseña incorrecta" });
-            }
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.Name, cliente.correo)
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-            return RedirectToAction("Index", "Home");
-        }
-
         public IActionResult ModifyCursilloView()
         {
             return View();
@@ -140,15 +115,6 @@ namespace AplicacionCuria.Controllers
         public IActionResult ModifyPrimeraComunionView()
         {
             return View();
-        }
-
-
-
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("", "");
         }
     }
 }

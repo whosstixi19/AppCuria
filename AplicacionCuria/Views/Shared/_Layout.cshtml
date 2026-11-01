@@ -176,7 +176,7 @@
                             <span class="me-2 fw-semibold text-dark">
                                 👤 @User.Identity.Name
                             </span>
-                            <form asp-action="Logout" method="post" class="d-inline">
+                            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Cerrar sesión</button>
                             </form>
                         </div>
