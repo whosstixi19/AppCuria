@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using AplicacionCuria.Security;
@@ -187,7 +187,7 @@ namespace AplicacionCuria.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Auth");
         }
     }
 }
