@@ -1,4 +1,4 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +67,9 @@ namespace AplicacionCuria.Controllers
                 model.fechavisita = DateTime.SpecifyKind(model.fechavisita, DateTimeKind.Utc);
                 if (foto != null && foto.Length > 0)
                 {
+                    if (foto.Length > 2 * 1024 * 1024)
+                        return Json(new { success = false, message = "La foto no debe superar los 2MB." });
+
                     using (var ms = new MemoryStream())
                     {
                         await foto.CopyToAsync(ms);
