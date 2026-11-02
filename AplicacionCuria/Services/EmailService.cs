@@ -19,14 +19,26 @@ namespace AplicacionCuria.Services
             if (string.IsNullOrWhiteSpace(toEmail))
                 throw new ArgumentException("El correo del destinatario está vacío o nulo.", nameof(toEmail));
 
+            if (string.IsNullOrWhiteSpace(_settings?.SmtpServer))
+                return;
+
             using (var client = new SmtpClient(_settings.SmtpServer, _settings.Port))
             {
-                client.Credentials = new NetworkCredential(_settings.Username, _settings.Password);
+                if (!string.IsNullOrWhiteSpace(_settings.Username) && !string.IsNullOrWhiteSpace(_settings.Password))
+                {
+                    client.Credentials = new NetworkCredential(_settings.Username, _settings.Password);
+                }
                 client.EnableSsl = _settings.EnableSsl;
+
+                var fromAddress = !string.IsNullOrWhiteSpace(_settings.From) ? _settings.From : _settings.Username;
+                if (string.IsNullOrWhiteSpace(fromAddress))
+                {
+                    fromAddress = "noreply@curia.local";
+                }
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(_settings.Username, "Sistema Curia"),
+                    From = new MailAddress(fromAddress, "Sistema Curia"),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true
