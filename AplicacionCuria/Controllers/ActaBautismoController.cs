@@ -56,7 +56,7 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public async Task<IActionResult> ListActasBautismo()
         {
-            var resultados = await sql.actasbautismo.ToListAsync();
+            var resultados = await sql.actasbautismo.OrderByDescending(a => a.id).Take(100).ToListAsync();
             return Json(resultados);
         }
 
@@ -291,7 +291,7 @@ namespace AplicacionCuria.Controllers
                                   a.cedulamadre,
                                   iglesia = i.nombre,
                                   iglesia_nombre = i.nombre
-                              }).ToList();
+                              }).Take(100).ToList();
 
             return Json(resultados);
         }

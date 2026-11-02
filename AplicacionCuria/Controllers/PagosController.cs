@@ -105,7 +105,7 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public async Task<IActionResult> ListPagos()
         {
-            var pagos = await sql.pagos.ToListAsync();
+            var pagos = await sql.pagos.OrderByDescending(p => p.id).Take(100).ToListAsync();
             return Json(pagos);
         }
 
@@ -116,7 +116,7 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public async Task<IActionResult> Search()
         {
-            var resultados = await sql.pagos.ToListAsync();
+            var resultados = await sql.pagos.OrderByDescending(p => p.id).Take(100).ToListAsync();
             return Json(resultados);
         }
 
