@@ -13,17 +13,19 @@ namespace AplicacionCuria.Services
     {
         public async Task<int> EnviarRecordatoriosHoyAsync()
         {
-            // Fecha "hoy" en hora de Ecuador (la app asume SA Pacific Standard Time)
-            // Se marca como UTC solo para que Npgsql la escriba en la comparación timestamptz;
-            // la parte de fecha es la del día ecuatoriano.
-            var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            var hoy = DateTime.SpecifyKind(
-                TimeZoneInfo.ConvertTime(DateTime.UtcNow, zonaEcuador).Date,
-                DateTimeKind.Utc);
+            // Fecha "hoy" en hora de Ecuador (soporta Windows y Linux/Docker)
+            var tzId = OperatingSystem.IsWindows() ? "SA Pacific Standard Time" : "America/Guayaquil";
+            var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+            var hoy = TimeZoneInfo.ConvertTime(DateTime.UtcNow, zonaEcuador).Date;
 
-            var agendas = await sql.agendas
-                .Where(a => a.notificar && a.fechaagenda.AddDays(-a.recordatorio_anticipacion).Date == hoy)
+            // Traer eventos con notificación activa y evaluar anticipación en memoria para evitar errores de traducción LINQ
+            var candidatas = await sql.agendas
+                .Where(a => a.notificar)
                 .ToListAsync();
+
+            var agendas = candidatas
+                .Where(a => a.fechaagenda.AddDays(-a.recordatorio_anticipacion).Date == hoy)
+                .ToList();
 
             int enviados = 0;
 
