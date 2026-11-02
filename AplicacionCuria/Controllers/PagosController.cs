@@ -69,7 +69,7 @@ namespace AplicacionCuria.Controllers
                     model.fechaPago = DateTime.SpecifyKind(model.fechaPago, DateTimeKind.Utc);
                     sql.pagos.Update(model);
                     sql.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("MenuPagos", "Home");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -90,7 +90,7 @@ namespace AplicacionCuria.Controllers
 
             sql.pagos.Remove(pago);
             await sql.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("MenuPagos", "Home");
         }
 
         private bool PagoExists(int id)
@@ -140,7 +140,7 @@ namespace AplicacionCuria.Controllers
             if (tipo_pago == "bautismo-celebracion")
                 return Json(await sql.actasbautismo.Select(a => new { a.id, nombre = a.nombrecompleto }).ToListAsync());
             if (tipo_pago == "bautismo-cursillo")
-                return Json(await sql.cursillosprematrimoniales.Select(c => new { c.id, nombre = c.nombrenovio + " y " + c.nombrenovia }).ToListAsync());
+                return Json(await sql.cursillosprebautismales.Select(c => new { c.id, nombre = c.nombrecompletonino }).ToListAsync());
             if (tipo_pago == "matrimonio-celebracion")
                 return Json(await sql.actasprematrimoniales.Select(a => new { a.id, nombre = a.nombrenovio + " y " + a.nombrenovia }).ToListAsync());
             if (tipo_pago == "matrimonio-cursillo")
