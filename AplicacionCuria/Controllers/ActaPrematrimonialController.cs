@@ -230,11 +230,19 @@ namespace AplicacionCuria.Controllers
         }
 
 
-        public IActionResult SearchByDate(string nombrecompleto)
+        [HttpGet]
+        public IActionResult SearchByDate(string? nombrecompleto)
         {
-            var resultados = sql.actasprematrimoniales.Where(a => a.fechamatrimonio.ToString().Contains(nombrecompleto)).ToList();
+            var filtro = (nombrecompleto ?? "").Trim();
+            if (string.IsNullOrEmpty(filtro))
+                return Json(sql.actasprematrimoniales.OrderByDescending(a => a.id).Take(20).ToList());
 
-            return Json(resultados); // Devolver resultados en formato JSON
+            var resultados = sql.actasprematrimoniales
+                .AsEnumerable()
+                .Where(a => a.fechamatrimonio.ToString("yyyy-MM-dd").Contains(filtro))
+                .ToList();
+
+            return Json(resultados);
         }
         #endregion
 
