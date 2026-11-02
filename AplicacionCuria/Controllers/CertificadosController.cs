@@ -87,11 +87,7 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // Enviar a la impresora
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            return Ok(new { success = true, message = "Certificado enviado a la impresora.", file = pdfName });
+            return Ok(new { success = true, message = "Certificado generado correctamente.", file = pdfName });
         }
 
 
@@ -181,12 +177,8 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 6. Enviar a la impresora
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            // 7. Responder con JSON (igual que Pase de Nivel)
-            return Ok(new { success = true, message = "Certificado de Primera Comunión enviado a la impresora.", file = pdfName });
+            // 6. Responder con JSON
+            return Ok(new { success = true, message = "Certificado de Primera Comunión generado correctamente.", file = pdfName });
         }
 
         #region listados
@@ -267,12 +259,8 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 6. Enviar a la impresora (o simulación)
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            // 7. Retornar JSON
-            return Ok(new { success = true, message = "Certificado de Confirmación enviado a la impresora.", file = pdfName });
+            // 6. Retornar JSON
+            return Ok(new { success = true, message = "Certificado de Confirmación generado correctamente.", file = pdfName });
         }
 
 
@@ -350,12 +338,8 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 4. Enviar a la impresora (o simulación)
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            // 5. Devolver confirmación en JSON
-            return Ok(new { success = true, message = "Certificado de soltería enviado a la impresora.", file = pdfName });
+            // 4. Devolver confirmación en JSON
+            return Ok(new { success = true, message = "Certificado de soltería generado correctamente.", file = pdfName });
         }
 
         #endregion
@@ -453,11 +437,7 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 7. Enviar a la impresora
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            return Ok(new { success = true, message = $"Certificado de Bautismo ({tipo}) enviado a la impresora.", file = pdfName });
+            return Ok(new { success = true, message = $"Certificado de Bautismo ({tipo}) generado correctamente.", file = pdfName });
         }
 
         /// <summary>
@@ -520,11 +500,7 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 7. Enviar a la impresora
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            return Ok(new { success = true, message = "Certificado de Acta de Bautismo enviado a la impresora.", file = pdfName });
+            return Ok(new { success = true, message = "Certificado de Acta de Bautismo generado correctamente.", file = pdfName });
         }
 
         #endregion
@@ -574,12 +550,8 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 6. Enviar a la impresora (o simular)
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            // 7. Responder con JSON
-            return Ok(new { success = true, message = "Certificado de cursillo de matrimonio enviado a la impresora.", file = pdfName });
+            // 6. Responder con JSON
+            return Ok(new { success = true, message = "Certificado de cursillo de matrimonio generado correctamente.", file = pdfName });
         }
 
 
@@ -649,12 +621,8 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 9. Imprimir (o simular impresión)
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            // 10. Responder
-            return Ok(new { success = true, message = "Certificado de matrimonio enviado a la impresora.", file = pdfName });
+            // 9. Responder
+            return Ok(new { success = true, message = "Certificado de matrimonio generado correctamente.", file = pdfName });
         }
 
         [HttpGet("Certificados/ImprimirReportePDF")]
@@ -717,12 +685,8 @@ namespace AplicacionCuria.Controllers
             var pdfPath = Path.Combine(Path.GetTempPath(), pdfName);
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
 
-            // 8. Imprimir (o simular)
-            var printer = new Services.PrintService();
-            printer.PrintPdf(pdfPath);
-
-            // 9. Responder
-            return Ok(new { success = true, message = "Reporte de acta de matrimonio enviado a la impresora.", file = pdfName });
+            // 8. Responder
+            return Ok(new { success = true, message = "Reporte de acta de matrimonio generado correctamente.", file = pdfName });
         }
 
         #endregion
