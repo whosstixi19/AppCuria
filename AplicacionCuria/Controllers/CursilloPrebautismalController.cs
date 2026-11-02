@@ -293,7 +293,7 @@ namespace AplicacionCuria.Controllers
 
                 TempData["SuccessMessage"] = "El cursillo se ha actualizado correctamente.";
 
-                return RedirectToAction("BautizadosView", "Home");
+                return RedirectToAction("BautizadosView", "Submenus");
             }
             catch (DbUpdateConcurrencyException)
             {

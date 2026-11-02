@@ -343,24 +343,7 @@ namespace AplicacionCuria.Controllers
         }
         
         [HttpGet]
-        public IActionResult SearchAllDetailed(int count = 20)
-        {
-            var resultados = (from a in sql.actasbautismo
-                            join i in sql.iglesias on a.iglesia_id equals i.id
-                            orderby a.id descending
-                            select new
-                            {
-                                id = a.id,
-                                nombrecompleto = a.nombrecompleto,
-                                fechabautizo = a.fechabautizo,
-                                cedulapadre = a.cedulapadre,
-                                cedulamadre = a.cedulamadre,
-                                iglesia = i.nombre,
-                                iglesia_nombre = i.nombre
-                            }).Take(count).ToList();
-
-            return Json(resultados);
-        }
+        public IActionResult SearchAllDetailed(int count = 20) => SearchAll(count);
 
 
         #endregion
