@@ -136,53 +136,6 @@ namespace AplicacionCuria.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register(UsuarioRegisterRequest request)
-        {
-            if (ModelState.IsValid)
-            {
-                var existingUser = sql.usuarios.FirstOrDefault(u => u.correo == request.Email);
-                if (existingUser != null)
-                {
-                    ViewBag.Error = "El correo ya está en uso";
-                    return View();
-                }
-
-                var hashedPassword = PasswordHelper.GenerateHash(request.Password);
-
-                var newUser = new Usuario
-                {
-                    correo = request.Email,
-                    nombre = request.Nombre,
-                    apellido = request.Apellido,
-                    pass = hashedPassword.Password ?? string.Empty,
-                    salt = hashedPassword.Salt ?? string.Empty,
-                    iterations = hashedPassword.Iterations,
-                    rol = "USUARIO",
-                    estado = "ACTIVO", // debe ser string según tu base
-                    fecha_creacion = DateTime.UtcNow,
-                    ultimo_acceso = null
-                };
-
-                sql.usuarios.Add(newUser);
-                await sql.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = "Registro exitoso. Ya puedes iniciar sesión.";
-                return RedirectToAction("Login", "Auth");
-            }
-
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
