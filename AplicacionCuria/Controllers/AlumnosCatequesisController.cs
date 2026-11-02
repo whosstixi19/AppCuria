@@ -31,6 +31,9 @@ namespace AplicacionCuria.Controllers
                 // Solo procesamos la foto si no es nula y tiene contenido
                 if (foto != null && foto.Length > 0)
                 {
+                    if (foto.Length > 2 * 1024 * 1024)
+                        return Json(new { success = false, errors = "La foto no puede superar los 2 MB." });
+
                     using var ms = new MemoryStream();
                     await foto.CopyToAsync(ms);
                     model.foto = ms.ToArray();
@@ -66,6 +69,12 @@ namespace AplicacionCuria.Controllers
 
                 if (foto != null && foto.Length > 0)
                 {
+                    if (foto.Length > 2 * 1024 * 1024)
+                    {
+                        TempData["ErrorMessage"] = "La foto no puede superar los 2 MB.";
+                        return RedirectToAction("ModifyAlumnosView", new { id = model.id });
+                    }
+
                     using (var ms = new MemoryStream())
                     {
                         await foto.CopyToAsync(ms);

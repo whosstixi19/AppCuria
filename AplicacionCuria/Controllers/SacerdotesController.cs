@@ -19,6 +19,9 @@ namespace AplicacionCuria.Controllers
                     // Si viene una firma, convertirla a bytes
                     if (firma != null && firma.Length > 0)
                     {
+                        if (firma.Length > 2 * 1024 * 1024)
+                            return Json(new { success = false, message = "La firma no puede superar los 2 MB." });
+
                         using var ms = new MemoryStream();
                         await firma.CopyToAsync(ms);
                         model.firma = ms.ToArray();
@@ -63,9 +66,12 @@ namespace AplicacionCuria.Controllers
                 // Actualizar firma si viene una nueva
                 if (firma != null && firma.Length > 0)
                 {
+                    if (firma.Length > 2 * 1024 * 1024)
+                        return Json(new { success = false, message = "La firma no puede superar los 2 MB." });
+
                     using var ms = new MemoryStream();
                     await firma.CopyToAsync(ms);
-                    model.firma = ms.ToArray();
+                    sacerdote.firma = ms.ToArray();
                 }
 
                 sql.Update(sacerdote);
