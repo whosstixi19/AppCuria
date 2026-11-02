@@ -20,10 +20,13 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restaurar dependencias NuGet
-      run: dotnet restore AplicacionCuria/AplicacionCuria.csproj
+      run: dotnet restore AplicacionCuria.sln
 
-    - name: Compilar proyecto en Release
-      run: dotnet build AplicacionCuria/AplicacionCuria.csproj --configuration Release --no-restore
+    - name: Compilar solución en Release
+      run: dotnet build AplicacionCuria.sln --configuration Release --no-restore
+
+    - name: Ejecutar pruebas unitarias
+      run: dotnet test AplicacionCuria.sln --configuration Release --no-build
 
   deploy:
     name: 2. Despliegue Automático en Google Cloud
