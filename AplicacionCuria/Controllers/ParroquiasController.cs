@@ -80,7 +80,8 @@ namespace AplicacionCuria.Controllers
                                   sacerdote_id = p.sacerdote_id,
                                   sacerdote_nombre = s != null ? s.nombre + " " + s.apellido : "",
                                   p.estado,
-                                  p.observaciones
+                                  p.observaciones,
+                                  p.logo_base64
                               }).ToList();
 
             return Json(parroquias);
@@ -104,7 +105,8 @@ namespace AplicacionCuria.Controllers
                                   sacerdote_id = p.sacerdote_id,
                                   sacerdote_nombre = s != null ? s.nombre + " " + s.apellido : "",
                                   p.estado,
-                                  p.observaciones
+                                  p.observaciones,
+                                  p.logo_base64
                               }).ToList();
 
             return Json(resultados);

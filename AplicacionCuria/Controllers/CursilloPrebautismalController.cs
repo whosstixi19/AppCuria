@@ -1,5 +1,6 @@
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,9 @@ namespace AplicacionCuria.Controllers
             model.nombremadre = Request.Form["nombremadre"];
             model.nombrepadrino = Request.Form["nombrepadrino"];
             model.nombremadrina = Request.Form["nombremadrina"];
-            model.parroquia = int.TryParse(Request.Form["parroquia"], out var parroquiaId) ? parroquiaId : 0;
+
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            model.parroquia = pid.HasValue ? pid.Value : (int.TryParse(Request.Form["parroquia"], out var parroquiaId) ? parroquiaId : 0);
 
             // Remueve los errores automáticos para estos campos
             ModelState.Remove("nombrepadre");
@@ -149,7 +152,14 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetParroquias()
         {
-            var parroquias = sql.parroquias
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.parroquias.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(p => p.id == pid.Value);
+            }
+
+            var parroquias = query
                 .Select(p => new
                 {
                     id = p.id,
@@ -164,8 +174,13 @@ namespace AplicacionCuria.Controllers
         public IActionResult SearchByName(string? nombrecompleto)
         {
             var filtro = (nombrecompleto ?? "").Trim().ToLower();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
 
             var query = sql.cursillosprebautismales.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(a => a.parroquia == pid.Value);
+            }
 
             if (!string.IsNullOrEmpty(filtro))
             {

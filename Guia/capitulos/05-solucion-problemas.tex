@@ -30,6 +30,17 @@
     \item \textbf{Solución:} abra el \textbf{Query Tool} sobre la base de datos \texttt{curia}, cargue el archivo \texttt{BD.sql}, asegúrese de no tener ningún fragmento sombreado y presione \textbf{F5} para crear las 24 tablas completas.
 \end{itemize}
 
+\subsection{Error de virtualización en Docker Desktop (\texttt{Hardware assisted virtualization disabled})}
+\begin{itemize}
+    \item \textbf{Síntoma:} al iniciar Docker Desktop en Windows aparece el mensaje \texttt{Hardware assisted virtualization and data execution protection must be enabled in the BIOS}.
+    \item \textbf{Causa probable:} la tecnología Intel VT-x o AMD-V está desactivada en la BIOS/UEFI de la computadora, o bien falta habilitar la característica Plataforma de máquina virtual en Windows.
+    \item \textbf{Solución:}
+    \begin{enumerate}
+        \item Reinicie la computadora, presione la tecla de acceso a la BIOS (\texttt{F2}, \texttt{F10}, \texttt{F12} o \texttt{Supr} según el fabricante) y busque en la sección \textbf{Advanced / CPU Configuration} la opción \textbf{Intel Virtualization Technology} o \textbf{SVM Mode} y cámbiela a \textbf{Enabled}. Guarde los cambios y reinicie.
+        \item Si el equipo no admite virtualización o la BIOS está protegida por contraseña administrativa desconocida, aplique de inmediato la \textbf{Modalidad B (Instalación Nativa)} detallada en el Capítulo 3 con el paquete Plan B llevado en la memoria USB.
+    \end{enumerate}
+\end{itemize}
+
 \subsection{El puerto 5432 ya está ocupado o falla la contraseña de PostgreSQL}
 \begin{itemize}
     \item \textbf{Síntoma:} la aplicación rechaza la conexión al puerto \texttt{5432} con error de autenticación (\texttt{28P01}).

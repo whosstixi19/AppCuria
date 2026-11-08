@@ -1,5 +1,6 @@
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,14 +50,26 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetParroquias()
         {
-            var parroquias = sql.parroquias.Select(p => new { p.id, p.nombre }).ToList();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.parroquias.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(p => p.id == pid.Value);
+            }
+            var parroquias = query.Select(p => new { p.id, p.nombre }).ToList();
             return Json(parroquias);
         }
 
         [HttpGet]
         public async Task<IActionResult> ListActasBautismo()
         {
-            var resultados = await sql.actasbautismo.OrderByDescending(a => a.id).Take(100).ToListAsync();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.actasbautismo.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(a => a.parroquia_id == pid.Value);
+            }
+            var resultados = await query.OrderByDescending(a => a.id).Take(100).ToListAsync();
             return Json(resultados);
         }
 
@@ -127,6 +140,12 @@ namespace AplicacionCuria.Controllers
 
                 if (errores.Count > 0)
                     throw new Exception(string.Join(" | ", errores));
+
+                var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                if (pid.HasValue)
+                {
+                    model.parroquia_id = pid.Value;
+                }
 
                 sql.Add(model);
                 await sql.SaveChangesAsync();

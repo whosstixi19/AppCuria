@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace AplicacionCuria.Models
 {
@@ -25,5 +25,7 @@ namespace AplicacionCuria.Models
 
         [Required(ErrorMessage = "Las observaciones son obligatorias")]
         public string observaciones { get; set; }
+
+        public string? logo_base64 { get; set; }
     }
 }

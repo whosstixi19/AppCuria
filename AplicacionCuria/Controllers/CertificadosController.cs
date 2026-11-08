@@ -1,5 +1,6 @@
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,40 @@ namespace AplicacionCuria.Controllers
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/pdf", fileName);
+        }
+
+        private async Task<string> ResolverLogoParroquiaAsync(int? parroquiaId)
+        {
+            if (parroquiaId.HasValue && parroquiaId.Value > 0)
+            {
+                var parroquia = await sql.parroquias.FindAsync(parroquiaId.Value);
+                if (parroquia != null && !string.IsNullOrWhiteSpace(parroquia.logo_base64))
+                {
+                    return parroquia.logo_base64;
+                }
+            }
+            return "/imagenes/escudo.png";
+        }
+
+        private async Task<string> ResolverLogoParroquiaAsync(string? identificador)
+        {
+            if (string.IsNullOrWhiteSpace(identificador))
+            {
+                return "/imagenes/escudo.png";
+            }
+
+            if (int.TryParse(identificador, out var id))
+            {
+                return await ResolverLogoParroquiaAsync(id);
+            }
+
+            var parroquia = await sql.parroquias.FirstOrDefaultAsync(p => p.nombre.ToLower() == identificador.ToLower());
+            if (parroquia != null && !string.IsNullOrWhiteSpace(parroquia.logo_base64))
+            {
+                return parroquia.logo_base64;
+            }
+
+            return "/imagenes/escudo.png";
         }
 
         #region pasedenivel
@@ -74,8 +109,10 @@ namespace AplicacionCuria.Controllers
             Console.WriteLine($"Sacerdote seleccionado: {model.Sacerdote}, Firma: {(model.FirmaSacerdote != null ? "Sí" : "No")}");
 
             // Generar PDF
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext));
             var pdf = new ViewAsPdf("CertificadoPaseDeNivel", model)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -164,8 +201,10 @@ namespace AplicacionCuria.Controllers
             };
 
             // 4. Generar el PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(result.parroquia_id);
             var pdf = new ViewAsPdf("CertificadoPrimeraComunion", modelo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -246,8 +285,10 @@ namespace AplicacionCuria.Controllers
             };
 
             // 4. Generar el PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(result.parroquia_id);
             var pdf = new ViewAsPdf("CertificadoConfirmacion", modelo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -325,8 +366,10 @@ namespace AplicacionCuria.Controllers
             s.parroquia = parroquia.nombre;
 
             // 2. Generar PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(parroquia.id);
             var pdf = new ViewAsPdf("CertificadoSolteria", s)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -424,8 +467,10 @@ namespace AplicacionCuria.Controllers
             }
 
             // 5. Generar el PDF
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(nuevoCursillo.parroquia);
             var pdf = new ViewAsPdf("CertificadoBautizmo", nuevoCursillo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -487,8 +532,10 @@ namespace AplicacionCuria.Controllers
             };
 
             // 5. Generar PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(acta.parroquia_id);
             var pdf = new ViewAsPdf("CertificadoActaBautismo", modelo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -537,8 +584,10 @@ namespace AplicacionCuria.Controllers
             };
 
             // 4. Generar PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(cursillo.parroquia);
             var pdf = new ViewAsPdf("CertificadoCursilloMatrimonio", modelo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -579,7 +628,7 @@ namespace AplicacionCuria.Controllers
             // 3. Datos de la iglesia
             var iglesiaData = await sql.iglesias
                 .Where(i => i.id == cursillo.iglesia_id)
-                .Select(i => new { i.nombre, i.direccion, i.ciudad, i.telefono, i.email })
+                .Select(i => new { i.nombre, i.direccion, i.ciudad, i.telefono, i.email, i.parroquia_id })
                 .FirstOrDefaultAsync();
 
             cursillo.observaciones = iglesiaData?.nombre ?? "IGLESIA DESCONOCIDA";
@@ -608,8 +657,10 @@ namespace AplicacionCuria.Controllers
             };
 
             // 7. Generar PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(parroquia.id);
             var pdf = new ViewAsPdf("CertificadoMatrimonio", modelo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };
@@ -647,7 +698,7 @@ namespace AplicacionCuria.Controllers
             // 3. Datos de la iglesia
             var iglesiaData = await sql.iglesias
                 .Where(i => i.id == cursillo.iglesia_id)
-                .Select(i => new { i.nombre, i.direccion, i.ciudad, i.telefono, i.email })
+                .Select(i => new { i.nombre, i.direccion, i.ciudad, i.telefono, i.email, i.parroquia_id })
                 .FirstOrDefaultAsync();
 
             cursillo.observaciones = iglesiaData?.nombre ?? "IGLESIA DESCONOCIDA";
@@ -672,8 +723,10 @@ namespace AplicacionCuria.Controllers
             };
 
             // 6. Generar PDF con Rotativa
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(iglesiaData?.parroquia_id);
             var pdf = new ViewAsPdf("ReporteMatrimonio", modelo)
             {
+                ViewData = ViewData,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A4
             };

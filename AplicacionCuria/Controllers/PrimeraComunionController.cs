@@ -1,5 +1,6 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +55,9 @@ namespace AplicacionCuria.Controllers
                 model.alumno_id = alumno.id;
                 Console.WriteLine($"Después de asignar: {model.alumno_id}");
                 model.sacerdote_id = sacerdote.id;
-                model.parroquia_id = parroquia.id;
+
+                var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                model.parroquia_id = pid.HasValue ? pid.Value : parroquia.id;
 
                 sql.Add(model);
                 await sql.SaveChangesAsync();
@@ -184,7 +187,13 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetParroquias()
         {
-            var parroquias = sql.parroquias.Select(p => new
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.parroquias.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(p => p.id == pid.Value);
+            }
+            var parroquias = query.Select(p => new
             {
                 p.id,
                 p.nombre
@@ -222,15 +231,28 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public async Task<IActionResult> Search()
         {
-            var resultados = await sql.primerascomuniones.ToListAsync();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.primerascomuniones.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(c => c.parroquia_id == pid.Value);
+            }
+            var resultados = await query.ToListAsync();
             return Json(resultados);
         }
 
         [HttpGet]
         public IActionResult SearchByName(string nombrecompleto)
         {
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.primerascomuniones.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(c => c.parroquia_id == pid.Value);
+            }
+
             var resultados = (
-                from c in sql.primerascomuniones
+                from c in query
                 join p in sql.parroquias on c.parroquia_id equals p.id into parroquiasJoin
                 from p in parroquiasJoin.DefaultIfEmpty()
                 where c.nombre.ToLower().Contains(nombrecompleto.ToLower()) || c.apellido.ToLower().Contains(nombrecompleto.ToLower())

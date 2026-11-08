@@ -46,3 +46,55 @@ body {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   background-color: #ffffff;
 }
+
+/* ==========================================================================
+   Estandarización de tipografía y colores de texto (Eliminación de textos azules)
+   ========================================================================== */
+body {
+  color: #212529;
+}
+
+/* Títulos, subtítulos y encabezados en color negro/oscuro neutro */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #212529 !important;
+}
+
+/* Sobrescribir clase text-primary para que textos e iconos no se muestren azules */
+.text-primary {
+  color: #212529 !important;
+}
+
+/* Enlaces generales para evitar el azul predeterminado del navegador/Bootstrap */
+a:not(.btn) {
+  color: #212529;
+}
+
+a:not(.btn):hover {
+  color: #000000;
+}
+
+/* Pestañas (tabs) para evitar texto azul en pestañas inactivas */
+.nav-tabs .nav-link {
+  color: #495057 !important;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #212529 !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: #212529 !important;
+  font-weight: 600;
+}
+
+/* Paginación de tablas */
+.page-link {
+  color: #212529 !important;
+}
+
+.page-item.active .page-link {
+  background-color: #343a40 !important;
+  border-color: #343a40 !important;
+  color: #ffffff !important;
+}

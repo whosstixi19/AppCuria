@@ -118,6 +118,31 @@
                         </div>
                     </div>
 
+                    <div class="mb-2">
+                        @if (ViewBag.EsSuperAdmin == true)
+                        {
+                            <label asp-for="ParroquiaId" class="form-label mb-1 fw-semibold small">Sede / Parroquia Asignada</label>
+                            <select asp-for="ParroquiaId" class="form-select form-select-sm">
+                                <option value="">Curia Central / Superadmin (Todas)</option>
+                                @if (ViewBag.Parroquias is List<AplicacionCuria.Models.Parroquia> parrs)
+                                {
+                                    foreach (var p in parrs)
+                                    {
+                                        <option value="@p.id">🏛️ @p.nombre</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="ParroquiaId" class="text-danger small"></span>
+                        }
+                        else
+                        {
+                            var miParr = (ViewBag.Parroquias as List<AplicacionCuria.Models.Parroquia>)?.FirstOrDefault(p => p.id == (int?)ViewBag.UserParroquiaId);
+                            <label class="form-label mb-1 fw-semibold small">Sede / Parroquia</label>
+                            <input type="text" class="form-control form-control-sm bg-light" value="@(miParr?.nombre ?? "Parroquia Asignada")" readonly />
+                            <input type="hidden" asp-for="ParroquiaId" value="@ViewBag.UserParroquiaId" />
+                        }
+                    </div>
+
                     @if (esEdicion)
                     {
                         <div class="form-text small text-muted mb-3">
@@ -173,16 +198,17 @@
                                 <th style="width: 45px;" class="text-center">ID</th>
                                 <th>Usuario</th>
                                 <th>Correo</th>
-                                <th style="width: 105px;" class="text-center">Rol</th>
-                                <th style="width: 85px;" class="text-center">Estado</th>
-                                <th style="width: 100px;" class="text-center">Acciones</th>
+                                <th style="width: 130px;">Sede / Parroquia</th>
+                                <th style="width: 95px;" class="text-center">Rol</th>
+                                <th style="width: 80px;" class="text-center">Estado</th>
+                                <th style="width: 95px;" class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="small" id="tablaUsuariosBody">
                             @if (usuarios == null || usuarios.Count == 0)
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-3">No hay usuarios registrados en el sistema.</td>
+                                    <td colspan="7" class="text-center text-muted py-3">No hay usuarios registrados en el sistema.</td>
                                 </tr>
                             }
                             else
@@ -202,6 +228,18 @@
                                         </td>
                                         <td>
                                             <span class="text-truncate d-inline-block" style="max-width: 170px;" title="@user.correo">@user.correo</span>
+                                        </td>
+                                        <td>
+                                            @if (user.parroquia_id.HasValue && (ViewBag.Parroquias as List<AplicacionCuria.Models.Parroquia>)?.FirstOrDefault(p => p.id == user.parroquia_id.Value) is { } parr)
+                                            {
+                                                <span class="badge bg-light text-dark border text-truncate d-inline-block" style="max-width: 120px;" title="@parr.nombre">
+                                                    <i class="fas fa-church text-primary me-1"></i>@parr.nombre
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary-subtle text-secondary border">Curia Central</span>
+                                            }
                                         </td>
                                         <td class="text-center">
                                             @if (user.rol?.ToLower() == "admin")

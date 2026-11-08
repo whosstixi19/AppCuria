@@ -1,5 +1,6 @@
-﻿using AplicacionCuria.Conexion;
+using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,13 @@ namespace AplicacionCuria.Controllers
                 }
 
                 model.alumno_id = alumno.id;
+
+                var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                if (pid.HasValue)
+                {
+                    model.parroquia_id = pid.Value;
+                }
+
                 await sql.confirmaciones.AddAsync(model);
                 await sql.SaveChangesAsync();
 
@@ -174,7 +182,13 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetParroquias()
         {
-            var parroquias = sql.parroquias.Select(p => new { p.id, p.nombre }).ToList();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.parroquias.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(p => p.id == pid.Value);
+            }
+            var parroquias = query.Select(p => new { p.id, p.nombre }).ToList();
             return Json(parroquias);
         }
 
@@ -190,8 +204,15 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
+                var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                var confQuery = sql.confirmaciones.AsQueryable();
+                if (pid.HasValue)
+                {
+                    confQuery = confQuery.Where(c => c.parroquia_id == pid.Value);
+                }
+
                 var data = (
-                    from c in sql.confirmaciones
+                    from c in confQuery
                     join p in sql.parroquias on c.parroquia_id equals p.id into parroquiasJoin
                     from p in parroquiasJoin.DefaultIfEmpty()
                     join s in sql.sacerdotes on c.sacerdote_id equals s.id into sacerdotesJoin

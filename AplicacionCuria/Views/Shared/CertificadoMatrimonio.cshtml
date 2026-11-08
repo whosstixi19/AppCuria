@@ -1,4 +1,4 @@
-﻿@model AplicacionCuria.Models.CertificadoMatrimonioImprimir
+@model AplicacionCuria.Models.CertificadoMatrimonioImprimir
 @{
     Layout = null;
 }
@@ -153,7 +153,7 @@
         <div>
             <!-- ENCABEZADO -->
             <div class="encabezado">
-                <img src="~/imagenes/escudo.png" alt="Escudo Parroquia" />
+                <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo Parroquia" />
                 <h1>ARQUIDIÓCESIS DE CUENCA</h1>
                 <h2>VICARÍA URBANA</h2>
                 <h3>PARROQUIA SANTA MARÍA DE EL VERGEL</h3>

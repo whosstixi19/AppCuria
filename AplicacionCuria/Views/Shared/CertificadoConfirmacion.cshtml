@@ -1,4 +1,4 @@
-﻿@model AplicacionCuria.Models.ConfirmacionImprimir
+@model AplicacionCuria.Models.ConfirmacionImprimir
 @{
     Layout = null;
 }
@@ -104,7 +104,7 @@
     <div class="container">
         <!-- Imagen del escudo -->
         <div class="mmmm">
-            <img src="~/imagenes/escudo.png" alt="Escudo" class="badge" />
+            <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo" class="badge" />
             <img src="~/imagenes/confirmacion.jpg" alt="Escudo" class="badgee" />
         </div>
 

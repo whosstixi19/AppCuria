@@ -40,6 +40,10 @@ VALUES
     ('Parroquia San Blas', 'Manuel Vega y Simón Bolívar', '072845678', 'sanblas@curia.com', 3, 'ACTIVO', 'Atención pastoral diaria'),
     ('Parroquia Virgen del Bronce', 'Av. 10 de Agosto y Ricardo Muñoz', '072856789', 'virgendelbronce@curia.com', 4, 'ACTIVO', 'Amplia participación en catequesis');
 
+-- Asignación de sedes parroquiales a usuarios de prueba
+UPDATE usuarios SET parroquia_id = 1 WHERE correo = 'secretaria@curia.com';
+UPDATE usuarios SET parroquia_id = 2 WHERE correo = 'despacho@curia.com';
+
 -- 5. IGLESIAS
 INSERT INTO iglesias (nombre, direccion, ciudad, telefono, email, ministro_id, parroquia_id, denominacion, estado, observaciones)
 VALUES

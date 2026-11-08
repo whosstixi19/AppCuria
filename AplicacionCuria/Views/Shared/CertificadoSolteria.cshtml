@@ -1,4 +1,4 @@
-﻿@model AplicacionCuria.Models.Solteria
+@model AplicacionCuria.Models.Solteria
 @{
     Layout = null;
 }
@@ -78,7 +78,7 @@
 <body>
     <div>
         <div class="text-center">
-            <img src="~/imagenes/escudo.png" alt="Escudo">
+            <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo">
             <h3>PARROQUIA SANTA MARÍA DE EL VERGEL</h3>
             <h1>CERTIFICADO DE SOLTERÍA</h1>
         </div>

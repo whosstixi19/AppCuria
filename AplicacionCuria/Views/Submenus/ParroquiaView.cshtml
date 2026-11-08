@@ -53,9 +53,19 @@
                             <textarea class="form-control form-control-sm" id="direccion" name="direccion" rows="2"></textarea>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label for="observaciones" class="form-label mb-1 fw-semibold">Observaciones</label>
                             <textarea class="form-control form-control-sm" id="observaciones" name="observaciones" rows="2"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fw-semibold">Escudo / Logo de la Parroquia (Para Certificados)</label>
+                            <input type="file" class="form-control form-control-sm" id="logo_input" accept="image/*" />
+                            <input type="hidden" id="logo_base64" name="logo_base64" />
+                            <div id="logo_preview_container" class="mt-2 align-items-center" style="display:none;">
+                                <img id="logo_preview" src="" alt="Escudo de la parroquia" style="max-height: 65px; max-width: 120px;" class="img-thumbnail me-2" />
+                                <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" id="btnQuitarLogo" style="font-size:0.75rem;"><i class="fas fa-trash-alt me-1"></i> Quitar escudo</button>
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-center gap-2">
@@ -111,6 +121,31 @@
                 buscarParroquias($(this).val());
             });
 
+            $("#logo_input").on("change", function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert("El archivo del escudo supera los 2 MB permitidos.");
+                        $(this).val("");
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        $("#logo_base64").val(evt.target.result);
+                        $("#logo_preview").attr("src", evt.target.result);
+                        $("#logo_preview_container").show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $("#btnQuitarLogo").on("click", function () {
+                $("#logo_input").val("");
+                $("#logo_base64").val("");
+                $("#logo_preview").attr("src", "");
+                $("#logo_preview_container").hide();
+            });
+
             $("#formParroquia").submit(function (e) {
                 e.preventDefault();
                 let id = $("#id").val();
@@ -123,7 +158,8 @@
                     email: $("#email").val(),
                     sacerdote_id: $("#sacerdote_id").val(),
                     estado: $("#estado").val(),
-                    observaciones: $("#observaciones").val()
+                    observaciones: $("#observaciones").val(),
+                    logo_base64: $("#logo_base64").val()
                 };
                 $.post(url, data, function (res) {
                     if (res.success) {
@@ -203,6 +239,13 @@
                     }, 200);
                     $("#estado").val(parroquia.estado);
                     $("#observaciones").val(parroquia.observaciones);
+                    if (parroquia.logo_base64) {
+                        $("#logo_base64").val(parroquia.logo_base64);
+                        $("#logo_preview").attr("src", parroquia.logo_base64);
+                        $("#logo_preview_container").show();
+                    } else {
+                        $("#btnQuitarLogo").click();
+                    }
                 }
             });
         }
@@ -229,6 +272,10 @@
             $("#sacerdote_id").val("");
             $("#estado").val("ACTIVO");
             $("#observaciones").val("");
+            $("#logo_input").val("");
+            $("#logo_base64").val("");
+            $("#logo_preview").attr("src", "");
+            $("#logo_preview_container").hide();
         }
 
         function mostrarMsg(msg, exito) {

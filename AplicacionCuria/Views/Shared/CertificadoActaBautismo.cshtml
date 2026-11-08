@@ -1,4 +1,4 @@
-﻿@model AplicacionCuria.Models.ActaBautismoImprimir
+@model AplicacionCuria.Models.ActaBautismoImprimir
 @{
     Layout = null;
 }
@@ -96,7 +96,7 @@
 </head>
 <body>
     <div class="encabezado">
-        <img src="~/imagenes/escudo.png" alt="Escudo Parroquia">
+        <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo Parroquia">
         <h1>ARQUIDIÓCESIS DE CUENCA</h1>
         <h2>VICARÍA URBANA</h2>
         <h3>@Model.NombreIglesia</h3>

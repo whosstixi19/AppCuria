@@ -16,6 +16,33 @@ namespace AplicacionCuria.Controllers
     public class HomeController(ConexionPostgreSQL sql) : Controller
     {
 
+        [HttpPost]
+        public IActionResult CambiarParroquiaActiva(int? id, string? returnUrl)
+        {
+            if (ParroquiaTenantHelper.EsSuperAdmin(User))
+            {
+                if (id.HasValue && id.Value > 0)
+                {
+                    Response.Cookies.Append(ParroquiaTenantHelper.CookieSuperAdminParroquia, id.Value.ToString(), new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Expires = DateTimeOffset.UtcNow.AddDays(7),
+                        SameSite = SameSiteMode.Lax
+                    });
+                }
+                else
+                {
+                    Response.Cookies.Delete(ParroquiaTenantHelper.CookieSuperAdminParroquia);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Index()
         {
             return View();

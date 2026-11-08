@@ -1,5 +1,6 @@
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@inject AplicacionCuria.Conexion.ConexionPostgreSQL SqlDbContext
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,10 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ECLESOFT</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AplicacionCuria.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <style>
         /* Estilos de la barra de navegación superior */
@@ -38,27 +39,27 @@
         }
 
         .navbar .navbar-nav .nav-link:hover {
-            color: #003366 !important;
+            color: #212529 !important;
             background-color: #f1f4f9;
         }
 
         .navbar .navbar-nav .nav-link:hover i {
-            color: #003366;
+            color: #212529;
         }
 
         /* Indicador de SECCIÓN ACTIVA */
         .navbar .navbar-nav .nav-link.active,
         .navbar .navbar-nav .nav-link.active-section {
-            color: #003366 !important;
-            background-color: #e8f0fe !important;
+            color: #212529 !important;
+            background-color: #f1f4f9 !important;
             font-weight: 700 !important;
-            border-bottom: 2.5px solid #003366 !important;
-            box-shadow: 0 2px 4px rgba(0, 51, 102, 0.08);
+            border-bottom: 2.5px solid #212529 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
         .navbar .navbar-nav .nav-link.active i,
         .navbar .navbar-nav .nav-link.active-section i {
-            color: #003366 !important;
+            color: #212529 !important;
         }
     </style>
 </head>
@@ -97,7 +98,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-dark" asp-controller="Home" asp-action="Index">ECLESOFT <span class="text-primary">2.0</span></a>
+                <a class="navbar-brand fw-bold text-dark" asp-controller="Home" asp-action="Index">ECLESOFT <span class="text-dark">2.0</span></a>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -172,8 +173,38 @@
                     <!-- Usuario actual y logout -->
                     @if (User.Identity.IsAuthenticated)
                     {
+                        var esSuperAdmin = AplicacionCuria.Security.ParroquiaTenantHelper.EsSuperAdmin(User);
+                        var parroquiaActivaId = AplicacionCuria.Security.ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, Context);
+                        var parroquiasDisponibles = SqlDbContext.parroquias.Where(p => p.estado == "ACTIVO").OrderBy(p => p.nombre).ToList();
+
                         <div class="d-flex align-items-center">
-                            <span class="me-2 fw-semibold text-dark">
+                            @if (esSuperAdmin)
+                            {
+                                <form asp-controller="Home" asp-action="CambiarParroquiaActiva" method="post" class="d-inline-flex align-items-center me-3">
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-2" title="Acceso total a nivel de Arquidiócesis">
+                                        <i class="fas fa-crown me-1"></i>Superadmin
+                                    </span>
+                                    <select name="id" class="form-select form-select-sm" onchange="this.form.submit()" style="max-width: 210px; font-size: 0.82rem;" title="Filtrar datos por Parroquia">
+                                        <option value="0" selected="@(parroquiaActivaId == null)">🏛️ Todas las Parroquias</option>
+                                        @foreach (var p in parroquiasDisponibles)
+                                        {
+                                            <option value="@p.id" selected="@(parroquiaActivaId == p.id)">🏛️ @p.nombre</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                </form>
+                            }
+                            else
+                            {
+                                var nombreParr = parroquiaActivaId.HasValue 
+                                    ? (parroquiasDisponibles.FirstOrDefault(p => p.id == parroquiaActivaId.Value)?.nombre ?? $"Parroquia #{parroquiaActivaId}")
+                                    : "Sede no asignada";
+                                <span class="badge bg-light text-primary border me-3 py-1 px-2" style="font-size: 0.82rem;" title="Parroquia asignada">
+                                    <i class="fas fa-church me-1 text-primary"></i>@nombreParr
+                                </span>
+                            }
+
+                            <span class="me-2 fw-semibold text-dark small">
                                 👤 @User.Identity.Name
                             </span>
                             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">

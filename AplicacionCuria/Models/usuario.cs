@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace AplicacionCuria.Models
 {
@@ -15,5 +15,6 @@ namespace AplicacionCuria.Models
         public DateTime fecha_creacion { get; set; }
         public string salt { get; set; }
         public int iterations { get; set; }
+        public int? parroquia_id { get; set; }
     }
 }

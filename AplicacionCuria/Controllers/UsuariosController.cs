@@ -9,18 +9,42 @@ namespace AplicacionCuria.Controllers
     [Authorize(Roles = "admin")]
     public class UsuariosController(ConexionPostgreSQL sql) : Controller
     {
+        private void PrepararViewData(bool esSuperAdmin, int? userParroquiaId)
+        {
+            var query = sql.usuarios.AsQueryable();
+            if (!esSuperAdmin && userParroquiaId.HasValue)
+            {
+                query = query.Where(u => u.parroquia_id == userParroquiaId.Value);
+            }
+
+            ViewBag.Usuarios = query.OrderBy(u => u.id).ToList();
+            ViewBag.Parroquias = sql.parroquias.Where(p => p.estado == "ACTIVO").OrderBy(p => p.nombre).ToList();
+            ViewBag.EsSuperAdmin = esSuperAdmin;
+            ViewBag.UserParroquiaId = userParroquiaId;
+        }
+
         [HttpGet]
         public IActionResult CrearUsuario()
         {
-            var usuarios = sql.usuarios.ToList();
-            ViewBag.Usuarios = usuarios;
+            var esSuperAdmin = ParroquiaTenantHelper.EsSuperAdmin(User);
+            var userParroquiaId = ParroquiaTenantHelper.ObtenerParroquiaAsignada(User);
+            PrepararViewData(esSuperAdmin, userParroquiaId);
             return View("~/Views/Home/CrearUsuario.cshtml");
         }
 
         [HttpPost]
         public async Task<IActionResult> CrearUsuario(UsuarioRegisterRequest request)
         {
-            // ✅ Validar contraseña solo si es nuevo usuario
+            var esSuperAdmin = ParroquiaTenantHelper.EsSuperAdmin(User);
+            var userParroquiaId = ParroquiaTenantHelper.ObtenerParroquiaAsignada(User);
+
+            // Si es admin de parroquia, el usuario creado queda forzosamente asignado a su sede
+            if (!esSuperAdmin)
+            {
+                request.ParroquiaId = userParroquiaId;
+            }
+
+            // Validar contraseña solo si es nuevo usuario
             if (request.Id == 0 && string.IsNullOrWhiteSpace(request.Password))
             {
                 ModelState.AddModelError(nameof(request.Password), "La contraseña es obligatoria.");
@@ -28,7 +52,7 @@ namespace AplicacionCuria.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Usuarios = sql.usuarios.ToList();
+                PrepararViewData(esSuperAdmin, userParroquiaId);
                 return View("~/Views/Home/CrearUsuario.cshtml", request);
             }
 
@@ -38,14 +62,24 @@ namespace AplicacionCuria.Controllers
                 if (existente == null)
                 {
                     ViewBag.Error = "Usuario no encontrado.";
-                    ViewBag.Usuarios = sql.usuarios.ToList();
+                    PrepararViewData(esSuperAdmin, userParroquiaId);
                     return View("~/Views/Home/CrearUsuario.cshtml", request);
+                }
+
+                // Restringir a admin local sobre usuarios ajenos
+                if (!esSuperAdmin && existente.parroquia_id != userParroquiaId)
+                {
+                    return Forbid();
                 }
 
                 existente.nombre = request.Nombre;
                 existente.apellido = request.Apellido;
                 existente.correo = request.Email;
                 existente.rol = request.Rol;
+                if (esSuperAdmin)
+                {
+                    existente.parroquia_id = request.ParroquiaId;
+                }
 
                 if (!string.IsNullOrWhiteSpace(request.Password))
                 {
@@ -63,7 +97,7 @@ namespace AplicacionCuria.Controllers
                 var existente = sql.usuarios.FirstOrDefault(u => u.correo == request.Email);
                 if (existente != null)
                 {
-                    ViewBag.Usuarios = sql.usuarios.ToList();
+                    PrepararViewData(esSuperAdmin, userParroquiaId);
                     ViewBag.Error = "Este correo ya está registrado.";
                     return View("~/Views/Home/CrearUsuario.cshtml", request);
                 }
@@ -79,12 +113,13 @@ namespace AplicacionCuria.Controllers
                     iterations = hash.Iterations,
                     rol = request.Rol,
                     estado = "ACTIVO",
-                    fecha_creacion = DateTime.UtcNow
+                    fecha_creacion = DateTime.UtcNow,
+                    parroquia_id = esSuperAdmin ? request.ParroquiaId : userParroquiaId
                 };
 
                 sql.usuarios.Add(nuevo);
-                TempData["Success"] = "Usuario creado exitosamente.";
                 await sql.SaveChangesAsync();
+                TempData["Success"] = "Usuario creado exitosamente.";
             }
 
             return RedirectToAction("CrearUsuario");
@@ -93,8 +128,16 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult EditarUsuario(int id)
         {
+            var esSuperAdmin = ParroquiaTenantHelper.EsSuperAdmin(User);
+            var userParroquiaId = ParroquiaTenantHelper.ObtenerParroquiaAsignada(User);
+
             var usuario = sql.usuarios.FirstOrDefault(u => u.id == id);
             if (usuario == null) return NotFound();
+
+            if (!esSuperAdmin && usuario.parroquia_id != userParroquiaId)
+            {
+                return Forbid();
+            }
 
             var model = new UsuarioRegisterRequest
             {
@@ -102,11 +145,12 @@ namespace AplicacionCuria.Controllers
                 Email = usuario.correo,
                 Nombre = usuario.nombre,
                 Apellido = usuario.apellido,
-                Rol = usuario.rol
+                Rol = usuario.rol,
+                ParroquiaId = usuario.parroquia_id
             };
 
             ViewBag.IdUsuario = id;
-            ViewBag.Usuarios = sql.usuarios.ToList();
+            PrepararViewData(esSuperAdmin, userParroquiaId);
             ViewBag.Editando = true;
             return View("~/Views/Home/CrearUsuario.cshtml", model);
         }
@@ -114,13 +158,25 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public async Task<IActionResult> EditarUsuario(int id, UsuarioRegisterRequest request)
         {
+            var esSuperAdmin = ParroquiaTenantHelper.EsSuperAdmin(User);
+            var userParroquiaId = ParroquiaTenantHelper.ObtenerParroquiaAsignada(User);
+
             var usuario = sql.usuarios.FirstOrDefault(u => u.id == id);
             if (usuario == null) return NotFound();
+
+            if (!esSuperAdmin && usuario.parroquia_id != userParroquiaId)
+            {
+                return Forbid();
+            }
 
             usuario.nombre = request.Nombre;
             usuario.apellido = request.Apellido;
             usuario.rol = request.Rol;
             usuario.correo = request.Email;
+            if (esSuperAdmin)
+            {
+                usuario.parroquia_id = request.ParroquiaId;
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Password))
             {
@@ -138,8 +194,16 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public async Task<IActionResult> EliminarUsuario(int id)
         {
+            var esSuperAdmin = ParroquiaTenantHelper.EsSuperAdmin(User);
+            var userParroquiaId = ParroquiaTenantHelper.ObtenerParroquiaAsignada(User);
+
             var usuario = sql.usuarios.FirstOrDefault(u => u.id == id);
             if (usuario == null) return NotFound();
+
+            if (!esSuperAdmin && usuario.parroquia_id != userParroquiaId)
+            {
+                return Forbid();
+            }
 
             sql.usuarios.Remove(usuario);
             await sql.SaveChangesAsync();

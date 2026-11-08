@@ -1,4 +1,4 @@
-﻿@model AplicacionCuria.Models.CursilloMatrimonioImprimir
+@model AplicacionCuria.Models.CursilloMatrimonioImprimir
 @{
     Layout = null;
 }
@@ -125,7 +125,7 @@
         <div class="sub-header">La Pastoral Familiar de la Parroquia Santa Maria de El Vergel</div>
 
         <div class="mmmm">
-            <img src="~/imagenes/logo_certificados.png" alt="Escudo" class="badge" />
+            <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/logo_certificados.png"))" alt="Escudo" class="badge" />
         </div>
 
         <!-- Encabezado del certificado -->

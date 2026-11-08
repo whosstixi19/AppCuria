@@ -1,0 +1,387 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-noshorthands]{babel}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+% Paleta de colores institucional
+\definecolor{azulcuria}{RGB}{0,51,102}
+\definecolor{doradocuria}{RGB}{184,134,11}
+\definecolor{grisclaro}{gray}{0.96}
+\definecolor{grisoscuro}{gray}{0.35}
+\definecolor{verdeexito}{RGB}{34,139,34}
+
+% Configuración de encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{grisoscuro}\textsc{Curia Diocesana de Cuenca --- ECLESOFT 2.0}}
+\fancyhead[R]{\small\color{grisoscuro}Informe de Avance y Propuesta Cloud}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+% Cuadros estilizados
+\newtcolorbox{resumenbox}{
+  colback=azulcuria!4, colframe=azulcuria,
+  title=\textbf{Resumen Ejecutivo}, fonttitle=\bfseries\color{white},
+  boxrule=0.8pt, arc=2mm, left=4mm, right=4mm, top=3mm, bottom=3mm
+}
+
+\newtcolorbox{destacadobox}[1]{
+  colback=doradocuria!5, colframe=doradocuria!80!black,
+  title=\textbf{#1}, fonttitle=\bfseries\color{white},
+  boxrule=0.8pt, arc=2mm, left=4mm, right=4mm, top=3mm, bottom=3mm
+}
+
+\newtcolorbox{alertabox}[1]{
+  colback=red!4, colframe=red!70!black,
+  title=\textbf{#1}, fonttitle=\bfseries\color{white},
+  boxrule=0.8pt, arc=2mm, left=4mm, right=4mm, top=3mm, bottom=3mm
+}
+
+\lstdefinestyle{consola}{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{grisclaro},
+  frame=single,
+  rulecolor=\color{grisoscuro},
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible
+}
+
+\begin{document}
+
+% -------------------------------------------------------------
+% PORTADA
+% -------------------------------------------------------------
+\begin{titlepage}
+    \centering
+    \vspace*{1.2cm}
+    {\Large \textsc{Sistema de Gestión Eclesiástica y Sacramental}\par}
+    \vspace{0.3cm}
+    {\Huge \bfseries \color{azulcuria} ECLESOFT 2.0\par}
+    \vspace{1.2cm}
+    \rule{\linewidth}{1.2pt}\par
+    \vspace{0.4cm}
+    {\LARGE \bfseries Informe de Avance Técnico y Propuesta de Despliegue en la Nube\par}
+    \vspace{0.3cm}
+    {\large Estado del Arte del Software, Estudio Comparativo de Hosting (GCP, AWS, VPS Calidad/Precio, Oracle), Seguridad Integral y Estimación de Costos de Mantenimiento\par}
+    \rule{\linewidth}{1.2pt}\par
+    \vspace{2.2cm}
+
+    \begin{minipage}{0.48\textwidth}
+        \textbf{Institución Destinataria:}\\
+        Curia Diocesana de Cuenca\\
+        Despacho Cancillería y Secretaría\\
+        \vspace{0.3cm}\\
+        \textbf{Revisores:}\\
+        Profesor Asesor de Proyecto\\
+        Encargado / Administrador de la Curia
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \flushright
+        \textbf{Elaborado por:}\\
+        Equipo de Desarrollo de Software\\
+        \textbf{Fecha:} Noviembre de 2026\\
+        \textbf{Versión:} 2.0 (Pre-Producción)
+    \end{minipage}
+
+    \vfill
+    {\small Cuenca, Ecuador --- 2026\par}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% -------------------------------------------------------------
+% RESUMEN EJECUTIVO
+% -------------------------------------------------------------
+\begin{resumenbox}
+El presente documento consolida formalmente el \textbf{estado actual de avance del sistema ECLESOFT 2.0} para su evaluación académica y técnica, junto con un exhaustivo \textbf{estudio técnico-económico de infraestructura en la nube y mantenimiento}.
+
+Se analizan múltiples alternativas de alojamiento en función de su relación calidad/precio: desde hiperescaladores globales (\textbf{Google Cloud Platform} y \textbf{Amazon Web Services}), pasando por servidores virtuales dedicados de alta eficiencia (\textbf{Hetzner Cloud} y \textbf{DigitalOcean}), hasta la opción de costo cero permanente (\textbf{Oracle Cloud Free Tier}). Asimismo, se detalla la resolución definitiva del candado de seguridad (\textbf{HTTPS/SSL con Let's Encrypt}), el aislamiento criptográfico de la base de datos PostgreSQL, la adquisición del dominio institucional y dos modalidades claras de costo mensual para la Curia.
+\end{resumenbox}
+
+\vspace{0.5cm}
+
+% -------------------------------------------------------------
+% SECCIÓN 1: ESTADO DEL ARTE Y AVANCE DEL PROYECTO
+% -------------------------------------------------------------
+\section{Estado Actual y Avances del Proyecto (Muestra Académica)}
+
+El sistema \textbf{ECLESOFT 2.0} fue concebido para modernizar, centralizar y resguardar el patrimonio sacramental y administrativo de la Curia Diocesana de Cuenca. A la fecha, el proyecto presenta un grado de madurez que supera la fase de prototipo, contando con arquitectura empresarial lista para producción.
+
+\subsection{Arquitectura Tecnológica del Sistema}
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{Backend y Plataforma Web:} Desarrollado sobre \textbf{.NET 8.0 (C\#)} utilizando el patrón arquitectónico \textbf{Modelo-Vista-Controlador (MVC)}, garantizando alto rendimiento, bajo consumo de memoria y soporte oficial de largo plazo (LTS).
+    \item \textbf{Capa de Datos y Persistencia:} Implementado con \textbf{Entity Framework Core} sobre \textbf{PostgreSQL 17/18}. Todas las relaciones canónicas (parroquias, sacerdotes, ministros, contrayentes, actas y libros) están normalizadas y validadas.
+    \item \textbf{Base de Datos Unificada (\texttt{BD.sql}):} Se consolidó un script único maestro de \textbf{24 tablas relacionales} sincronizadas con los modelos de C\#, eliminando inconsistencias previas y garantizando la regeneración íntegra del esquema con un solo comando.
+\end{itemize}
+
+\subsection{Módulos Funcionales Completamente Operativos}
+\begin{enumerate}[leftmargin=1.2cm]
+    \item \textbf{Catálogos Maestros de Registro:} Mantenimiento centralizado de Feligreses, Sacerdotes, Parroquias, Iglesias, Ministros/Catequistas, Periodos, Misas y Barrios.
+    \item \textbf{Gestión Sacramental Integral:} Registro, foliado canónico (Libro, Tomo, Página, Acta) y búsqueda en tiempo real de \textbf{Bautismos}, \textbf{Primera Comunión}, \textbf{Confirmación} y \textbf{Matrimonios}.
+    \item \textbf{Catequesis Parroquial:} Fichas de inscripción de alumnos, vinculación de representantes y control de faltas periódicas.
+    \item \textbf{Generación Oficial de Certificados en PDF:} Motor de renderizado dinámico en servidor basado en \texttt{Rotativa} y \texttt{wkhtmltopdf}. Genera al instante certificados eclesiásticos oficiales listos para impresión con firma y sellos (Bautizo, Matrimonio, Pase de Nivel, Confirmación y Dispensas).
+    \item \textbf{Agenda Litúrgica con Notificaciones Automáticas:} Calendario de eventos y celebraciones con servicio en segundo plano (\textit{Background Service}) que despacha recordatorios automáticos por correo electrónico (\textbf{SMTP / Gmail}) sin intervención humana.
+    \item \textbf{Ficha Social y Pastoral (Ayuda Social):} Módulo socioeconómico para familias vulnerables, incluyendo condición de vivienda, historial clínico, representantes y croquis georreferenciado, con restricción técnica de carga de fotos a máximo 2 MB.
+    \item \textbf{Control de Pagos y Tesorería:} Registro y conciliación de aranceles por servicios y cursillos, con filtros por fecha y exportación de balances a PDF.
+    \item \textbf{Seguridad de Usuarios y Roles:} Deshabilitación de auto-registro público. El acceso está restringido a cuentas dadas de alta por el Administrador con hashing seguro de credenciales.
+\end{enumerate}
+
+\subsection{Calidad de Software, Pruebas Automatizadas y DevOps}
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{Suite de Pruebas Automatizadas (xUnit):} Se creó el proyecto independiente \texttt{AplicacionCuria.Tests} con pruebas unitarias y de integración que verifican las validaciones de negocio críticas, como el envío de recordatorios y el cálculo de fechas litúrgicas.
+    \item \textbf{Integración y Despliegue Continuo (CI/CD con GitHub Actions):} Pipeline automatizado en \texttt{.github/workflows/deploy.yml}. Cada confirmación de código en la rama principal (\texttt{main}) compila el proyecto, ejecuta la batería de pruebas con \texttt{dotnet test} y, de resultar exitosa, se conecta vía SSH seguro a la máquina virtual en la nube para actualizar los contenedores en caliente en menos de 90 segundos sin caída de la base de datos.
+    \item \textbf{Optimización y Limpieza:} Se depuraron 7 paquetes NuGet obsoletos, se eliminó código muerto y se impuso un límite eficiente de 100 registros en consultas masivas para evitar saturación de memoria en el servidor.
+\end{itemize}
+
+% -------------------------------------------------------------
+% SECCIÓN 2: JUSTIFICACIÓN DEL DESPLIEGUE EN LA NUBE
+% -------------------------------------------------------------
+\section{Justificación del Despliegue en la Nube (Escenario 2 vs. Servidor Físico)}
+
+Frente a la alternativa tradicional de alojar el sistema en una computadora de escritorio dentro de las oficinas de la Curia (\textbf{Escenario 1}), el despliegue en la nube (\textbf{Escenario 2}) ofrece ventajas determinantes para la institución:
+
+\begin{itemize}[leftmargin=1.5cm]
+    \item[\color{azulcuria}\checkmark] \textbf{Operación Continua 24/7 sin Dependencia Física:} Se eliminan los riesgos derivados de cortes imprevistos de energía eléctrica en Cuenca, fallas de disco duro local, apagados accidentales o daños en computadoras de oficina.
+    \item[\color{azulcuria}\checkmark] \textbf{Acceso Multi-Parroquia Descentralizado:} Las secretarías parroquiales y los sacerdotes pueden consultar actas históricas e inscribir bautismos desde cualquier iglesia o despacho parroquial conectado a Internet sin necesidad de instalar programas especiales en sus computadoras (únicamente requieren el navegador web).
+    \item[\color{azulcuria}\checkmark] \textbf{Copia de Seguridad Remota Inmune a Desastres:} Los datos no quedan en un solo disco local susceptible a robos o daños físicos. Se garantiza respaldo automatizado diario fuera del servidor.
+\end{itemize}
+
+% -------------------------------------------------------------
+% SECCIÓN 3: COMPARATIVA TÉCNICA Y ECONÓMICA DE HOSTING
+% -------------------------------------------------------------
+\section{Estudio Comparativo de Servidores en la Nube (Mejor Calidad/Precio)}
+
+Para no encarecer la infraestructura de la Curia, se descartaron servicios administrados hipercostosos (como Cloud SQL o AWS RDS que cobran entre \$45 y \$65 USD adicionales al mes únicamente por el motor de base de datos). La arquitectura óptima y comprobada consiste en **una Máquina Virtual / Servidor VPS Linux con Docker Compose**, alojando tanto la aplicación web como el motor PostgreSQL de forma aislada.
+
+A continuación, se comparan las 5 mejores alternativas del mercado ordenadas por su relación costo/beneficio:
+
+\subsection{Matriz Comparativa de Proveedores de Cómputo}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{p{2.3cm} p{2.6cm} p{2.4cm} p{2.1cm} p{2.2cm} p{2.5cm}}
+\toprule
+\textbf{Proveedor} & \textbf{Plan / Tipo} & \textbf{Recursos (CPU / RAM / SSD)} & \textbf{Costo Mensual Estimado} & \textbf{Costo Anual Estimado} & \textbf{Ventaja Principal} \\
+\midrule
+\textbf{Google Cloud (GCP)} & Compute Engine \texttt{e2-medium} & 2 vCPUs, 4 GB RAM, 30 GB SSD & \textbf{\$20.00 -- \$24.00} & \$240.00 -- \$288.00 & \textbf{\$300 USD gratis} de crédito inicial (90 días); afinidad Gmail/Drive. \\
+\addlinespace
+\textbf{Amazon Web Services (AWS)} & Amazon Lightsail & 2 vCPUs, 2 a 4 GB RAM, 60 GB SSD & \textbf{\$15.00 -- \$20.00} & \$180.00 -- \$240.00 & Facturación fija y predecible; 3 meses de prueba gratuita. \\
+\addlinespace
+\textbf{Hetzner Cloud (Recomendada Calidad/Precio)} & Cloud VPS \texttt{CX22} / \texttt{CPX21} & 2 vCPUs AMD, 4 GB RAM, 40 GB NVMe & \textbf{\$6.00 -- \$8.00} & \textbf{\$72.00 -- \$96.00} & **Mejor precio del mercado**; discos NVMe ultrarrápidos y tráfico 20 TB. \\
+\addlinespace
+\textbf{DigitalOcean / Linode} & Basic Droplet & 1--2 vCPUs, 2 a 4 GB RAM, 50 GB SSD & \textbf{\$12.00 -- \$18.00} & \$144.00 -- \$216.00 & Interfaz sencilla, respaldos semanales integrados a bajo costo (\$2/mes). \\
+\addlinespace
+\textbf{Oracle Cloud Infrastructure (OCI)} & Always Free Tier (Ampere ARM) & 4 OCPUs, 24 GB RAM, 100 GB SSD & \textbf{\$0.00 USD (Gratis)} & \textbf{\$0.00 USD (Gratis de por vida)} & Capacidad masiva sin costo. Requiere compilar contenedores en arquitectura ARM64. \\
+\bottomrule
+\end{tabularx}
+\caption{Comparativa técnica y económica de servidores en la nube para ECLESOFT 2.0.}
+\label{tab:comparativa-hosting}
+\end{table}
+
+\subsection{Análisis Detallado por Opción}
+
+\subsubsection{Opción 1: Google Cloud Platform (GCP) --- Enfoque Ecosistema Institucional}
+\begin{itemize}[leftmargin=1cm]
+    \item \textbf{Puntos Fuertes:}
+    \begin{enumerate}
+        \item \textbf{Crédito de Bienvenida de \$300 USD:} Permite operar el servidor durante los primeros 10 a 12 meses prácticamente sin costo inicial durante la etapa de despliegue y estabilización.
+        \item \textbf{Integración con Google Workspace:} La Curia y las parroquias operan con Gmail. El envío de recordatorios de la Agenda y la sincronización de respaldos hacia Google Drive institucional se realizan de forma nativa.
+        \item \textbf{Infraestructura ya probada y desplegada:} El servidor actual de pruebas ya fue configurado en GCP sobre una instancia Ubuntu con IP fija.
+    \end{enumerate}
+    \item \textbf{Costo estimado:} \$20.00 a \$24.00 USD / mes (absorbible con el bono inicial).
+\end{itemize}
+
+\subsubsection{Opción 2: Hetzner Cloud --- La Mejor Opción Calidad/Precio (Ultra Bajo Costo)}
+\begin{itemize}[leftmargin=1cm]
+    \item \textbf{Puntos Fuertes:}
+    \begin{enumerate}
+        \item \textbf{Ahorro Económico Drástico:} Con un costo de solo **\$6.00 a \$8.00 USD al mes** (aproximadamente \$72 a \$96 USD al año), ofrece el mismo rendimiento (2 vCPUs y 4 GB de RAM con discos NVMe de última generación) que en GCP o AWS cuesta el triple.
+        \item \textbf{Rendimiento Sobresaliente:} Es ideal si la Curia busca minimizar su presupuesto anual recurrente una vez finalizados los créditos de prueba de Google.
+    \end{enumerate}
+    \item \textbf{Consideración:} Sus centros de datos principales se encuentran en Virginia (EE.UU.) y Europa; seleccionando la región de EE.UU. la latencia hacia Cuenca es de aproximadamente 80 ms, perfectamente fluida.
+\end{itemize}
+
+\subsubsection{Opción 3: Amazon Web Services (AWS - Lightsail)}
+\begin{itemize}[leftmargin=1cm]
+    \item \textbf{Puntos Fuertes:} Precio cerrado sin sorpresas por consumo de ancho de banda y 60 GB de almacenamiento SSD NVMe en el plan de \$15 USD/mes.
+    \item \textbf{Desventaja:} Panel de configuración de seguridad más complejo para personal no técnico.
+\end{itemize}
+
+\subsubsection{Opción 4: Oracle Cloud Free Tier (Alternativa Costo Cero Permanente)}
+\begin{itemize}[leftmargin=1cm]
+    \item \textbf{Puntos Fuertes:} Oracle ofrece de forma permanente y gratuita instancias con procesadores Ampere (hasta 4 núcleos y 24 GB de memoria RAM) sin cobrar mensualidad jamás.
+    \item \textbf{Consideración Técnica:} Utiliza arquitectura de procesador ARM64, por lo que el \texttt{Dockerfile} de ECLESOFT 2.0 requiere compilarse con soporte multiplataforma (\texttt{docker buildx}).
+\end{itemize}
+
+\begin{destacadobox}{Estrategia Recomendada de Selección}
+\textbf{Fase 1 (Inmediata / Puesta en marcha):} Utilizar **Google Cloud Platform (GCP)** aprovechando el crédito gratuito de \$300 USD para costo cero durante el primer año académico.\\
+\textbf{Fase 2 (Sostenibilidad a largo plazo):} Si la Curia decide asumir la factura permanente con el mínimo presupuesto posible, migrar la máquina virtual a **Hetzner Cloud (\$6 a \$8 USD/mes)** en menos de una hora mediante el script de Docker Compose ya preparado.
+\end{destacadobox}
+
+% -------------------------------------------------------------
+% SECCIÓN 4: DOMINIO INSTITUCIONAL Y CONEXIÓN SEGURA HTTPS
+% -------------------------------------------------------------
+\section{Seguridad de Conexión, Certificados SSL y Dominio Web}
+
+\subsection{Dominio Propio para la Curia Diocesana}
+Actualmente el acceso se efectúa por dirección IP numérica (ej. \texttt{http://136.65.6.168:5155}). Para dotar de identidad institucional y habilitar el cifrado seguro, se requiere asociar un nombre de dominio:
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l p{4.2cm} l p{4.8cm}}
+\toprule
+\textbf{Extensión} & \textbf{Ejemplo sugerido} & \textbf{Costo Anual} & \textbf{Proveedor / Recomendación} \\
+\midrule
+\textbf{.org} & \texttt{curiacuenca.org} & \$10 -- \$12 USD / año & Cloudflare / Namecheap (\textbf{Opción más económica}) \\
+\textbf{.org.ec} & \texttt{diocesisdecuenca.org.ec} & \$30 -- \$35 USD / año & NIC.ec (Subdominio oficial para ONG/Iglesias en Ecuador) \\
+\textbf{.ec} & \texttt{curiacuenca.ec} & \$35 -- \$40 USD / año & NIC.ec (Dominio de máxima jerarquía nacional) \\
+\bottomrule
+\end{tabularx}
+\caption{Opciones de dominio web para la Curia de Cuenca.}
+\end{table}
+
+\subsection{Solución al Mensaje de Chrome: ``La conexión no es segura''}
+El navegador emite una advertencia de riesgo debido a que la información viaja en texto plano mediante el protocolo no cifrado \texttt{http://}.
+
+Para resolver esto y activar el **candado de seguridad verde/gris (`https://`)**, se implementa una solución de nivel bancario a **costo cero (\$0.00 USD)**:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item \textbf{Proxy Inverso Automatizado (Caddy o Nginx con Certbot):} Se añade un contenedor ligero al archivo \texttt{docker-compose.yml} que intercepta las peticiones de los puertos 80 y 443.
+    \item \textbf{Certificado Criptográfico Oficial Gratuito (Let's Encrypt):} El servidor se comunica automáticamente con la autoridad certificadora global \textbf{Let's Encrypt}, emitiendo un certificado digital TLS 1.3 de 256 bits reconocido por Google Chrome, Microsoft Edge, Mozilla Firefox y teléfonos Android/iOS.
+    \item \textbf{Renovación Desatendida:} El certificado se renueva cada 60 días en segundo plano sin intervención humana ni cobros periódicos.
+    \item \textbf{Capa Adicional Cloudflare (WAF y CDN Gratuita):} Al gestionar el DNS a través de Cloudflare (plan gratuito), se obtiene protección adicional contra ataques de denegación de servicio (DDoS), aceleración de entrega de certificados en PDF y enmascaramiento de la IP real del servidor.
+\end{enumerate}
+
+% -------------------------------------------------------------
+% SECCIÓN 5: ARQUITECTURA DE SEGURIDAD Y PROTECCIÓN DE DATOS
+% -------------------------------------------------------------
+\section{Arquitectura de Seguridad Integral del Servidor}
+
+La seguridad no se limita a la conexión HTTPS; se implementó un esquema de defensa en capas:
+
+\begin{figure}[h!]
+\centering
+\small
+\begin{tcolorbox}[colback=grisclaro,colframe=azulcuria,arc=1mm,width=\textwidth]
+\centering
+\textbf{[ Internet / Parroquias / Chrome ]} $\xrightarrow{\text{HTTPS (Puerto 443)}}$ \textbf{[ Firewall GCP ]} $\xrightarrow{}$ \textbf{[ Caddy Proxy (SSL) ]}\\
+$\downarrow$\\
+\textbf{[ Contenedor curia-web (.NET 8) ]} $\xleftrightarrow{\text{Red Privada Docker (127.0.0.1)}}$ \textbf{[ PostgreSQL 17 / BD.sql ]}\\
+\textit{(El puerto 5432 está bloqueado para el exterior y jamás se expone a Internet)}
+\end{tcolorbox}
+\caption{Flujo de seguridad y aislamiento de red en el servidor.}
+\end{figure}
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{Aislamiento de la Base de Datos:} En el archivo \texttt{docker-compose.yml}, el puerto \texttt{5432} de PostgreSQL está vinculado únicamente a \texttt{127.0.0.1} y a la red interna de contenedores. **Nadie desde Internet puede intentar ataques de fuerza bruta contra la contraseña de la base de datos.**
+    \item \textbf{Cortafuegos Perimetral (Firewall):} Únicamente se encuentran abiertos los puertos \texttt{80} (HTTP para redirección), \texttt{443} (HTTPS cifrado) y el puerto \texttt{22} (SSH para mantenimiento mediante llaves criptográficas privadas, con contraseña deshabilitada).
+    \item \textbf{Protección contra Denegación de Servicio en Subidas (DoS):} El sistema limita las subidas de firmas de sacerdotes y fotos de ayuda social a un tamaño máximo de 2 MB por archivo con validación estricta de extensiones de imagen permitidas.
+    \item \textbf{Cookies de Sesión Blindadas:} Configuración de cookies en \texttt{Program.cs} con banderas \texttt{HttpOnly=true} (para impedir robo de sesión por scripts XSS maliciosos) y \texttt{SameAsRequest}.
+\end{itemize}
+
+% -------------------------------------------------------------
+% SECCIÓN 6: ESTRATEGIA DE RESPALDOS AUTOMATIZADOS
+% -------------------------------------------------------------
+\section{Estrategia de Respaldos Automatizados (Backup Plan)}
+
+Para proteger el archivo histórico sacramental de la Curia contra cualquier contingencia, se define la siguiente política de respaldo:
+
+\begin{itemize}[leftmargin=1.5cm]
+    \item \textbf{Punto de Recuperación Objetivo (RPO):} Menor a 24 horas (respaldo automático ejecutado todas las noches a las 23:00).
+    \item \textbf{Tiempo de Recuperación Objetivo (RTO):} Menor a 30 minutos (restauración total del sistema en una nueva máquina virtual mediante Docker).
+\end{itemize}
+
+\subsection{Procedimiento Automatizado de Copia de Seguridad}
+\begin{enumerate}[leftmargin=1.2cm]
+    \item Una tarea programada (\texttt{cron}) en el servidor Linux extrae diariamente un volcado comprimido de PostgreSQL:
+\begin{lstlisting}[style=consola]
+docker exec curia-postgres pg_dump -U postgres curia | gzip > /backups/curia_$(date +\%Y\%m\%d).sql.gz
+\end{lstlisting}
+    \item La herramienta segura \texttt{rclone} transmite el archivo comprimido hacia una carpeta privada de **Google Drive institucional** y hacia un repositorio seguro de Google Cloud Storage.
+    \item Se aplica una política de rotación automática de 30 días, conservando los últimos 30 respaldos diarios y eliminando versiones antiguas para no generar costos de almacenamiento.
+\end{enumerate}
+
+% -------------------------------------------------------------
+% SECCIÓN 7: COSTOS DE MANTENIMIENTO Y PROPUESTA ECONÓMICA
+% -------------------------------------------------------------
+\section{Propuesta Económica y Costos de Mantenimiento}
+
+Para responder con exactitud al requerimiento del encargado, se presentan dos esquemas de contratación:
+
+\subsection{Modalidad A: Infraestructura Directa Autogestionada (Costo de Nube)}
+La Curia es la titular directa de las cuentas de hosting y dominio, asumiendo únicamente el costo neto de consumo de servidores:
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{0.95\textwidth}{X r r}
+\toprule
+\textbf{Rubro de Infraestructura} & \textbf{Costo Mensual} & \textbf{Costo Anual} \\
+\midrule
+Servidor Cloud en Google Cloud (\texttt{e2-medium}, 2 vCPU, 4 GB RAM, 30 GB SSD) & \$20.00 USD & \$240.00 USD \\
+Dirección IP Estática pública (Asignada a la VM) & \$0.00 USD & \$0.00 USD \\
+Almacenamiento de Backups (Google Drive / Cloud Storage) & \$1.00 USD & \$12.00 USD \\
+Dominio institucional (\texttt{curiacuenca.org} prorrateado mensualmente) & \$1.00 USD & \$12.00 USD \\
+Certificado SSL/TLS oficial (Let's Encrypt con renovación automática) & \$0.00 USD & \$0.00 USD \\
+\midrule
+\textbf{Total con Google Cloud Platform (Primer año con bono de \$300 gratis)} & \textbf{\$22.00 USD/mes} & \textbf{\$264.00 USD/año} \\
+\midrule
+\textit{Alternativa de Ultra Bajo Costo con Hetzner Cloud (2 vCPU, 4 GB RAM NVMe)} & \textit{\$8.00 USD/mes} & \textit{\$96.00 USD/año} \\
+\bottomrule
+\end{tabularx}
+\caption{Presupuesto desglosado de infraestructura directa en la nube.}
+\end{table}
+
+\subsection{Modalidad B: Servicio Administrado Integral (Recomendada para la Curia)}
+Dado que la Curia no cuenta con un departamento de ingeniería de sistemas dedicado 24/7, el equipo de desarrollo asume la custodia, operación y soporte por una tarifa fija:
+
+\begin{destacadobox}{Plan de Servicio y Soporte Integral: \$45.00 a \$60.00 USD / mes}
+\begin{itemize}[leftmargin=1cm]
+    \item \textbf{Alojamiento Completo en la Nube:} Cobertura total de la máquina virtual, ancho de banda y disponibilidad del 99.9\%.
+    \item \textbf{Dominio Web y Candado SSL/HTTPS:} Gestión, configuración y renovación anual de dominio y certificados de seguridad.
+    \item \textbf{Auditoría Semanal de Respaldos:} Verificación de integridad de las copias de seguridad en Google Drive y simulacros periódicos de recuperación ante desastres.
+    \item \textbf{Soporte a Usuarios y Secretarías:} Asistencia técnica para sacerdotes y secretarias parroquiales ante incidencias o dudas operativas.
+    \item \textbf{Mantenimiento y Actualizaciones:} Aplicación de parches de seguridad del sistema operativo y despliegue continuo de mejoras solicitadas por la Curia mediante GitHub Actions.
+\end{itemize}
+\end{destacadobox}
+
+% -------------------------------------------------------------
+% SECCIÓN 8: CRONOGRAMA DE ENTREGA
+% -------------------------------------------------------------
+\section{Cronograma de Implementación y Siguientes Pasos}
+
+El pase a producción definitiva se ejecutará en un plazo de 5 días laborables tras la aprobación:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item \textbf{Día 1: Registro de Dominio y DNS:} Adquisición del dominio (\texttt{curiacuenca.org}) y vinculación mediante registros tipo A hacia la IP fija del servidor.
+    \item \textbf{Día 2: Despliegue de Certificado SSL/HTTPS:} Activación del proxy Caddy en Docker para levantar el candado de seguridad y eliminar las alertas en el navegador.
+    \item \textbf{Día 3: Automatización de Copias de Seguridad:} Programación del script diario \texttt{pg\_dump} con envío a Google Drive institucional.
+    \item \textbf{Día 4: Vinculación del Correo SMTP Institucional:} Registro de credenciales en \texttt{appsettings.json} para el despacho de recordatorios litúrgicos.
+    \item \textbf{Día 5: Entrega y Capacitación:} Creación de cuentas nominales para el personal de la Curia y entrega de credenciales maestras.
+\end{enumerate}
+
+\vspace{0.8cm}
+\begin{center}
+    \rule{8cm}{0.6pt}\\
+    \vspace{0.2cm}
+    \textbf{Firma del Responsable del Proyecto}\\
+    Ingeniería y Desarrollo de Software --- ECLESOFT 2.0
+\end{center}
+
+\end{document}

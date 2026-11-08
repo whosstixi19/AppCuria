@@ -1,4 +1,4 @@
-﻿@model AplicacionCuria.Models.CursilloPrebautismalImprimir
+@model AplicacionCuria.Models.CursilloPrebautismalImprimir
 @{
     Layout = null;
     string etiquetaPadre = ViewBag.Tipo == "padrinos" ? "Padrino" : "Padre";
@@ -113,7 +113,7 @@
     <div class="container">
         <!-- Imagen del escudo -->
         <div class="mmmm">
-            <img src="~/imagenes/logo_certificados.png" alt="Escudo" class="badge" />
+            <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/logo_certificados.png"))" alt="Escudo" class="badge" />
 @*             <img src="~/imagenes/comunion.jpg" alt="Escudo" class="badgee" />
  *@        </div>
 

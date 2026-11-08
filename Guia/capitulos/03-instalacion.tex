@@ -1,34 +1,69 @@
 \chapter{Instalación paso a paso}\label{cap:instalacion}
 
-\section{Obtener el código fuente}
+\section{Obtención del código y preparación del entorno}
 \begin{enumerate}
     \item Descomprima el paquete del proyecto en su carpeta de documentos o bien abra una terminal (PowerShell) para clonarlo con Git desde el repositorio oficial:
     \begin{lstlisting}[style=consola]
 cd C:\Users\SuUsuario\Documents
 git clone https://github.com/whosstixi19/AppCuria.git
+cd AppCuria
 \end{lstlisting}
-    \item Verifique que dentro de la carpeta del proyecto se encuentre la subcarpeta \texttt{AplicacionCuria} (con el archivo \texttt{AplicacionCuria.csproj}) y en la raíz el script de base de datos \texttt{BD.sql}.
+    \item Verifique que dentro de la carpeta del proyecto se encuentren la subcarpeta \texttt{AplicacionCuria} (con el código fuente), el manifiesto \texttt{docker-compose.yml} y en la raíz el script de base de datos \texttt{BD.sql}.
 \end{enumerate}
 
-\section{Configurar pgAdmin 4 y crear las tablas}
+\section{Modalidad A: Instalación Local con Docker Desktop (Recomendada)}
+Esta modalidad es el método más rápido, limpio y estandarizado para instalar el sistema en el equipo local de la parroquia o curia. No requiere instalar .NET SDK ni configurar pgAdmin manualmente, ya que todo el entorno se ejecuta en contenedores aislados.
 
-\subsection{Crear la base de datos \texttt{curia}}
+\subsection{Verificación previa de virtualización}
+\begin{enumerate}
+    \item Abra el \textbf{Administrador de tareas} (\texttt{Ctrl + Shift + Esc}).
+    \item Vaya a la pestaña \textbf{Rendimiento} y seleccione \textbf{CPU}.
+    \item En la esquina inferior derecha verifique que indique \textbf{Virtualización: Habilitada}.
+    \item Abra \textbf{Docker Desktop} y asegúrese de que el motor esté en ejecución (ícono de Docker en verde).
+\end{enumerate}
+
+\subsection{Puesta en marcha con un solo comando}
+\begin{enumerate}
+    \item Abra una consola de PowerShell en la raíz del proyecto (donde se ubica \texttt{docker-compose.yml}).
+    \item Ejecute la orden de construcción y levantamiento de contenedores:
+    \begin{lstlisting}[style=consola]
+docker compose up -d --build
+\end{lstlisting}
+    \item \textbf{Inicialización automática:}
+    \begin{itemize}
+        \item El servicio \texttt{curia-postgres} monta el script \texttt{BD.sql} en \texttt{/docker-entrypoint-initdb.d/}, creando automáticamente la base de datos \texttt{curia}, las 24 tablas y el usuario administrador inicial con clave \texttt{Clave\_curia}.
+        \item El servicio \texttt{curia-web} compila la aplicación ASP.NET Core 8 con soporte completo para generación de PDFs y expone los puertos \texttt{80} y \texttt{5155}.
+    \end{itemize}
+    \item Compruebe que ambos contenedores estén saludables ejecutando:
+    \begin{lstlisting}[style=consola]
+docker ps
+\end{lstlisting}
+    \item En el navegador de la máquina principal, ingrese a \url{http://localhost:5155} o \url{http://localhost} para comprobar el inicio de sesión.
+\end{enumerate}
+
+\subsection{Configuración de autoarranque con Windows}
+Para que el párroco o secretaria no tengan que abrir consolas cada mañana:
+\begin{enumerate}
+    \item En la configuración de Docker Desktop (\textbf{Settings} $\rightarrow$ \textbf{General}), active la opción \textbf{Start Docker Desktop when you sign in to Windows}.
+    \item Como el archivo \texttt{docker-compose.yml} tiene la directiva \texttt{restart: always}, los contenedores de la aplicación y la base de datos se encenderán solos en segundo plano al iniciar sesión en la computadora.
+\end{enumerate}
+
+\section{Modalidad B: Instalación Local Nativa (Plan B sin Docker)}
+Si la computadora de la sede parroquial es antigua, tiene la virtualización bloqueada en la BIOS o no permite instalar Docker Desktop, se ejecuta la instalación nativa directa.
+
+\subsection{Crear la base de datos \texttt{curia} en pgAdmin 4}
 \begin{enumerate}
     \item Abra \textbf{pgAdmin 4} en la máquina principal y expanda en el panel izquierdo \textbf{Servers} $\rightarrow$ \textbf{PostgreSQL 18}.
     \item Haga clic derecho sobre \textbf{Databases} y seleccione \textbf{Create} $\rightarrow$ \textbf{Database...}.
-    \item En el campo \textbf{Database}, escriba exactamente en minúsculas:
-    \begin{lstlisting}[style=consola]
-curia
-\end{lstlisting}
-    \item Haga clic en el botón \textbf{Save} para crear la base de datos.
+    \item En el campo \textbf{Database}, escriba exactamente en minúsculas: \texttt{curia} y presione \textbf{Save}.
 \end{enumerate}
 
 \subsection{Ejecutar el script de base de datos (\texttt{BD.sql})}
 \begin{enumerate}
-    \item En el panel izquierdo de pgAdmin 4, haga clic derecho sobre la base de datos \texttt{curia} recién creada y seleccione \textbf{Query Tool} (Herramienta de consulta).
-    \item En la barra superior del editor de consultas, haga clic en el ícono de \textbf{Open File} (Abrir archivo) y seleccione el archivo \texttt{BD.sql} (o copie y pegue su contenido completo en el editor).
-    \item Asegúrese de no tener sombreada solo una parte del texto y presione el botón \textbf{Execute script} (ícono de reproducción $\blacktriangleright$ o tecla \textbf{F5}).
-    \item En la pestaña inferior \textbf{Messages} deberá mostrarse el mensaje \texttt{Query returned successfully}. Con esto quedarán creadas las 24 tablas del sistema y la cuenta de usuario administrador inicial.
+    \item En el panel izquierdo de pgAdmin 4, haga clic derecho sobre la base de datos \texttt{curia} recién creada y seleccione \textbf{Query Tool}.
+    \item Abra el archivo \texttt{BD.sql} (o copie su contenido en el editor).
+    \item Asegúrese de no tener ningún fragmento sombreado y presione el botón \textbf{Execute script} (tecla \textbf{F5}).
+    \item La pestaña \textbf{Messages} confirmará la creación exitosa de las 24 tablas.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -38,20 +73,8 @@ curia
     \label{fig:pgadmin-bd}
 \end{figure}
 
-\begin{alerta}
-El repositorio contiene archivos históricos de versiones previas (\texttt{Tablas.sql} y \texttt{TablasNuevo.sql}). Para la instalación utilice únicamente el archivo actualizado \texttt{BD.sql}, ya que está 100\% sincronizado con todos los modelos de datos actuales del sistema. Asimismo, verifique en pgAdmin 4 que no quede seleccionado solo un fragmento de texto antes de presionar \textbf{F5}, para que se ejecute el script completo.
-\end{alerta}
-
-\section{Configurar la cadena de conexión}
-Por motivos de seguridad, al clonar el proyecto desde GitHub el archivo \texttt{appsettings.json} viene con la cadena de conexión en blanco (\texttt{"DefaultConnection": ""}) y el archivo \texttt{appsettings.Development.json} no se incluye en el repositorio público (está listado en \texttt{.gitignore}).
-
-\begin{alerta}
-Si intenta ejecutar \texttt{dotnet run} sin antes configurar la cadena de conexión, la consola mostrará el error \texttt{System.InvalidOperationException: The ConnectionString property has not been initialized}. Además, recuerde que si existe el archivo \texttt{appsettings.Development.json}, ASP.NET Core le da prioridad sobre \texttt{appsettings.json}.
-\end{alerta}
-
-\begin{enumerate}
-    \item Abra el archivo \texttt{appsettings.json} (y, si existe en su carpeta, también \texttt{appsettings.Development.json}) dentro de \texttt{AplicacionCuria}.
-    \item En la sección \texttt{ConnectionStrings}, coloque la cadena de conexión apuntando a la base de datos \texttt{curia} con la contraseña asignada a PostgreSQL (\texttt{Clave\_curia}):
+\subsection{Configurar la cadena de conexión}
+Abra el archivo \texttt{appsettings.json} dentro de \texttt{AplicacionCuria} y asigne la cadena de conexión:
 \begin{lstlisting}[style=json]
 {
   "ConnectionStrings": {
@@ -59,52 +82,25 @@ Si intenta ejecutar \texttt{dotnet run} sin antes configurar la cadena de conexi
   }
 }
 \end{lstlisting}
-    \item Guarde los cambios antes de iniciar el servidor.
-\end{enumerate}
 
-\section{Ejecutar la aplicación y habilitar el acceso en red local}
-
-\subsection{Ejecución local en la máquina principal}
+\subsection{Ejecución nativa y script de autoarranque en Windows}
+Para que la aplicación funcione como un servicio permanente sin terminales abiertas:
 \begin{enumerate}
-    \item Abra una terminal de PowerShell dentro de la carpeta \texttt{AplicacionCuria} (donde se ubica \texttt{AplicacionCuria.csproj}).
-    \item Restaure los paquetes del proyecto y ejecute la aplicación:
+    \item Compile y publique la aplicación en una carpeta limpia ejecutando en PowerShell:
     \begin{lstlisting}[style=consola]
-dotnet restore
-dotnet run
+cd AplicacionCuria
+dotnet publish -c Release -o C:\CuriaApp
 \end{lstlisting}
-    \item La consola mostrará que el servidor está escuchando en \url{http://localhost:5155} y que la verificación inicial de recordatorios se ejecutó con \texttt{[OK]}.
+    \item Cree un archivo ejecutable por lotes llamado \texttt{iniciar\_curia.bat} en \texttt{C:\textbackslash CuriaApp\textbackslash} con el siguiente contenido:
+    \begin{lstlisting}[style=consola]
+@echo off
+cd /d C:\CuriaApp
+start /min AplicacionCuria.exe --urls "http://0.0.0.0:5155"
+\end{lstlisting}
+    \item Presione la combinación de teclas \texttt{Windows + R}, escriba \texttt{shell:startup} y presione Enter.
+    \item Pegue dentro de esa carpeta un acceso directo al archivo \texttt{iniciar\_curia.bat}.
+    \item Con esto, cada vez que se encienda la computadora, la aplicación web arrancará de forma automática en segundo plano.
 \end{enumerate}
-
-\subsection{Habilitar el acceso desde otras computadoras de la red (Cliente--Servidor)}
-Para que las demás computadoras de la Curia puedan conectarse mediante su navegador web a la máquina principal:
-
-\begin{enumerate}
-    \item \textbf{Política de cookies en red local (\texttt{Program.cs}):} Verifique que en la línea 41 del archivo \texttt{Program.cs} la política de cookies esté definida como:
-    \begin{lstlisting}[style=codigo]
-options.Cookie.HttpOnly = true;
-options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-\end{lstlisting}
-    Esto permite que los navegadores de las computadoras clientes mantengan la sesión iniciada al conectarse por dirección IP local mediante \texttt{http://}.
-    \item \textbf{Abrir el puerto en el Firewall de Windows:} En la máquina principal, abra una ventana de PowerShell como \textbf{Administrador} y ejecute por única vez el siguiente comando para permitir conexiones entrantes al puerto \texttt{5155}:
-    \begin{lstlisting}[style=consola]
-New-NetFirewallRule -DisplayName "AplicacionCuria 5155" -Direction Inbound -LocalPort 5155 -Protocol TCP -Action Allow
-\end{lstlisting}
-    \item \textbf{Iniciar el servidor escuchando en toda la red local:} En la carpeta \texttt{AplicacionCuria}, ejecute:
-    \begin{lstlisting}[style=consola]
-dotnet run --urls "http://0.0.0.0:5155"
-\end{lstlisting}
-    \item \textbf{Consultar la dirección IP o nombre de equipo de la máquina principal:} En otra ventana de PowerShell de la máquina principal, ejecute:
-    \begin{lstlisting}[style=consola]
-ipconfig
-hostname
-\end{lstlisting}
-    Anote la dirección \textbf{IPv4} (por ejemplo, \texttt{192.168.1.100} o \texttt{172.29.x.x}) o el nombre del equipo (\texttt{hostname}).
-    \item \textbf{Ingresar desde las demás computadoras:} En cualquiera de las computadoras clientes de la red, abra el navegador web e ingrese a \texttt{http://IP\_DE\_LA\_MAQUINA\_PRINCIPAL:5155}.
-\end{enumerate}
-
-\begin{nota}
-El comodín \texttt{0.0.0.0} se utiliza exclusivamente en el comando \texttt{dotnet run} de la máquina principal para indicarle que acepte conexiones por cualquiera de sus tarjetas de red. En el navegador de las demás computadoras siempre debe escribirse la dirección IPv4 real o el nombre de red de la máquina principal.
-\end{nota}
 
 \begin{figure}[H]
     \centering
@@ -113,12 +109,44 @@ El comodín \texttt{0.0.0.0} se utiliza exclusivamente en el comando \texttt{dot
     \label{fig:consola-dotnet}
 \end{figure}
 
-\section{Verificación final y credenciales iniciales de acceso}
-Al acceder a la dirección desde el navegador web (tanto en la máquina principal como desde un equipo cliente), se mostrará la pantalla de \textbf{Inicio de Sesión} de \textbf{ECLESOFT 2.0}. El script \texttt{BD.sql} incluye precreada la cuenta de administrador lista para el primer ingreso:
+\section{Habilitar el acceso en Red Local y Configurar Nombre sin Costo}
 
+\subsection{Aislamiento y seguridad por diseño}
+Al tratarse de una instalación en red local (despacho parroquial), el servidor está \textbf{completamente aislado de Internet}. Ninguna persona externa puede acceder a los datos mediante datos móviles ni redes públicas a menos que se configure una VPN institucional.
+
+\subsection{Apertura de puerto en el Firewall de Windows}
+En la máquina principal donde corre el sistema, abra PowerShell como \textbf{Administrador} y ejecute una sola vez:
+\begin{lstlisting}[style=consola]
+New-NetFirewallRule -DisplayName "AplicacionCuria 5155" -Direction Inbound -LocalPort 5155 -Protocol TCP -Action Allow
+\end{lstlisting}
+
+\subsection{Acceso por Hostname (Nombre de equipo sin costo)}
+No es necesario memorizar números de dirección IP (\texttt{192.168.1.X}). En la máquina principal consulte su nombre de equipo:
+\begin{lstlisting}[style=consola]
+hostname
+\end{lstlisting}
+Si el equipo se llama \texttt{SERVIDOR-CURIA}, todas las secretarias y sacerdotes de la oficina pueden ingresar directamente desde sus computadoras escribiendo en el navegador:
+\begin{lstlisting}[style=consola]
+http://SERVIDOR-CURIA:5155
+\end{lstlisting}
+
+\subsection{Dominio local amigable mediante el archivo \texttt{hosts} (Costo Cero)}
+Si se prefiere una dirección institucional como \texttt{http://curia.local:5155} sin pagar registro de dominios:
+\begin{enumerate}
+    \item Asigne una dirección IP estática a la máquina principal (por ejemplo, \texttt{192.168.1.50}).
+    \item En cada computadora cliente del despacho, abra el Bloc de notas como Administrador y edite el archivo \texttt{C:\textbackslash Windows\textbackslash System32\textbackslash drivers\textbackslash etc\textbackslash hosts}.
+    \item Agregue al final la siguiente línea:
+    \begin{lstlisting}[style=consola]
+192.168.1.50    curia.local
+\end{lstlisting}
+    \item Guarde el archivo. A partir de ese momento podrán ingresar simplemente navegando a \url{http://curia.local:5155}.
+\end{enumerate}
+
+\section{Verificación inicial y credenciales de acceso}
+Al ingresar a la dirección del sistema se presentará la interfaz de inicio de sesión de \textbf{ECLESOFT 2.0}:
 \begin{itemize}
     \item \textbf{Correo electrónico:} \texttt{admin@curia.com}
-    \item \textbf{Contraseña:} \texttt{Clave\_curia}
+    \item \textbf{Contraseña temporal:} \texttt{Clave\_curia}
 \end{itemize}
 
 \begin{figure}[H]
@@ -127,6 +155,79 @@ Al acceder a la dirección desde el navegador web (tanto en la máquina principa
     \caption{Pantalla de Inicio de Sesión de ECLESOFT 2.0.}
     \label{fig:login}
 \end{figure}
+
+\section{Personalización de Escudos y Logos en Certificados PDF}
+Cada parroquia o sucursal posee su propia identidad heráldica y escudos institucionales que deben figurar en las actas de Bautismo, Matrimonio, Primera Comunión y Confirmación.
+
+\subsection{Ubicación del archivo de imagen}
+En el código fuente, la imagen del membrete de los certificados reside en la ruta estática:
+\begin{lstlisting}[style=consola]
+AplicacionCuria/wwwroot/imagenes/logo_certificados.png
+\end{lstlisting}
+Las plantillas de generación de actas (\texttt{CertificadoBautizmo.cshtml}, \texttt{CertificadoCursilloMatrimonio.cshtml}, \texttt{CertificadoPaseDeNivel.cshtml}) consumen este recurso para incrustarlo en el encabezado del documento PDF.
+
+\subsection{Personalización para la sede local instalada}
+Para personalizar la instalación local de una parroquia específica:
+\begin{enumerate}
+    \item Prepare el escudo oficial de la parroquia en formato PNG transparente, con un ancho recomendado de 300 a 500 píxeles.
+    \item Reemplace el archivo \texttt{logo\_certificados.png} en \texttt{AplicacionCuria/wwwroot/imagenes/} con el escudo propio de la sede.
+    \item Si se utiliza Docker, reconstruya los recursos estáticos con \texttt{docker compose build app-curia \&\& docker compose up -d}. Si se utiliza la instalación nativa, copie la imagen a la carpeta \texttt{C:\textbackslash CuriaApp\textbackslash wwwroot\textbackslash imagenes\textbackslash}.
+\end{enumerate}
+
+\section{Arquitectura Multi-Sucursal ($N$ Parroquias) y Análisis de Costos en la Nube}
+
+\subsection{¿Incrementa el costo en Google Cloud por tener múltiples parroquias?}
+\textbf{No.} La carga transaccional del software eclesial es principalmente administrativa.
+\begin{itemize}
+    \item La instancia de máquina virtual estándar presupuestada (\textbf{\texttt{e2-medium} con 2 vCPUs y 4 GB de memoria RAM}) en Google Cloud Compute Engine tiene un costo mensual de aproximadamente \textbf{\$20.00 a \$24.00 USD}.
+    \item Dicha infraestructura tiene capacidad computacional suficiente para atender de forma concurrente a decenas de parroquias y curias simultáneas bajo un esquema multi-inquilino sin necesidad de contratar servidores adicionales ni encarecer la factura de la Curia.
+\end{itemize}
+
+\subsection{Estrategia de aislamiento de datos (Multi-tenancy Lógico)}
+Para segmentar la información de cada sucursal de modo que una parroquia únicamente acceda a sus propios registros mientras la Curia Central o Administrador General conserve visibilidad global:
+\begin{enumerate}
+    \item \textbf{Discriminador por tabla:} La tabla \texttt{parroquias} actúa como entidad matriz. En las tablas operativas (\texttt{usuarios}, \texttt{feligreses}, \texttt{actasbautismo}, \texttt{actasdematrimonio}, \texttt{agendas}) se añade una columna de relación:
+    \begin{lstlisting}[style=sql]
+ALTER TABLE usuarios ADD COLUMN parroquia_id INT REFERENCES parroquias(id);
+ALTER TABLE feligreses ADD COLUMN parroquia_id INT REFERENCES parroquias(id);
+ALTER TABLE actasbautismo ADD COLUMN parroquia_id INT REFERENCES parroquias(id);
+\end{lstlisting}
+    \item \textbf{Jerarquía de roles y control de acceso:}
+    \begin{itemize}
+        \item \textbf{SuperAdministrador (Curia Diocesana):} Su campo \texttt{parroquia\_id} es nulo o posee privilegio maestro. La interfaz le presenta un selector desplegable de parroquias para auditar cualquier sede o generar reportes diocesanos consolidados.
+        \item \textbf{Administrador u Operador Parroquial:} Su usuario está estrictamente vinculado a una sola sede (\texttt{parroquia\_id = X}). En todas las consultas del backend, el sistema inyecta automáticamente el filtro \texttt{WHERE parroquia\_id = @parroquiaActiva}, garantizando que ninguna parroquia pueda visualizar ni modificar actas de otra jurisdicción.
+    \end{itemize}
+\end{enumerate}
+
+\section{Procedimiento de Migración de Datos Local a la Nube (tras 6 meses)}\label{sec:migracion-cloud}
+Si la parroquia opera el sistema en modalidad local durante un semestre y posteriormente la Curia decide centralizar toda la información en el servidor en la nube de Google Cloud, la migración de datos es sumamente sencilla y libre de incompatibilidades debido a que ambos entornos comparten el motor estándar PostgreSQL 17/18.
+
+\subsection{Paso 1: Exportar el respaldo de 6 meses desde la máquina local}
+Desde la máquina local (con Docker o nativo), genere un volcado binario consistente:
+\begin{lstlisting}[style=consola]
+# Si se uso Docker en la instalacion local:
+docker exec -t curia-postgres pg_dump -U postgres -F c -b -v -f /tmp/curia_6meses.dump curia
+docker cp curia-postgres:/tmp/curia_6meses.dump ./curia_6meses.dump
+
+# Si se uso la instalacion nativa en Windows:
+pg_dump -U postgres -F c -b -v -f "C:\CuriaApp\curia_6meses.dump" curia
+\end{lstlisting}
+
+\subsection{Paso 2: Transferir el archivo a Google Cloud}
+Copie el archivo \texttt{curia\_6meses.dump} hacia la máquina virtual en Google Cloud mediante SCP, SFTP o descargándolo desde Google Drive institucional:
+\begin{lstlisting}[style=consola]
+gcloud compute scp curia_6meses.dump servidor-curia:~ --zone=us-central1-a
+\end{lstlisting}
+
+\subsection{Paso 3: Restauración en el contenedor en la Nube}
+En la consola SSH del servidor en la nube, restaure la base de datos completa con la directiva \texttt{--clean} para reemplazar el esquema inicial con los datos históricos acumulados:
+\begin{lstlisting}[style=consola]
+docker cp ~/curia_6meses.dump curia-postgres:/tmp/curia_6meses.dump
+docker exec -i curia-postgres pg_restore -U postgres -d curia -v --clean /tmp/curia_6meses.dump
+\end{lstlisting}
+
+\subsection{Paso 4: Verificación inmediata}
+Al actualizar el navegador apuntando a la IP de Google Cloud, todos los feligreses, actas sacramentales, notas marginales, agendas y usuarios creados durante los 6 meses locales estarán inmediatamente disponibles en línea sin pérdida de información.
 
 \section{Despliegue en la Nube con Docker en Google Cloud (Escenario 2)}\label{sec:despliegue-cloud}
 El Escenario 2 traslada la infraestructura a una Máquina Virtual en Google Cloud Compute Engine, orquestada mediante Docker Compose. Este modelo elimina la necesidad de mantener un servidor físico local encendido de forma permanente en las dependencias de la Curia y otorga acceso global seguro a través de una dirección IP pública.
@@ -140,7 +241,7 @@ El Escenario 2 traslada la infraestructura a una Máquina Virtual en Google Clou
     \begin{itemize}
         \item \textbf{Nombre:} \texttt{servidor-curia} (en minúsculas y sin espacios).
         \item \textbf{Región y Zona:} seleccione una región de bajo costo y baja latencia como \texttt{us-central1} (Iowa) o \texttt{us-east1} (Carolina del Sur).
-        \item \textbf{Serie y Tipo de máquina:} serie \textbf{E2}, seleccionando el tipo \textbf{\texttt{e2-small}} (2 vCPU, 2 GB RAM) o \textbf{\texttt{e2-medium}} (2 vCPU, 4 GB RAM).
+        \item \textbf{Serie y Tipo de máquina:} serie \textbf{E2}, seleccionando el tipo \textbf{\texttt{e2-medium}} (2 vCPU virtuales, 4 GB de memoria RAM) para garantizar alta concurrencia multi-iglesia.
         \item \textbf{Disco de arranque:} haga clic en el botón \textbf{Cambiar}, seleccione \textbf{Ubuntu 24.04 LTS x86/64} (o 22.04 LTS), tipo de disco \textbf{Disco persistente equilibrado} y asigne un tamaño de \textbf{30 GB}.
         \item \textbf{Cortafuegos (Firewall):} en la sección de red, marque las dos casillas obligatorias: \textbf{Permitir tráfico HTTP} y \textbf{Permitir tráfico HTTPS}.
     \end{itemize}

@@ -55,6 +55,11 @@ namespace AplicacionCuria.Controllers
                 new(ClaimTypes.Role, cliente.rol)
             };
 
+            if (cliente.parroquia_id.HasValue)
+            {
+                claims.Add(new Claim(ParroquiaTenantHelper.ClaimParroquiaId, cliente.parroquia_id.Value.ToString()));
+            }
+
             if (primerLogin)
             {
                 // Contraseña temporal (semilla del sistema o clave inicial
@@ -129,6 +134,10 @@ namespace AplicacionCuria.Controllers
                 new(ClaimTypes.Email, usuario.correo),
                 new(ClaimTypes.Role, usuario.rol)
             };
+            if (usuario.parroquia_id.HasValue)
+            {
+                claims.Add(new Claim(ParroquiaTenantHelper.ClaimParroquiaId, usuario.parroquia_id.Value.ToString()));
+            }
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
@@ -139,6 +148,7 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            Response.Cookies.Delete(ParroquiaTenantHelper.CookieSuperAdminParroquia);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Auth");
         }

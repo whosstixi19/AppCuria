@@ -18,5 +18,7 @@ namespace AplicacionCuria.Models
         public string? Password { get; set; }
 
         public string Rol { get; set; }
+
+        public int? ParroquiaId { get; set; }
     }
 }
