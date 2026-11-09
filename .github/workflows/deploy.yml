@@ -33,6 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
 
     steps:
     - name: Conectar por SSH y actualizar contenedores Docker
@@ -52,14 +54,17 @@ jobs:
           elif [ -d "AppCuria" ]; then
             cd AppCuria
           fi
-          git fetch origin main
-          git reset --hard origin/main
+          git fetch "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" main
+          git reset --hard FETCH_HEAD
           if command -v docker > /dev/null 2>&1 && docker compose version > /dev/null 2>&1; then
-            docker compose down || true
-            docker compose up -d --build --force-recreate
-            docker ps
+            DOCKER_CMD="docker compose"
+          elif command -v docker-compose > /dev/null 2>&1; then
+            DOCKER_CMD="docker-compose"
+          elif sudo docker compose version > /dev/null 2>&1; then
+            DOCKER_CMD="sudo docker compose"
           else
-            sudo docker compose down || true
-            sudo docker compose up -d --build --force-recreate
-            sudo docker ps
+            DOCKER_CMD="sudo docker-compose"
           fi
+          $DOCKER_CMD down || true
+          $DOCKER_CMD up -d --build --force-recreate
+          $DOCKER_CMD ps
