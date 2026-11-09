@@ -57,6 +57,34 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Migración automática idempotente para entornos existentes (evita errores 500 si la BD ya existía)
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ConexionPostgreSQL>();
+        db.Database.ExecuteSqlRaw(@"
+            ALTER TABLE IF EXISTS parroquias ADD COLUMN IF NOT EXISTS logo_base64 TEXT;
+            ALTER TABLE IF EXISTS usuarios ADD COLUMN IF NOT EXISTS parroquia_id INT;
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint WHERE conname = 'fk_usuarios_parroquia'
+                ) THEN
+                    ALTER TABLE usuarios 
+                    ADD CONSTRAINT fk_usuarios_parroquia 
+                    FOREIGN KEY (parroquia_id) REFERENCES parroquias(id) ON DELETE SET NULL;
+                END IF;
+            END $$;
+        ");
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning(ex, "No se pudo aplicar la migración automática del esquema.");
+    }
+}
+
 // Middleware
 if (!app.Environment.IsDevelopment())
 {

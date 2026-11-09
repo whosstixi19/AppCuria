@@ -71,9 +71,12 @@ namespace AplicacionCuria.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            // Registrar el acceso (antes nunca se actualizaba)
-            cliente.ultimo_acceso = DateTime.UtcNow;
-            await sql.SaveChangesAsync();
+            // Registrar el acceso solo si ya no tiene contraseña temporal pendiente
+            if (!primerLogin)
+            {
+                cliente.ultimo_acceso = DateTime.UtcNow;
+                await sql.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -121,10 +124,7 @@ namespace AplicacionCuria.Controllers
             usuario.pass = hash.Password ?? string.Empty;
             usuario.salt = hash.Salt ?? string.Empty;
             usuario.iterations = hash.Iterations;
-            if (usuario.ultimo_acceso == null)
-            {
-                usuario.ultimo_acceso = DateTime.UtcNow;
-            }
+            usuario.ultimo_acceso = DateTime.UtcNow;
             await sql.SaveChangesAsync();
 
             // Re-emitir la cookie sin la marca de cambio pendiente
@@ -145,7 +145,9 @@ namespace AplicacionCuria.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             Response.Cookies.Delete(ParroquiaTenantHelper.CookieSuperAdminParroquia);

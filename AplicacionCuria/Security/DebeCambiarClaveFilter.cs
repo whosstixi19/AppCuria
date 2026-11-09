@@ -20,7 +20,12 @@ namespace AplicacionCuria.Security
 
             // Solo se permite cambiar la clave (o cerrar sesión)
             var ruta = context.HttpContext.Request.Path;
-            if (ruta.StartsWithSegments("/Auth/CambiarClave") || ruta.StartsWithSegments("/Auth/Logout")) return;
+            if (ruta.StartsWithSegments("/Auth/CambiarClave") ||
+                ruta.StartsWithSegments("/Auth/Logout") ||
+                ruta.Value?.Contains("Logout", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                return;
+            }
 
             context.Result = new RedirectResult("/Auth/CambiarClave");
         }

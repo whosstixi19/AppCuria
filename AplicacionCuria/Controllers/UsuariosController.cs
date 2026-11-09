@@ -87,6 +87,7 @@ namespace AplicacionCuria.Controllers
                     existente.pass = hash.Password ?? "";
                     existente.salt = hash.Salt ?? "";
                     existente.iterations = hash.Iterations;
+                    existente.ultimo_acceso = null; // Clave temporal: debe cambiarla en su próximo login
                 }
 
                 await sql.SaveChangesAsync();
@@ -114,6 +115,7 @@ namespace AplicacionCuria.Controllers
                     rol = request.Rol,
                     estado = "ACTIVO",
                     fecha_creacion = DateTime.UtcNow,
+                    ultimo_acceso = null, // Clave temporal inicial entregada por el admin
                     parroquia_id = esSuperAdmin ? request.ParroquiaId : userParroquiaId
                 };
 
@@ -184,12 +186,18 @@ namespace AplicacionCuria.Controllers
                 usuario.pass = hash.Password ?? "";
                 usuario.salt = hash.Salt ?? "";
                 usuario.iterations = hash.Iterations;
+                usuario.ultimo_acceso = null; // Clave temporal: debe cambiarla en su próximo login
             }
 
             await sql.SaveChangesAsync();
             TempData["Success"] = "Usuario actualizado correctamente.";
             return RedirectToAction("CrearUsuario");
         }
+
+        [HttpGet]
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Logout() => RedirectToAction("Logout", "Auth");
 
         [HttpPost]
         public async Task<IActionResult> EliminarUsuario(int id)

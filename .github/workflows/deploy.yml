@@ -42,7 +42,24 @@ jobs:
         username: ${{ secrets.GCP_USERNAME }}
         key: ${{ secrets.GCP_SSH_KEY }}
         script: |
-          cd AppCuria
-          git pull origin main
-          docker compose up -d --build || sudo docker compose up -d --build
-          docker ps || sudo docker ps
+          set -e
+          if [ -d "$HOME/AppCuria" ]; then
+            cd "$HOME/AppCuria"
+          elif [ -d "$HOME/AplicacionCuria" ]; then
+            cd "$HOME/AplicacionCuria"
+          elif [ -d "$HOME/AplicacionCuria-main" ]; then
+            cd "$HOME/AplicacionCuria-main"
+          elif [ -d "AppCuria" ]; then
+            cd AppCuria
+          fi
+          git fetch origin main
+          git reset --hard origin/main
+          if command -v docker > /dev/null 2>&1 && docker compose version > /dev/null 2>&1; then
+            docker compose down || true
+            docker compose up -d --build --force-recreate
+            docker ps
+          else
+            sudo docker compose down || true
+            sudo docker compose up -d --build --force-recreate
+            sudo docker ps
+          fi

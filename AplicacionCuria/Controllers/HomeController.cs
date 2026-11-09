@@ -123,6 +123,11 @@ namespace AplicacionCuria.Controllers
         }
 
 
+        [HttpGet]
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Logout() => RedirectToAction("Logout", "Auth");
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
