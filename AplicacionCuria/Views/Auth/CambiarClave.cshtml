@@ -17,15 +17,25 @@
                     <form asp-controller="Auth" asp-action="CambiarClave" method="post">
                         <div class="mb-3">
                             <label for="Clave" class="form-label">Nueva contraseña</label>
-                            <input type="password" class="form-control" id="Clave" name="Clave" minlength="8" required />
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="Clave" name="Clave" minlength="8" required />
+                                <button class="btn btn-outline-secondary" type="button" id="btnToggleClave" tabindex="-1" title="Mostrar/ocultar contraseña">
+                                    <i class="fas fa-eye" id="iconToggleClave"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="Confirmar" class="form-label">Confirmar contraseña</label>
-                            <input type="password" class="form-control" id="Confirmar" name="Confirmar" minlength="8" required />
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="Confirmar" name="Confirmar" minlength="8" required />
+                                <button class="btn btn-outline-secondary" type="button" id="btnToggleConfirmar" tabindex="-1" title="Mostrar/ocultar contraseña">
+                                    <i class="fas fa-eye" id="iconToggleConfirmar"></i>
+                                </button>
+                            </div>
                             @if (ViewBag.Error != null)
                             {
-                                <span class="text-danger">@ViewBag.Error</span>
+                                <span class="text-danger small mt-1 d-block">@ViewBag.Error</span>
                             }
                         </div>
 
@@ -42,3 +52,21 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function configurarTogglePassword(btnId, inputId, iconId) {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            btn?.addEventListener('click', function () {
+                const isPassword = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isPassword ? 'text' : 'password');
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+            });
+        }
+        configurarTogglePassword('btnToggleClave', 'Clave', 'iconToggleClave');
+        configurarTogglePassword('btnToggleConfirmar', 'Confirmar', 'iconToggleConfirmar');
+    </script>
+}

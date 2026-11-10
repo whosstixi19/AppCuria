@@ -83,13 +83,10 @@
 
                             <!-- Información de contacto -->
                             <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <label for="telefono" class="form-label mb-1 fw-semibold small">Teléfono</label>
-                                    <input type="text" class="form-control form-control-sm" id="telefono" name="telefono" required>
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label for="celular" class="form-label mb-1 fw-semibold small">Celular</label>
-                                    <input type="text" class="form-control form-control-sm" id="celular" name="celular" required>
+                                <div class="col-12 mb-2">
+                                    <label for="celular" class="form-label mb-1 fw-semibold small">Teléfono / Celular</label>
+                                    <input type="text" class="form-control form-control-sm" id="celular" name="celular" required placeholder="Ej: 0991234567 o 072831234" oninput="document.getElementById('telefono').value = this.value;">
+                                    <input type="hidden" id="telefono" name="telefono">
                                 </div>
                             </div>
 

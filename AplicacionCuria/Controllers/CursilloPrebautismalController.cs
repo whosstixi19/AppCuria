@@ -29,6 +29,12 @@ namespace AplicacionCuria.Controllers
             ModelState.Remove("nombrepadrino");
             ModelState.Remove("nombremadrina");
             ModelState.Remove("parroquia");
+            ModelState.Remove("telefono");
+
+            if (string.IsNullOrWhiteSpace(model.telefono))
+            {
+                model.telefono = model.celular;
+            }
 
             // Validación manual
             var errores = new List<string>();

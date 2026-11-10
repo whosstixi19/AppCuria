@@ -22,7 +22,12 @@
 
                         <div class="mb-3">
                             <label for="Password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="Password" name="Password" required />
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="Password" name="Password" required />
+                                <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword" tabindex="-1" title="Mostrar/ocultar contraseña">
+                                    <i class="fas fa-eye" id="iconTogglePassword"></i>
+                                </button>
+                            </div>
                             @if (ViewBag.Error != null)
                             {
                                 <span id="errorMessage" class="text-danger">@ViewBag.Error</span>
@@ -66,5 +71,14 @@
 
         emailInput?.addEventListener('input', clearError);
         passwordInput?.addEventListener('input', clearError);
+
+        const btnTogglePassword = document.getElementById('btnTogglePassword');
+        const iconTogglePassword = document.getElementById('iconTogglePassword');
+        btnTogglePassword?.addEventListener('click', function () {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            iconTogglePassword.classList.toggle('fa-eye', !isPassword);
+            iconTogglePassword.classList.toggle('fa-eye-slash', isPassword);
+        });
     </script>
 }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AplicacionCuria.Models
@@ -40,11 +40,10 @@ namespace AplicacionCuria.Models
 
         // Quien inscribe y contactos
         public string quieninscribe { get; set; }
-        [Required(ErrorMessage = "El campo 'Teléfono' es obligatorio.")]
-        [RegularExpression(@"^\d{8,12}$", ErrorMessage = "El 'Teléfono' debe tener entre 8 y 12 dígitos.")]
-        public string telefono { get; set; }
-        [Required(ErrorMessage = "El campo 'Celular' es obligatorio.")]
-        [RegularExpression(@"^\d{8,12}$", ErrorMessage = "El 'Celular' debe tener entre 8 y 12 dígitos.")]
+        [StringLength(20)]
+        public string? telefono { get; set; }
+        [Required(ErrorMessage = "El campo 'Teléfono / Celular' es obligatorio.")]
+        [RegularExpression(@"^\d{8,12}$", ErrorMessage = "El 'Teléfono / Celular' debe tener entre 8 y 12 dígitos.")]
         public string celular { get; set; }
 
         [Required(ErrorMessage = "La fecha de bautizo es obligatoria.")]

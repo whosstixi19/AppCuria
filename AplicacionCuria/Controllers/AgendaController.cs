@@ -1,5 +1,6 @@
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AplicacionCuria.Controllers
 {
     [Authorize]
-    public class AgendaController(ConexionPostgreSQL sql) : Controller
+    public class AgendaController(ConexionPostgreSQL sql, EmailService emailService) : Controller
     {
         [HttpGet]
         public IActionResult GetAllPersonas()
@@ -47,7 +48,8 @@ namespace AplicacionCuria.Controllers
                 }
 
                 // Zona horaria de Ecuador
-                var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+                var tzId = OperatingSystem.IsWindows() ? "SA Pacific Standard Time" : "America/Guayaquil";
+                var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById(tzId);
 
                 // Crear modelo Agenda
                 var model = new Agenda
@@ -73,11 +75,77 @@ namespace AplicacionCuria.Controllers
                 sql.agendas.Add(model);
                 await sql.SaveChangesAsync();
 
+                if (model.notificar && responsablesIds.Count > 0)
+                {
+                    try
+                    {
+                        await NotificarResponsablesNuevaCitaAsync(model, responsablesIds);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[AVISO] No se pudo enviar la invitación por correo: {ex.Message}");
+                    }
+                }
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task NotificarResponsablesNuevaCitaAsync(Agenda agenda, List<int> responsablesIds)
+        {
+            var tzId = OperatingSystem.IsWindows() ? "SA Pacific Standard Time" : "America/Guayaquil";
+            var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+
+            var hora = agenda.hora ?? TimeSpan.FromHours(8);
+            var fechaLocal = TimeZoneInfo.ConvertTimeFromUtc(agenda.fechaagenda, zonaEcuador).Date;
+            var inicioLocal = fechaLocal.Add(hora);
+            var startUtc = TimeZoneInfo.ConvertTimeToUtc(inicioLocal, zonaEcuador);
+            var endUtc = startUtc.AddHours(1);
+
+            string horaAmPm = DateTime.Today.Add(hora).ToString("hh:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+
+            var personas = await sql.personas_evento
+                .Where(p => responsablesIds.Contains(p.id))
+                .ToListAsync();
+
+            foreach (var persona in personas)
+            {
+                if (string.IsNullOrWhiteSpace(persona.email)) continue;
+
+                string subject = $"📅 Nueva Cita: {agenda.titulo}";
+                string body = $@"
+                <html>
+                <body style='font-family: Arial, sans-serif;'>
+                    <h2>Nueva Cita Agendada: {agenda.titulo}</h2>
+                    <p>Estimado/a <strong>{persona.nombre}</strong>,</p>
+                    <p>Se ha registrado un evento en la agenda parroquial:</p>
+                    <ul>
+                        <li><strong>Tipo:</strong> {agenda.tipo_evento}</li>
+                        <li><strong>Fecha:</strong> {fechaLocal:dd/MM/yyyy}</li>
+                        <li><strong>Hora:</strong> {horaAmPm}</li>
+                        <li><strong>Lugar:</strong> {agenda.lugar}</li>
+                        <li><strong>Descripción:</strong> {agenda.descripcion}</li>
+                    </ul>
+                    <p style='color: #666;'>Este evento ha sido añadido a tu calendario.</p>
+                </body>
+                </html>";
+
+                string uid = $"agenda-{agenda.id}-{persona.id}@curia.local";
+                await emailService.SendCalendarInviteAsync(
+                    persona.email,
+                    subject,
+                    body,
+                    uid,
+                    agenda.titulo ?? "Cita Parroquial",
+                    agenda.descripcion ?? string.Empty,
+                    agenda.lugar ?? string.Empty,
+                    startUtc,
+                    endUtc
+                );
             }
         }
 

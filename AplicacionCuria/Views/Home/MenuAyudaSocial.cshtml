@@ -10,6 +10,9 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-10 col-xl-9">
+        <div id="ayuda-validation-alert" class="alert alert-danger py-2 px-3 small d-none shadow-sm mb-3" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i><span id="ayuda-validation-msg"></span>
+        </div>
         <form asp-action="Create" asp-controller="Ayuda" method="post" id="form-ayuda-social" enctype="multipart/form-data" autocomplete="off" target="_blank">
             <div class="card shadow-sm">
                 <!-- Pestañas de Navegación del Formulario -->
@@ -70,7 +73,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="cedula" class="form-label mb-1 fw-semibold small">Cédula de Identidad</label>
-                                    <input type="text" class="form-control form-control-sm" id="cedula" name="cedula" maxlength="20" placeholder="Ej: 0102030405">
+                                    <input type="text" class="form-control form-control-sm" id="cedula" name="cedula" required maxlength="20" placeholder="Ej: 0102030405">
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="fechanacimiento" class="form-label mb-1 fw-semibold small">Fecha de Nacimiento</label>
@@ -85,7 +88,7 @@
                                 </div>
                                 <div class="col-md-4 mb-2">
                                     <label for="genero" class="form-label mb-1 fw-semibold small">Género</label>
-                                    <select class="form-select form-select-sm" id="genero" name="genero">
+                                    <select class="form-select form-select-sm" id="genero" name="genero" required>
                                         <option value="">Seleccione género</option>
                                         <option value="MASCULINO">MASCULINO</option>
                                         <option value="FEMENINO">FEMENINO</option>
@@ -94,7 +97,7 @@
                                 </div>
                                 <div class="col-md-4 mb-2">
                                     <label for="estadocivil" class="form-label mb-1 fw-semibold small">Estado Civil</label>
-                                    <select class="form-select form-select-sm" id="estadocivil" name="estadocivil">
+                                    <select class="form-select form-select-sm" id="estadocivil" name="estadocivil" required>
                                         <option value="">Seleccione estado</option>
                                         <option value="SOLTERO(A)">SOLTERO(A)</option>
                                         <option value="CASADO(A)">CASADO(A)</option>
@@ -108,7 +111,8 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="instruccion" class="form-label mb-1 fw-semibold small">Nivel de Instrucción</label>
-                                    <select class="form-select form-select-sm" id="instruccion" name="instruccion">
+                                    <select class="form-select form-select-sm" id="instruccion" name="instruccion" required>
+                                        <option value="">Seleccione nivel</option>
                                         <option value="NINGUNA">NINGUNA</option>
                                         <option value="PRIMARIA">PRIMARIA</option>
                                         <option value="SECUNDARIA">SECUNDARIA</option>
@@ -118,7 +122,7 @@
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="religion" class="form-label mb-1 fw-semibold small">Religión</label>
-                                    <input type="text" class="form-control form-control-sm" id="religion" name="religion" value="CATÓLICA">
+                                    <input type="text" class="form-control form-control-sm" id="religion" name="religion" value="CATÓLICA" required>
                                 </div>
                             </div>
 
@@ -146,36 +150,36 @@
                                 </div>
                                 <div class="col-md-4 mb-2">
                                     <label for="parroquia" class="form-label mb-1 fw-semibold small">Parroquia</label>
-                                    <input type="text" class="form-control form-control-sm" id="parroquia" name="parroquia" placeholder="Ej: San Blas">
+                                    <input type="text" class="form-control form-control-sm" id="parroquia" name="parroquia" required placeholder="Ej: San Blas">
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-5 mb-2">
                                     <label for="calleprincipal" class="form-label mb-1 fw-semibold small">Calle Principal</label>
-                                    <input type="text" class="form-control form-control-sm" id="calleprincipal" name="calleprincipal">
+                                    <input type="text" class="form-control form-control-sm" id="calleprincipal" name="calleprincipal" required placeholder="Calle principal">
                                 </div>
                                 <div class="col-md-2 mb-2">
-                                    <label for="numero" class="form-label mb-1 fw-semibold small">Número / Lote</label>
+                                    <label for="numero" class="form-label mb-1 fw-semibold small">Número / Lote <span class="text-muted fw-normal">(Opcional)</span></label>
                                     <input type="text" class="form-control form-control-sm" id="numero" name="numero" placeholder="S/N">
                                 </div>
                                 <div class="col-md-5 mb-2">
-                                    <label for="callesecundaria" class="form-label mb-1 fw-semibold small">Calle Secundaria</label>
-                                    <input type="text" class="form-control form-control-sm" id="callesecundaria" name="callesecundaria">
+                                    <label for="callesecundaria" class="form-label mb-1 fw-semibold small">Calle Secundaria <span class="text-muted fw-normal">(Opcional)</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="callesecundaria" name="callesecundaria" placeholder="Calle secundaria">
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-4 mb-2">
                                     <label for="sector" class="form-label mb-1 fw-semibold small">Sector / Barrio</label>
-                                    <input type="text" class="form-control form-control-sm" id="sector" name="sector">
+                                    <input type="text" class="form-control form-control-sm" id="sector" name="sector" required placeholder="Sector o barrio">
                                 </div>
                                 <div class="col-md-4 mb-2">
                                     <label for="telefono" class="form-label mb-1 fw-semibold small">Teléfono / Celular</label>
-                                    <input type="text" class="form-control form-control-sm" id="telefono" name="telefono">
+                                    <input type="text" class="form-control form-control-sm" id="telefono" name="telefono" required placeholder="Teléfono de contacto">
                                 </div>
                                 <div class="col-md-4 mb-2">
-                                    <label for="referencia" class="form-label mb-1 fw-semibold small">Referencia de llegada</label>
+                                    <label for="referencia" class="form-label mb-1 fw-semibold small">Referencia de llegada <span class="text-muted fw-normal">(Opcional)</span></label>
                                     <input type="text" class="form-control form-control-sm" id="referencia" name="referencia" placeholder="Frente a la tienda, portón blanco...">
                                 </div>
                             </div>
@@ -189,7 +193,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="viviendaes" class="form-label mb-1 fw-semibold small">Tenencia de la Vivienda</label>
-                                    <select class="form-select form-select-sm" id="viviendaes" name="viviendaes">
+                                    <select class="form-select form-select-sm" id="viviendaes" name="viviendaes" required>
                                         <option value="Propia">Propia</option>
                                         <option value="Arrendada">Arrendada</option>
                                         <option value="Prestada">Prestada</option>
@@ -199,7 +203,7 @@
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="tipoconstruccion" class="form-label mb-1 fw-semibold small">Tipo de Construcción</label>
-                                    <select class="form-select form-select-sm" id="tipoconstruccion" name="tipoconstruccion">
+                                    <select class="form-select form-select-sm" id="tipoconstruccion" name="tipoconstruccion" required>
                                         <option value="Ladrillo / Hormigón">Ladrillo / Hormigón</option>
                                         <option value="Madera">Madera</option>
                                         <option value="Adobe / Tapial">Adobe / Tapial</option>
@@ -210,7 +214,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label mb-1 fw-semibold small">Descripción del Croquis / Accesos</label>
+                                <label for="descripcion" class="form-label mb-1 fw-semibold small">Descripción del Croquis / Accesos <span class="text-muted fw-normal">(Opcional)</span></label>
                                 <textarea class="form-control form-control-sm" id="descripcion" name="descripcion" rows="2" placeholder="Indicaciones para llegar, líneas de bus o referencias del camino..."></textarea>
                             </div>
 
@@ -391,7 +395,150 @@
         }
     }
 
+    const tabOrder = ['tab-datos-btn', 'tab-ubicacion-btn', 'tab-salud-btn', 'tab-visita-btn'];
+
+    function obtenerPestanaActivaIndex() {
+        const activeBtn = document.querySelector('#ayudaSocialTabs .nav-link.active');
+        return activeBtn ? tabOrder.indexOf(activeBtn.id) : 0;
+    }
+
+    function marcarCampo(id, esValido) {
+        const el = document.getElementById(id);
+        if (!el) return esValido;
+        if (!esValido) {
+            el.classList.add('is-invalid');
+            el.classList.remove('is-valid');
+        } else {
+            el.classList.remove('is-invalid');
+        }
+        return esValido;
+    }
+
+    function mostrarMensajeValidacion(msg) {
+        const alertBox = document.getElementById('ayuda-validation-alert');
+        const alertMsg = document.getElementById('ayuda-validation-msg');
+        if (alertBox && alertMsg) {
+            alertMsg.textContent = msg;
+            alertBox.classList.remove('d-none');
+            alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                alertBox.classList.add('d-none');
+            }, 6000);
+        } else {
+            alert(msg);
+        }
+    }
+
+    function ocultarMensajeValidacion() {
+        const alertBox = document.getElementById('ayuda-validation-alert');
+        if (alertBox) alertBox.classList.add('d-none');
+    }
+
+    function validarPestana1() {
+        let esValido = true;
+        let primerInvalido = null;
+
+        // Subpágina 1: Todos los datos son necesarios (foto es opcional)
+        const campos = [
+            'nombre', 'apellidos', 'cedula', 'fechanacimiento',
+            'edad', 'genero', 'estadocivil', 'instruccion', 'religion'
+        ];
+
+        campos.forEach(id => {
+            const el = document.getElementById(id);
+            const val = el ? el.value.trim() : '';
+            const valido = val !== '';
+            marcarCampo(id, valido);
+            if (!valido) {
+                esValido = false;
+                if (!primerInvalido && el) primerInvalido = el;
+            }
+        });
+
+        if (!esValido && primerInvalido) {
+            primerInvalido.focus();
+        }
+        return esValido;
+    }
+
+    function validarPestana2() {
+        let esValido = true;
+        let primerInvalido = null;
+
+        // Subpágina 2: obligatorios (calle secundaria, número/lote, referencia y descripción son opcionales)
+        const campos = [
+            'provincia', 'canton', 'parroquia', 'calleprincipal',
+            'sector', 'telefono', 'viviendaes', 'tipoconstruccion'
+        ];
+
+        campos.forEach(id => {
+            const el = document.getElementById(id);
+            const val = el ? el.value.trim() : '';
+            const valido = val !== '';
+            marcarCampo(id, valido);
+            if (!valido) {
+                esValido = false;
+                if (!primerInvalido && el) primerInvalido = el;
+            }
+        });
+
+        if (!esValido && primerInvalido) {
+            primerInvalido.focus();
+        }
+        return esValido;
+    }
+
+    function validarPestana3() {
+        let esValido = true;
+        const tieneDiscapacidad = document.getElementById("discapacidad")?.value === "true";
+        if (tieneDiscapacidad) {
+            const esp = document.getElementById("especificardiscapacidad");
+            const porc = document.getElementById("porcentajediscapacidad");
+            if (!esp?.value.trim()) {
+                marcarCampo('especificardiscapacidad', false);
+                esValido = false;
+                esp?.focus();
+            } else {
+                marcarCampo('especificardiscapacidad', true);
+            }
+            if (!porc?.value.trim() || Number(porc.value) <= 0) {
+                marcarCampo('porcentajediscapacidad', false);
+                esValido = false;
+            } else {
+                marcarCampo('porcentajediscapacidad', true);
+            }
+        }
+        return esValido;
+    }
+
+    function validarHastaPestana(targetIndex) {
+        if (targetIndex >= 1 && !validarPestana1()) {
+            mostrarMensajeValidacion('Paso 1 incompleto: Por favor llene todos los campos obligatorios del Beneficiario.');
+            return false;
+        }
+        if (targetIndex >= 2 && !validarPestana2()) {
+            mostrarMensajeValidacion('Paso 2 incompleto: Complete los datos requeridos de Ubicación y Vivienda (Calle secundaria y Referencia son opcionales).');
+            return false;
+        }
+        if (targetIndex >= 3 && !validarPestana3()) {
+            mostrarMensajeValidacion('Paso 3 incompleto: Especifique el tipo y porcentaje de discapacidad.');
+            return false;
+        }
+        ocultarMensajeValidacion();
+        return true;
+    }
+
     function cambiarPestana(tabButtonId) {
+        const targetIndex = tabOrder.indexOf(tabButtonId);
+        const currentIndex = obtenerPestanaActivaIndex();
+
+        // Validar si intenta avanzar hacia adelante
+        if (targetIndex > currentIndex) {
+            if (!validarHastaPestana(targetIndex)) {
+                return;
+            }
+        }
+
         const triggerEl = document.getElementById(tabButtonId);
         if (!triggerEl) return;
 
@@ -415,7 +562,7 @@
             targetPane.classList.add('show', 'active');
         }
 
-        // 4. Invocar API de Bootstrap si está presente (para compatibilidad con plugins externos)
+        // 4. Invocar API de Bootstrap si está presente
         try {
             if (window.jQuery && typeof jQuery(triggerEl).tab === 'function') {
                 jQuery(triggerEl).tab('show');
@@ -437,6 +584,8 @@
         const vistaPrevia = document.getElementById('vistaPrevia');
         if (vistaPrevia) vistaPrevia.src = "";
         toggleDiscapacidad();
+        ocultarMensajeValidacion();
+        document.querySelectorAll('#form-ayuda-social .is-invalid').forEach(el => el.classList.remove('is-invalid'));
         cambiarPestana('tab-datos-btn');
     }
 
@@ -447,5 +596,29 @@
                 cambiarPestana(this.id);
             });
         });
+
+        // Limpiar el estado de error al escribir en cualquier campo
+        document.querySelectorAll('#form-ayuda-social input, #form-ayuda-social select, #form-ayuda-social textarea').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('is-invalid');
+                }
+            });
+            input.addEventListener('change', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+
+        // Validar todo antes del envío final
+        const formAyuda = document.getElementById('form-ayuda-social');
+        if (formAyuda) {
+            formAyuda.addEventListener('submit', function(e) {
+                if (!validarHastaPestana(3)) {
+                    e.preventDefault();
+                }
+            });
+        }
     });
 </script>
