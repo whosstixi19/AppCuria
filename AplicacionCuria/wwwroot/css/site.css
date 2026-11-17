@@ -98,3 +98,9 @@ a:not(.btn):hover {
   border-color: #343a40 !important;
   color: #ffffff !important;
 }
+
+/* Ocultar el botón de ojo nativo de Edge/IE para evitar doble icono en campos de contraseña */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}

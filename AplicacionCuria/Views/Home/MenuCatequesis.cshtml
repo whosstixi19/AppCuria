@@ -121,10 +121,16 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-2">
-                                    <label for="catequista" class="form-label mb-1 fw-semibold small">Catequista Principal</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="catequista" class="form-label mb-0 fw-semibold small">Catequista Principal</label>
+                                        <a href="/Submenus/MinistrosCatequistasView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar catequista">+ Nuevo</a>
+                                    </div>
                                     <select class="form-select form-select-sm" id="catequista" name="catequista_id" required>
                                         <option value="">Seleccione un Catequista</option>
                                     </select>
+                                    <div id="alertaSinCatequistas" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                        No hay catequistas. <a href="/Submenus/MinistrosCatequistasView" class="fw-bold text-decoration-underline">Registrar aquí</a>.
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="catequista2" class="form-label mb-1 fw-semibold small">Catequista 2 (Opcional)</label>
@@ -136,10 +142,16 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-2">
-                                    <label for="periodo_id" class="form-label mb-1 fw-semibold small">Período</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="periodo_id" class="form-label mb-0 fw-semibold small">Período</label>
+                                        <a href="/Submenus/PeriodosView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar período">+ Nuevo</a>
+                                    </div>
                                     <select class="form-select form-select-sm" id="periodo_id" name="periodo_id" required>
                                         <option value="">Seleccione un período</option>
                                     </select>
+                                    <div id="alertaSinPeriodos" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                        No hay períodos. <a href="/Submenus/PeriodosView" class="fw-bold text-decoration-underline">Registrar aquí</a>.
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="cedula" class="form-label mb-1 fw-semibold small">Cédula</label>
@@ -514,6 +526,7 @@
                     select1.innerHTML += optionHTML;
                     select2.innerHTML += optionHTML;
                 });
+                document.getElementById('alertaSinCatequistas').style.display = (!data || data.length === 0) ? 'block' : 'none';
             })
             .catch(error => console.error('Error al cargar catequistas:', error));
     }
@@ -529,6 +542,7 @@
                 data.forEach(periodo => {
                     selectPeriodo.innerHTML += `<option value="${periodo.id}">${periodo.nombre}</option>`;
                 });
+                document.getElementById('alertaSinPeriodos').style.display = (!data || data.length === 0) ? 'block' : 'none';
             })
             .catch(error => console.error('Error al cargar períodos:', error));
     }

@@ -21,24 +21,42 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="ministro_id" class="form-label mb-1 fw-semibold">Ministro</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="ministro_id" class="form-label mb-0 fw-semibold">Ministro</label>
+                                    <a href="/Submenus/MinistrosCatequistasView#ministro" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar un nuevo ministro">+ Nuevo</a>
+                                </div>
                                 <select class="form-control form-control-sm" id="ministro_id" name="ministro_id" required>
                                     <!-- Opciones dinámicas desde la BD -->
                                 </select>
+                                <div id="alertaSinMinistros" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay ministros registrados. <a href="/Submenus/MinistrosCatequistasView#ministro" class="fw-bold text-decoration-underline">Registrar uno aquí</a>.
+                                </div>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="iglesia_id" class="form-label mb-1 fw-semibold">Iglesia</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="iglesia_id" class="form-label mb-0 fw-semibold">Iglesia</label>
+                                    <a href="/Submenus/IglesiaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar una nueva iglesia">+ Nueva</a>
+                                </div>
                                 <select class="form-control form-control-sm" id="iglesia_id" name="iglesia_id" required>
                                     <!-- Opciones dinámicas desde la BD -->
                                 </select>
+                                <div id="alertaSinIglesias" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay iglesias registradas. <a href="/Submenus/IglesiaView" class="fw-bold text-decoration-underline">Registrar una aquí</a>.
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="misa_id" class="form-label mb-1 fw-semibold">Misa</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="misa_id" class="form-label mb-0 fw-semibold">Misa</label>
+                                    <a href="/Submenus/MisaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar una nueva misa">+ Nueva</a>
+                                </div>
                                 <select class="form-control form-control-sm" id="misa_id" name="misa_id" required>
                                     <!-- Opciones dinámicas desde la BD -->
                                 </select>
+                                <div id="alertaSinMisas" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay misas registradas. <a href="/Submenus/MisaView" class="fw-bold text-decoration-underline">Registrar una aquí</a>.
+                                </div>
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label for="estado" class="form-label mb-1 fw-semibold">Estado</label>
@@ -239,6 +257,7 @@
                     data.forEach(m => {
                         select.innerHTML += `<option value="${m.id}">${m.nombre} ${m.apellido}</option>`;
                     });
+                    document.getElementById("alertaSinMinistros").style.display = (!data || data.length === 0) ? "block" : "none";
                 });
         }
 
@@ -251,6 +270,7 @@
                     data.forEach(i => {
                         select.innerHTML += `<option value="${i.id}">${i.nombre}</option>`;
                     });
+                    document.getElementById("alertaSinIglesias").style.display = (!data || data.length === 0) ? "block" : "none";
                 });
         }
 
@@ -263,6 +283,7 @@
                     data.forEach(m => {
                         select.innerHTML += `<option value="${m.id}">${m.nombre}</option>`;
                     });
+                    document.getElementById("alertaSinMisas").style.display = (!data || data.length === 0) ? "block" : "none";
                 });
         }
     </script>

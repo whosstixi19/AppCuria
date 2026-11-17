@@ -124,17 +124,27 @@
                     <div class="mb-2">
                         @if (ViewBag.EsSuperAdmin == true)
                         {
-                            <label asp-for="ParroquiaId" class="form-label mb-1 fw-semibold small">Sede / Parroquia Asignada</label>
+                            var listaParrs = ViewBag.Parroquias as List<AplicacionCuria.Models.Parroquia>;
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label asp-for="ParroquiaId" class="form-label mb-0 fw-semibold small">Sede / Parroquia Asignada</label>
+                                <a href="/Submenus/ParroquiaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar una nueva parroquia">+ Nueva</a>
+                            </div>
                             <select asp-for="ParroquiaId" class="form-select form-select-sm">
                                 <option value="">Curia Central / Superadmin (Todas)</option>
-                                @if (ViewBag.Parroquias is List<AplicacionCuria.Models.Parroquia> parrs)
+                                @if (listaParrs != null)
                                 {
-                                    foreach (var p in parrs)
+                                    foreach (var p in listaParrs)
                                     {
                                         <option value="@p.id">🏛️ @p.nombre</option>
                                     }
                                 }
                             </select>
+                            @if (listaParrs == null || listaParrs.Count == 0)
+                            {
+                                <div class="text-danger small mt-1" style="font-size: 0.75rem;">
+                                    No hay parroquias registradas. <a href="/Submenus/ParroquiaView" class="fw-bold text-decoration-underline">Registrar una aquí</a>.
+                                </div>
+                            }
                             <span asp-validation-for="ParroquiaId" class="text-danger small"></span>
                         }
                         else

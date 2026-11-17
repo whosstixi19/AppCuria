@@ -45,16 +45,28 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="ministro_id" class="form-label mb-1 fw-semibold">Ministro</label>
-                                <select class="form-control form-control-sm" id="ministro_id" name="ministro_id">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="ministro_id" class="form-label mb-0 fw-semibold">Ministro</label>
+                                    <a href="/Submenus/MinistrosCatequistasView#ministro" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar un nuevo ministro">+ Nuevo</a>
+                                </div>
+                                <select class="form-control form-control-sm" id="ministro_id" name="ministro_id" required>
                                     <option value="">Seleccione un ministro</option>
                                 </select>
+                                <div id="alertaSinMinistros" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay ministros registrados. <a href="/Submenus/MinistrosCatequistasView#ministro" class="fw-bold text-decoration-underline">Registrar uno aquí</a>.
+                                </div>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="parroquia_id" class="form-label mb-1 fw-semibold">Parroquia</label>
-                                <select class="form-control form-control-sm" id="parroquia_id" name="parroquia_id">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="parroquia_id" class="form-label mb-0 fw-semibold">Parroquia</label>
+                                    <a href="/Submenus/ParroquiaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar una nueva parroquia">+ Nueva</a>
+                                </div>
+                                <select class="form-control form-control-sm" id="parroquia_id" name="parroquia_id" required>
                                     <option value="">Seleccione una parroquia</option>
                                 </select>
+                                <div id="alertaSinParroquias" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay parroquias registradas. <a href="/Submenus/ParroquiaView" class="fw-bold text-decoration-underline">Registrar una aquí</a>.
+                                </div>
                             </div>
                         </div>
 
@@ -123,7 +135,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(function () {
             cargarMinistros();
@@ -136,6 +147,10 @@
 
             $("#formIglesia").submit(function (e) {
                 e.preventDefault();
+                if (!$("#ministro_id").val() || !$("#parroquia_id").val()) {
+                    mostrarMsgIglesia("Debe seleccionar un ministro y una parroquia.", false);
+                    return;
+                }
                 let id = $("#id").val();
                 let url = id == 0 ? "/Iglesia/Create" : "/Iglesia/Edit/" + id;
                 let data = {
@@ -192,6 +207,7 @@
                     options += `<option value="${m.id}">${m.nombre}</option>`;
                 });
                 $("#ministro_id").html(options);
+                $("#alertaSinMinistros").toggle(!data || data.length === 0);
             });
         }
 
@@ -202,6 +218,7 @@
                     options += `<option value="${p.id}">${p.nombre}</option>`;
                 });
                 $("#parroquia_id").html(options);
+                $("#alertaSinParroquias").toggle(!data || data.length === 0);
             });
         }
 

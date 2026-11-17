@@ -188,10 +188,18 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         // --- Catequistas ---
         $(document).ready(function () {
+            if (window.location.hash === "#ministro") {
+                const tabBtn = document.getElementById("ministro-tab");
+                if (tabBtn && window.bootstrap && bootstrap.Tab) {
+                    new bootstrap.Tab(tabBtn).show();
+                } else {
+                    $("#ministro-tab").trigger("click");
+                }
+                cargarMinistros();
+            }
             cargarCatequistas();
 
             $("#busquedaCatequista").on("input", function () {

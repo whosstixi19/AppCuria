@@ -34,10 +34,16 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="sacerdote_id" class="form-label mb-1 fw-semibold">Sacerdote</label>
-                                <select class="form-control form-control-sm" id="sacerdote_id" name="sacerdote_id">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="sacerdote_id" class="form-label mb-0 fw-semibold">Sacerdote</label>
+                                    <a href="/Submenus/SacerdoteView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar un nuevo sacerdote">+ Nuevo</a>
+                                </div>
+                                <select class="form-control form-control-sm" id="sacerdote_id" name="sacerdote_id" required>
                                     <option value="">Seleccione un sacerdote</option>
                                 </select>
+                                <div id="alertaSinSacerdotes" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay sacerdotes registrados. <a href="/Submenus/SacerdoteView" class="fw-bold text-decoration-underline">Registrar uno aquí</a>.
+                                </div>
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label for="estado" class="form-label mb-1 fw-semibold">Estado</label>
@@ -111,7 +117,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(function () {
             cargarSacerdotes();
@@ -148,6 +153,10 @@
 
             $("#formParroquia").submit(function (e) {
                 e.preventDefault();
+                if (!$("#sacerdote_id").val()) {
+                    mostrarMsg("Debe seleccionar un sacerdote (o registrar uno primero).", false);
+                    return;
+                }
                 let id = $("#id").val();
                 let url = id == 0 ? "/Parroquias/Create" : "/Parroquias/Edit/" + id;
                 let data = {
@@ -201,6 +210,7 @@
                     options += `<option value="${s.id}">${s.nombre}</option>`;
                 });
                 $("#sacerdote_id").html(options);
+                $("#alertaSinSacerdotes").toggle(!data || data.length === 0);
             });
         }
 

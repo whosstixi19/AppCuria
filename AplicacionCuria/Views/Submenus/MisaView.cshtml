@@ -48,16 +48,28 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="iglesia_id" class="form-label mb-1 fw-semibold">Iglesia</label>
-                                <select class="form-control form-control-sm" id="iglesia_id" name="iglesia_id">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="iglesia_id" class="form-label mb-0 fw-semibold">Iglesia</label>
+                                    <a href="/Submenus/IglesiaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar una nueva iglesia">+ Nueva</a>
+                                </div>
+                                <select class="form-control form-control-sm" id="iglesia_id" name="iglesia_id" required>
                                     <option value="">Seleccione una iglesia</option>
                                 </select>
+                                <div id="alertaSinIglesias" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay iglesias registradas. <a href="/Submenus/IglesiaView" class="fw-bold text-decoration-underline">Registrar una aquí</a>.
+                                </div>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="sacerdote_id" class="form-label mb-1 fw-semibold">Sacerdote</label>
-                                <select class="form-control form-control-sm" id="sacerdote_id" name="sacerdote_id">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="sacerdote_id" class="form-label mb-0 fw-semibold">Sacerdote</label>
+                                    <a href="/Submenus/SacerdoteView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar un nuevo sacerdote">+ Nuevo</a>
+                                </div>
+                                <select class="form-control form-control-sm" id="sacerdote_id" name="sacerdote_id" required>
                                     <option value="">Seleccione un sacerdote</option>
                                 </select>
+                                <div id="alertaSinSacerdotes" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                                    No hay sacerdotes registrados. <a href="/Submenus/SacerdoteView" class="fw-bold text-decoration-underline">Registrar uno aquí</a>.
+                                </div>
                             </div>
                         </div>
 
@@ -116,7 +128,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(function () {
             cargarIglesias();
@@ -129,6 +140,10 @@
 
             $("#formMisa").submit(function (e) {
                 e.preventDefault();
+                if (!$("#iglesia_id").val() || !$("#sacerdote_id").val()) {
+                    mostrarMsgMisa("Debe seleccionar una iglesia y un sacerdote.", false);
+                    return;
+                }
                 let id = $("#id").val();
                 let url = id == 0 ? "/Misas/Create" : "/Misas/Edit/" + id;
                 let data = {
@@ -183,6 +198,7 @@
                     options += `<option value="${i.id}">${i.nombre}</option>`;
                 });
                 $("#iglesia_id").html(options);
+                $("#alertaSinIglesias").toggle(!data || data.length === 0);
             });
         }
 
@@ -193,6 +209,7 @@
                     options += `<option value="${s.id}">${s.nombre}</option>`;
                 });
                 $("#sacerdote_id").html(options);
+                $("#alertaSinSacerdotes").toggle(!data || data.length === 0);
             });
         }
 

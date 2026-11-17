@@ -64,10 +64,19 @@
                     </div>
 
                     <div class="mb-2">
-                        <label for="responsables" class="form-label mb-1 fw-semibold small">Responsables Asignados</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="responsables" class="form-label mb-0 fw-semibold small">Responsables Asignados</label>
+                            <div class="d-flex gap-1">
+                                <a href="/Submenus/SacerdoteView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar sacerdote">+ Sacerdote</a>
+                                <a href="/Submenus/EncargadosView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar encargado">+ Encargado</a>
+                            </div>
+                        </div>
                         <select class="form-select form-select-sm" id="responsables" name="responsables" multiple style="height: 85px;">
                             <!-- Las opciones se cargarán dinámicamente -->
                         </select>
+                        <div id="alertaSinResponsables" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
+                            No hay personas registradas. Registre un <a href="/Submenus/SacerdoteView" class="fw-bold text-decoration-underline">Sacerdote</a> o un <a href="/Submenus/EncargadosView" class="fw-bold text-decoration-underline">Encargado</a>.
+                        </div>
                         <div class="small text-muted" style="font-size: 0.75rem;">Mantenga presionada la tecla Ctrl (o Cmd) para seleccionar múltiples responsables.</div>
                     </div>
 
@@ -267,7 +276,9 @@
 
                 if (!data || data.length === 0) {
                     select.innerHTML = "<option disabled>No hay personas registradas</option>";
+                    document.getElementById("alertaSinResponsables").style.display = "block";
                 } else {
+                    document.getElementById("alertaSinResponsables").style.display = "none";
                     data.forEach(p => {
                         select.innerHTML += `<option value="${p.id}">${p.nombre} (${p.email})</option>`;
                     });
