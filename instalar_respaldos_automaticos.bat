@@ -1,5 +1,15 @@
 @echo off
 chcp 65001 > nul
+
+:: Solicitar permisos de Administrador automáticamente si se abrió con doble clic normal
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Solicitando permisos de Administrador...
+    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+    exit /b
+)
+
+cd /d "%~dp0"
 echo ============================================================================
 echo  CONFIGURACIÓN DE RESPALDOS AUTOMÁTICOS (LOCAL + GOOGLE DRIVE): ECLESOFT 2.0
 echo ============================================================================
