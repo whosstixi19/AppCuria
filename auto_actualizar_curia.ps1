@@ -57,9 +57,12 @@ if ($LocalHash -eq $RemoteHash) {
 Write-Log "[ACTUALIZANDO] Nueva version detectada ($($LocalHash.Substring(0,7)) -> $($RemoteHash.Substring(0,7))). Descargando cambios..."
 git pull origin main
 if ($LASTEXITCODE -eq 0) {
-    Write-Log "[DOCKER] Reconstruyendo contenedor web (curia-web)..."
+    $Count = (git rev-list --count HEAD).Trim()
+    $Short = (git rev-parse --short HEAD).Trim()
+    $env:APP_VERSION = "2.0.$Count ($Short)"
+    Write-Log "[DOCKER] Reconstruyendo contenedor web (curia-web) en version $($env:APP_VERSION)..."
     docker compose up -d --build
-    Write-Log "[OK] Actualizacion completada exitosamente."
+    Write-Log "[OK] Actualizacion completada exitosamente a v$($env:APP_VERSION)."
 } else {
     Write-Log "[ERROR] Fallo git pull. Revise si hay cambios locales sin confirmar."
 }

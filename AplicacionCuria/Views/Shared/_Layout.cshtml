@@ -286,12 +286,17 @@
         </main>
     </div>
 
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Curia - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    @{
+        var rawVersion = System.Reflection.CustomAttributeExtensions
+            .GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(System.Reflection.Assembly.GetExecutingAssembly())?.InformationalVersion ?? "2.0.46";
+        var displayVersion = rawVersion.Contains("+") ? rawVersion.Split('+')[0] + " (" + rawVersion.Split('+')[1].Substring(0, Math.Min(7, rawVersion.Split('+')[1].Length)) + ")" : rawVersion;
+    }
+    <footer class="border-top text-muted mt-5 py-3 bg-white">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center small">
+            <span>&copy; @DateTime.Now.Year - <strong>ECLESOFT 2.0</strong> (Sistema de Gestión para la Curia de Cuenca)</span>
+            <span class="badge bg-light text-secondary border fw-normal">Versión v@(displayVersion)</span>
         </div>
-        
-    </footer> *@
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

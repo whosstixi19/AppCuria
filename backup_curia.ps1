@@ -88,7 +88,7 @@ if ($Tipo -eq "diario") {
     $ArchivoLocal = Join-Path $LocalDiarios $NombreArchivo
 
     Write-Host "[1/3] Extrayendo base de datos desde PostgreSQL hacia disco local..." -ForegroundColor White
-    docker exec -t curia-postgres pg_dump -U postgres -F c -b -v -f /tmp/backup_temp.dump curia
+    docker exec curia-postgres pg_dump -U postgres -F c -b -v -f /tmp/backup_temp.dump curia
     docker cp curia-postgres:/tmp/backup_temp.dump $ArchivoLocal
     docker exec curia-postgres rm -f /tmp/backup_temp.dump
 
@@ -112,7 +112,7 @@ elseif ($Tipo -eq "semanal") {
     $ArchivoLocal = Join-Path $LocalSemanales $NombreArchivo
 
     Write-Host "[1/4] Extrayendo respaldo semanal consolidado hacia disco local..." -ForegroundColor White
-    docker exec -t curia-postgres pg_dump -U postgres -F c -b -v -f /tmp/backup_temp.dump curia
+    docker exec curia-postgres pg_dump -U postgres -F c -b -v -f /tmp/backup_temp.dump curia
     docker cp curia-postgres:/tmp/backup_temp.dump $ArchivoLocal
     docker exec curia-postgres rm -f /tmp/backup_temp.dump
 
