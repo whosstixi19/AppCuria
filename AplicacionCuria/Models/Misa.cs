@@ -18,16 +18,19 @@ namespace AplicacionCuria.Models
         [DataType(DataType.Time)]
         public TimeSpan? hora_fin { get; set; }
 
+        [Required(ErrorMessage = "El día de la semana es obligatorio")]
         [StringLength(20)]
         public string dia_semana { get; set; }
 
+        [Required(ErrorMessage = "Debe seleccionar una iglesia")]
         public int? iglesia_id { get; set; }
 
+        [Required(ErrorMessage = "Debe seleccionar un sacerdote")]
         public int? sacerdote_id { get; set; }
 
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        public string descripcion { get; set; }
+        public string? descripcion { get; set; }
 
+        [Required(ErrorMessage = "El estado es obligatorio")]
         [StringLength(20)]
         public string estado { get; set; } = "ACTIVO";
     }

@@ -14,18 +14,38 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                var faltantes = new List<string>();
+                if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+                if (string.IsNullOrWhiteSpace(model.dia_semana)) faltantes.Add("Día de la semana");
+                if (model.iglesia_id == null || model.iglesia_id <= 0)
+                    faltantes.Add("Iglesia (debe registrar y seleccionar una iglesia primero)");
+                if (model.sacerdote_id == null || model.sacerdote_id <= 0)
+                    faltantes.Add("Sacerdote (debe registrar y seleccionar un sacerdote primero)");
+                if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
+
+                if (faltantes.Count > 0)
                 {
-                    sql.Add(model);
-                    await sql.SaveChangesAsync();
-                    return Json(new { success = true });
+                    return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
                 }
+
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .Where(m => !string.IsNullOrWhiteSpace(m));
+                    return Json(new { success = false, message = "Datos inválidos: " + string.Join("; ", errores) });
+                }
+
+                model.descripcion ??= "";
+                sql.Add(model);
+                await sql.SaveChangesAsync();
+                return Json(new { success = true });
             }
             catch (Exception e)
             {
-                return Json(new { success = false, message = e.Message });
+                return Json(new { success = false, message = "Error al guardar misa: " + e.Message });
             }
-            return Json(new { success = false });
         }
 
         [HttpPost]

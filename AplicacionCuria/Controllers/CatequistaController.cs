@@ -21,9 +21,24 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Catequista model)
         {
+            var faltantes = new List<string>();
+            if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+            if (string.IsNullOrWhiteSpace(model.apellido)) faltantes.Add("Apellido");
+            if (string.IsNullOrWhiteSpace(model.cedula)) faltantes.Add("Cédula");
+            if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
+            if (string.IsNullOrWhiteSpace(model.direccion)) faltantes.Add("Dirección");
+            if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Email");
+
+            if (faltantes.Count > 0)
+            {
+                var msg = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + ".";
+                return Json(new { success = false, message = msg, errors = new[] { msg } });
+            }
+
             if (!ModelState.IsValid)
             {
-                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+                var errs = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+                return Json(new { success = false, message = string.Join("; ", errs), errors = errs });
             }
             try
             {
@@ -32,13 +47,14 @@ namespace AplicacionCuria.Controllers
 
                 model.id = 0;
                 model.estado = "ACTIVO";
+                model.observaciones ??= "";
                 await sql.catequistas.AddAsync(model);
                 await sql.SaveChangesAsync();
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, errors = new[] { ex.Message } });
+                return Json(new { success = false, message = ex.Message, errors = new[] { ex.Message } });
             }
         }
 

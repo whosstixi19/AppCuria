@@ -60,18 +60,21 @@ namespace AplicacionCuria.Controllers
         public async Task<IActionResult> Create([FromBody] Feligres model)
         {
             // Validación de campos obligatorios
-            if (string.IsNullOrWhiteSpace(model.nombre) ||
-                string.IsNullOrWhiteSpace(model.apellido) ||
-                string.IsNullOrWhiteSpace(model.cedula) ||
-                model.fechanacimiento == default ||
-                string.IsNullOrWhiteSpace(model.direccion) ||
-                string.IsNullOrWhiteSpace(model.telefono) ||
-                string.IsNullOrWhiteSpace(model.email) ||
-                string.IsNullOrWhiteSpace(model.estado) ||
-                string.IsNullOrWhiteSpace(model.observaciones))
+            var faltantes = new List<string>();
+            if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+            if (string.IsNullOrWhiteSpace(model.apellido)) faltantes.Add("Apellido");
+            if (string.IsNullOrWhiteSpace(model.cedula)) faltantes.Add("Cédula");
+            if (model.fechanacimiento == default) faltantes.Add("Fecha de nacimiento");
+            if (string.IsNullOrWhiteSpace(model.direccion)) faltantes.Add("Dirección");
+            if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
+            if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
+            if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
+
+            if (faltantes.Count > 0)
             {
-                return Json(new { success = false, message = "Todos los campos son obligatorios." });
+                return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
             }
+            model.observaciones ??= "";
 
             // Normalizar nombre y apellido
             model.nombre = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(model.nombre.Trim().ToLower());

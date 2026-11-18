@@ -14,28 +14,28 @@
         <div class="col-lg-4 col-md-5">
             <div class="card shadow-sm">
                 <div class="card-body p-3">
-                    <form id="formParroquia">
+                    <form id="formParroquia" novalidate>
                         <input type="hidden" id="id" name="id" value="0" />
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre <span class="text-danger">*</span></label>
                                 <input class="form-control form-control-sm" id="nombre" name="nombre" required maxlength="255" />
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono</label>
-                                <input class="form-control form-control-sm" id="telefono" name="telefono" maxlength="20" />
+                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-sm" id="telefono" name="telefono" required maxlength="20" />
                             </div>
                         </div>
 
                         <div class="mb-2">
-                            <label for="email" class="form-label mb-1 fw-semibold">Correo electrónico</label>
-                            <input type="email" class="form-control form-control-sm" id="email" name="email" maxlength="255" />
+                            <label for="email" class="form-label mb-1 fw-semibold">Correo electrónico <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control form-control-sm" id="email" name="email" required maxlength="255" />
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="sacerdote_id" class="form-label mb-0 fw-semibold">Sacerdote</label>
+                                    <label for="sacerdote_id" class="form-label mb-0 fw-semibold">Sacerdote <span class="text-danger">*</span></label>
                                     <a href="/Submenus/SacerdoteView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar un nuevo sacerdote">+ Nuevo</a>
                                 </div>
                                 <select class="form-control form-control-sm" id="sacerdote_id" name="sacerdote_id" required>
@@ -46,8 +46,8 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="estado" class="form-label mb-1 fw-semibold">Estado</label>
-                                <select class="form-control form-control-sm" id="estado" name="estado">
+                                <label for="estado" class="form-label mb-1 fw-semibold">Estado <span class="text-danger">*</span></label>
+                                <select class="form-control form-control-sm" id="estado" name="estado" required>
                                     <option value="ACTIVO">ACTIVO</option>
                                     <option value="INACTIVO">INACTIVO</option>
                                 </select>
@@ -55,12 +55,12 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="direccion" class="form-label mb-1 fw-semibold">Dirección</label>
-                            <textarea class="form-control form-control-sm" id="direccion" name="direccion" rows="2"></textarea>
+                            <label for="direccion" class="form-label mb-1 fw-semibold">Dirección <span class="text-danger">*</span></label>
+                            <textarea class="form-control form-control-sm" id="direccion" name="direccion" rows="2" required></textarea>
                         </div>
 
                         <div class="mb-2">
-                            <label for="observaciones" class="form-label mb-1 fw-semibold">Observaciones</label>
+                            <label for="observaciones" class="form-label mb-1 fw-semibold">Observaciones <span class="text-muted fw-normal">(Opcional)</span></label>
                             <textarea class="form-control form-control-sm" id="observaciones" name="observaciones" rows="2"></textarea>
                         </div>
 
@@ -153,21 +153,43 @@
 
             $("#formParroquia").submit(function (e) {
                 e.preventDefault();
-                if (!$("#sacerdote_id").val()) {
-                    mostrarMsg("Debe seleccionar un sacerdote (o registrar uno primero).", false);
+                let id = $("#id").val();
+                let nombre = ($("#nombre").val() || "").trim();
+                let telefono = ($("#telefono").val() || "").trim();
+                let email = ($("#email").val() || "").trim();
+                let sacerdote_id = $("#sacerdote_id").val();
+                let direccion = ($("#direccion").val() || "").trim();
+                let estado = ($("#estado").val() || "").trim();
+
+                let faltantes = [];
+                if (!nombre) faltantes.push("Nombre");
+                if (!telefono) faltantes.push("Teléfono");
+                if (!email) faltantes.push("Correo electrónico");
+                if (!sacerdote_id) {
+                    if ($("#sacerdote_id option").length <= 1) {
+                        faltantes.push("Sacerdote (no hay sacerdotes registrados, primero cree uno en la pestaña Sacerdotes)");
+                    } else {
+                        faltantes.push("Sacerdote");
+                    }
+                }
+                if (!direccion) faltantes.push("Dirección");
+                if (!estado) faltantes.push("Estado");
+
+                if (faltantes.length > 0) {
+                    mostrarMsg("Falta ingresar los siguientes datos obligatorios: " + faltantes.join(", ") + ".", false);
                     return;
                 }
-                let id = $("#id").val();
+
                 let url = id == 0 ? "/Parroquias/Create" : "/Parroquias/Edit/" + id;
                 let data = {
                     id: id,
-                    nombre: $("#nombre").val(),
-                    direccion: $("#direccion").val(),
-                    telefono: $("#telefono").val(),
-                    email: $("#email").val(),
-                    sacerdote_id: $("#sacerdote_id").val(),
-                    estado: $("#estado").val(),
-                    observaciones: $("#observaciones").val(),
+                    nombre: nombre,
+                    direccion: direccion,
+                    telefono: telefono,
+                    email: email,
+                    sacerdote_id: sacerdote_id,
+                    estado: estado,
+                    observaciones: $("#observaciones").val() || "",
                     logo_base64: $("#logo_base64").val()
                 };
                 $.post(url, data, function (res) {
@@ -176,8 +198,10 @@
                         limpiarFormulario();
                         mostrarMsg("Parroquia guardada correctamente.", true);
                     } else {
-                        mostrarMsg(res.message || "Error al guardar.", false);
+                        mostrarMsg(res.message || "No se pudo guardar la parroquia. Verifique los datos ingresados.", false);
                     }
+                }).fail(function (xhr) {
+                    mostrarMsg("Error de comunicación con el servidor (" + xhr.status + "). Recargue la página e intente nuevamente.", false);
                 });
             });
 
@@ -290,7 +314,7 @@
 
         function mostrarMsg(msg, exito) {
             $("#msgParroquia").text(msg).removeClass().addClass(exito ? "text-success" : "text-danger");
-            setTimeout(() => { $("#msgParroquia").text(""); }, 3000);
+            setTimeout(() => { $("#msgParroquia").text(""); }, 6000);
         }
     </script>
 }

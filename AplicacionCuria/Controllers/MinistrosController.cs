@@ -14,21 +14,39 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    if (model.fechaordenacion.HasValue)
-                        model.fechaordenacion = DateTime.SpecifyKind(model.fechaordenacion.Value, DateTimeKind.Utc);
+                var faltantes = new List<string>();
+                if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+                if (string.IsNullOrWhiteSpace(model.apellido)) faltantes.Add("Apellido");
+                if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Email");
+                if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
+                if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
 
-                    sql.Add(model);
-                    await sql.SaveChangesAsync();
-                    return Json(new { success = true });
+                if (faltantes.Count > 0)
+                {
+                    return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
                 }
+
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .Where(m => !string.IsNullOrWhiteSpace(m));
+                    return Json(new { success = false, message = "Datos inválidos: " + string.Join("; ", errores) });
+                }
+
+                if (model.fechaordenacion.HasValue)
+                    model.fechaordenacion = DateTime.SpecifyKind(model.fechaordenacion.Value, DateTimeKind.Utc);
+
+                model.observaciones ??= "";
+                sql.Add(model);
+                await sql.SaveChangesAsync();
+                return Json(new { success = true });
             }
             catch (Exception e)
             {
-                return Json(new { success = false, message = e.Message });
+                return Json(new { success = false, message = "Error al guardar ministro: " + e.Message });
             }
-            return Json(new { success = false });
         }
 
         [HttpPost]

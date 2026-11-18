@@ -65,19 +65,20 @@
 
                     <div class="mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="responsables" class="form-label mb-0 fw-semibold small">Responsables Asignados</label>
+                            <label for="buscarResponsable" class="form-label mb-0 fw-semibold small">Responsables Asignados <span class="text-danger">*</span></label>
                             <div class="d-flex gap-1">
                                 <a href="/Submenus/SacerdoteView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar sacerdote">+ Sacerdote</a>
                                 <a href="/Submenus/EncargadosView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar encargado">+ Encargado</a>
                             </div>
                         </div>
-                        <select class="form-select form-select-sm" id="responsables" name="responsables" multiple style="height: 85px;">
-                            <!-- Las opciones se cargarán dinámicamente -->
-                        </select>
+                        <input type="text" id="buscarResponsable" class="form-control form-control-sm mb-1" placeholder="Buscar sacerdote o encargado por nombre o correo..." oninput="filtrarResponsables(this.value)">
+                        <div id="listaResponsablesCheck" class="border rounded p-2 bg-white" style="max-height: 120px; overflow-y: auto; font-size: 0.84rem;">
+                            <!-- Los checkboxes se cargarán dinámicamente -->
+                        </div>
                         <div id="alertaSinResponsables" class="text-danger small mt-1" style="display:none; font-size: 0.75rem;">
                             No hay personas registradas. Registre un <a href="/Submenus/SacerdoteView" class="fw-bold text-decoration-underline">Sacerdote</a> o un <a href="/Submenus/EncargadosView" class="fw-bold text-decoration-underline">Encargado</a>.
                         </div>
-                        <div class="small text-muted" style="font-size: 0.75rem;">Mantenga presionada la tecla Ctrl (o Cmd) para seleccionar múltiples responsables.</div>
+                        <div class="small text-muted" style="font-size: 0.75rem;">Marque uno o varios responsables para que reciban la invitación y el recordatorio en su correo.</div>
                     </div>
 
                     <!-- Configuración de Recordatorio -->
@@ -229,9 +230,25 @@
 
         var formData = new FormData(this);
 
-        const selectResponsables = document.getElementById("responsables");
-        const responsablesSeleccionados = Array.from(selectResponsables.selectedOptions)
-                                            .map(opt => parseInt(opt.value));
+        const responsablesSeleccionados = Array.from(document.querySelectorAll(".chk-responsable:checked"))
+                                            .map(chk => parseInt(chk.value))
+                                            .filter(val => !isNaN(val));
+
+        const faltantes = [];
+        if (!document.getElementById("titulo").value.trim()) faltantes.push("Título");
+        if (!document.getElementById("fechaagenda").value.trim()) faltantes.push("Fecha");
+        if (!document.getElementById("hora").value.trim()) faltantes.push("Hora");
+        if (!document.getElementById("lugar").value.trim()) faltantes.push("Lugar");
+        if (!document.getElementById("descripcion").value.trim()) faltantes.push("Descripción");
+        if (responsablesSeleccionados.length === 0) faltantes.push("Responsables Asignados (marque al menos un Sacerdote o Encargado)");
+
+        if (faltantes.length > 0) {
+            const exito = document.getElementById("exito");
+            exito.className = "text-danger fw-semibold small";
+            exito.textContent = "Falta ingresar los siguientes datos obligatorios: " + faltantes.join(", ") + ".";
+            exito.style.display = "block";
+            return;
+        }
 
         formData.append("responsables_ids", JSON.stringify(responsablesSeleccionados));
 
@@ -248,6 +265,7 @@
                 exito.textContent = "Agenda Registrada con éxito";
                 exito.style.display = "block";
                 document.getElementById("crearagenda").reset();
+                filtrarResponsables("");
                 setTimeout(function () {
                     exito.style.display = "none";
                     List();
@@ -267,20 +285,39 @@
         });
     });
 
+    function filtrarResponsables(texto) {
+        const filtro = (texto || "").trim().toLowerCase();
+        document.querySelectorAll(".item-responsable").forEach(item => {
+            const contenido = (item.getAttribute("data-search") || "").toLowerCase();
+            item.style.display = (!filtro || contenido.includes(filtro)) ? "" : "none";
+        });
+    }
+
     function cargarListaPersonas() {
         fetch('/Agenda/GetAllPersonas')
             .then(response => response.json())
             .then(data => {
-                const select = document.getElementById("responsables");
-                select.innerHTML = "";
+                const contenedor = document.getElementById("listaResponsablesCheck");
+                contenedor.innerHTML = "";
 
                 if (!data || data.length === 0) {
-                    select.innerHTML = "<option disabled>No hay personas registradas</option>";
+                    contenedor.innerHTML = "<div class='text-muted small'>No hay personas registradas</div>";
                     document.getElementById("alertaSinResponsables").style.display = "block";
                 } else {
                     document.getElementById("alertaSinResponsables").style.display = "none";
                     data.forEach(p => {
-                        select.innerHTML += `<option value="${p.id}">${p.nombre} (${p.email})</option>`;
+                        const rol = p.rol || "Encargado";
+                        const badgeClass = rol === "Sacerdote" ? "bg-primary-subtle text-primary border border-primary-subtle" : "bg-secondary-subtle text-secondary border border-secondary-subtle";
+                        const searchText = `${rol} ${p.nombre} ${p.email}`;
+                        contenedor.innerHTML += `
+                            <div class="form-check mb-1 item-responsable" data-search="${searchText}">
+                                <input class="form-check-input chk-responsable" type="checkbox" value="${p.id}" id="resp_${p.id}">
+                                <label class="form-check-label d-flex align-items-center gap-1" for="resp_${p.id}" style="cursor:pointer;">
+                                    <span class="badge ${badgeClass}" style="font-size: 0.68rem;">${rol}</span>
+                                    <span class="fw-semibold">${p.nombre}</span>
+                                    <span class="text-muted small">(${p.email})</span>
+                                </label>
+                            </div>`;
                     });
                 }
             })

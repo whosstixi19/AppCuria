@@ -8,19 +8,19 @@ namespace AplicacionCuria.Models
         [Key]
         public int id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El nombre del periodo es obligatorio")]
         [StringLength(255)]
         public string nombre { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
         public DateTime fecha_inicio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de fin es obligatoria")]
         public DateTime fecha_fin { get; set; }
 
         [StringLength(20)]
         public string estado { get; set; } = "ACTIVO";
 
-        public string observaciones { get; set; }
+        public string? observaciones { get; set; }
     }
 }

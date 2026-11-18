@@ -14,18 +14,38 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                var faltantes = new List<string>();
+                if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+                if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
+                if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
+                if (model.sacerdote_id == null || model.sacerdote_id <= 0)
+                    faltantes.Add("Sacerdote (debe registrar y seleccionar un sacerdote primero)");
+                if (string.IsNullOrWhiteSpace(model.direccion)) faltantes.Add("Dirección");
+                if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
+
+                if (faltantes.Count > 0)
                 {
-                    sql.Add(model);
-                    await sql.SaveChangesAsync();
-                    return Json(new { success = true });
+                    return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
                 }
+
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .Where(m => !string.IsNullOrWhiteSpace(m));
+                    return Json(new { success = false, message = "Datos inválidos: " + string.Join("; ", errores) });
+                }
+
+                model.observaciones ??= "";
+                sql.Add(model);
+                await sql.SaveChangesAsync();
+                return Json(new { success = true });
             }
             catch (Exception e)
             {
-                return Json(new { success = false, message = e.Message });
+                return Json(new { success = false, message = "Error al guardar parroquia: " + e.Message });
             }
-            return Json(new { success = false });
         }
 
         [HttpPost]
@@ -37,6 +57,30 @@ namespace AplicacionCuria.Controllers
             }
             try
             {
+                var faltantes = new List<string>();
+                if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+                if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
+                if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
+                if (model.sacerdote_id == null || model.sacerdote_id <= 0)
+                    faltantes.Add("Sacerdote (debe seleccionar un sacerdote)");
+                if (string.IsNullOrWhiteSpace(model.direccion)) faltantes.Add("Dirección");
+                if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
+
+                if (faltantes.Count > 0)
+                {
+                    return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .Where(m => !string.IsNullOrWhiteSpace(m));
+                    return Json(new { success = false, message = "Datos inválidos: " + string.Join("; ", errores) });
+                }
+
+                model.observaciones ??= "";
                 sql.Update(model);
                 sql.SaveChanges();
             }
@@ -47,6 +91,10 @@ namespace AplicacionCuria.Controllers
                     return NotFound();
                 }
                 throw;
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false, message = "Error al actualizar parroquia: " + e.Message });
             }
             return Json(new { success = true });
         }

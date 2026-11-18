@@ -97,7 +97,7 @@
                         limpiarFormulario();
                         mostrarMsg("Periodo guardado correctamente.", true);
                     } else {
-                        mostrarMsg("Error al guardar.", false);
+                        mostrarMsg(res.message || (res.errors && res.errors.join("; ")) || "No se pudo guardar el periodo. Verifique los datos ingresados.", false);
                     }
                 });
             });

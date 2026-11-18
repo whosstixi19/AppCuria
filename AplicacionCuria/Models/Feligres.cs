@@ -37,7 +37,6 @@ namespace AplicacionCuria.Models
         [StringLength(20)]
         public string estado { get; set; } = "ACTIVO";
 
-        [Required]
-        public string observaciones { get; set; }
+        public string? observaciones { get; set; }
     }
 }

@@ -21,7 +21,6 @@ namespace AplicacionCuria.Models
         [Required]
         public string estado { get; set; }
 
-        [Required]
-        public string observaciones { get; set; }
+        public string? observaciones { get; set; }
     }
 }

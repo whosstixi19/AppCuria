@@ -13,11 +13,46 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetAllPersonas()
         {
+            // Sincronizar automáticamente sacerdotes activos hacia personas_evento para que siempre aparezcan como responsables elegibles
+            var sacerdotesActivos = sql.sacerdotes
+                .Where(s => s.estado == "ACTIVO" && !string.IsNullOrEmpty(s.email))
+                .ToList();
+
+            bool huboCambios = false;
+            foreach (var s in sacerdotesActivos)
+            {
+                var nombreCompleto = $"{s.nombre} {s.apellido}".Trim();
+                var emailLimpio = s.email.Trim();
+                bool existe = sql.personas_evento.Any(p =>
+                    p.email.ToLower() == emailLimpio.ToLower() ||
+                    p.nombre.ToLower() == nombreCompleto.ToLower());
+
+                if (!existe)
+                {
+                    sql.personas_evento.Add(new PersonasEvento
+                    {
+                        nombre = nombreCompleto,
+                        email = emailLimpio,
+                        telefono = s.telefono ?? "",
+                        rol = "Sacerdote"
+                    });
+                    huboCambios = true;
+                }
+            }
+
+            if (huboCambios)
+            {
+                sql.SaveChanges();
+            }
+
             var personas = sql.personas_evento
+                .OrderByDescending(p => p.rol == "Sacerdote")
+                .ThenBy(p => p.nombre)
                 .Select(p => new {
                     p.id,
                     p.nombre,
-                    p.email
+                    p.email,
+                    rol = string.IsNullOrWhiteSpace(p.rol) ? "Encargado" : p.rol
                 })
                 .ToList();
 
@@ -44,7 +79,20 @@ namespace AplicacionCuria.Controllers
 
                 if (!string.IsNullOrEmpty(responsablesRaw))
                 {
-                    responsablesIds = System.Text.Json.JsonSerializer.Deserialize<List<int>>(responsablesRaw);
+                    responsablesIds = System.Text.Json.JsonSerializer.Deserialize<List<int>>(responsablesRaw) ?? new List<int>();
+                }
+
+                var faltantes = new List<string>();
+                if (string.IsNullOrWhiteSpace(Request.Form["titulo"])) faltantes.Add("Título");
+                if (string.IsNullOrWhiteSpace(Request.Form["fechaagenda"])) faltantes.Add("Fecha");
+                if (string.IsNullOrWhiteSpace(Request.Form["hora"])) faltantes.Add("Hora");
+                if (string.IsNullOrWhiteSpace(Request.Form["lugar"])) faltantes.Add("Lugar");
+                if (string.IsNullOrWhiteSpace(Request.Form["descripcion"])) faltantes.Add("Descripción");
+                if (responsablesIds.Count == 0) faltantes.Add("Responsables Asignados (seleccione al menos un Sacerdote o Encargado)");
+
+                if (faltantes.Count > 0)
+                {
+                    return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
                 }
 
                 // Zona horaria de Ecuador

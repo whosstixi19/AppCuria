@@ -66,18 +66,21 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Barrio model)
         {
-            if (string.IsNullOrWhiteSpace(model.nombre) ||
-                model.ministro_id == 0 ||
-                model.iglesia_id == 0 ||
-                model.misa_id == 0 ||
-                string.IsNullOrWhiteSpace(model.estado) ||
-                string.IsNullOrWhiteSpace(model.observaciones))
+            var faltantes = new List<string>();
+            if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+            if (model.ministro_id == 0) faltantes.Add("Ministro");
+            if (model.iglesia_id == 0) faltantes.Add("Iglesia");
+            if (model.misa_id == 0) faltantes.Add("Misa");
+            if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
+
+            if (faltantes.Count > 0)
             {
-                return Json(new { success = false, message = "Todos los campos son obligatorios." });
+                return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
             }
 
             try
             {
+                model.observaciones ??= "";
                 sql.Add(model);
                 await sql.SaveChangesAsync();
                 return Json(new { success = true });

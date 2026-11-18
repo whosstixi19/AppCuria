@@ -21,14 +21,27 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Periodo model)
         {
+            var faltantes = new List<string>();
+            if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+            if (model.fecha_inicio == default) faltantes.Add("Fecha Inicio");
+            if (model.fecha_fin == default) faltantes.Add("Fecha Fin");
+
+            if (faltantes.Count > 0)
+            {
+                var msg = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + ".";
+                return Json(new { success = false, message = msg, errors = new[] { msg } });
+            }
+
             if (!ModelState.IsValid)
             {
-                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+                var errs = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+                return Json(new { success = false, message = string.Join("; ", errs), errors = errs });
             }
             try
             {
                 model.id = 0;
                 model.estado = "ACTIVO";
+                model.observaciones ??= "";
                 model.fecha_inicio = DateTime.SpecifyKind(model.fecha_inicio, DateTimeKind.Utc);
                 model.fecha_fin = DateTime.SpecifyKind(model.fecha_fin, DateTimeKind.Utc);
 
@@ -38,7 +51,7 @@ namespace AplicacionCuria.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, errors = new[] { ex.Message } });
+                return Json(new { success = false, message = ex.Message, errors = new[] { ex.Message } });
             }
         }
 

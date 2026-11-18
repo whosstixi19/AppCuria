@@ -227,7 +227,7 @@
                         cargarCatequistas();
                         limpiarFormularioCatequista();
                     } else {
-                        alert("Error al guardar.");
+                        alert(res.message || (res.errors && res.errors.join("\n")) || "No se pudo guardar el catequista. Verifique los datos ingresados.");
                     }
                 });
             });

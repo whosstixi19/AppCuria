@@ -14,18 +14,42 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                var faltantes = new List<string>();
+                if (string.IsNullOrWhiteSpace(model.nombre)) faltantes.Add("Nombre");
+                if (string.IsNullOrWhiteSpace(model.ciudad)) faltantes.Add("Ciudad");
+                if (string.IsNullOrWhiteSpace(model.direccion)) faltantes.Add("Dirección");
+                if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
+                if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
+                if (model.ministro_id == null || model.ministro_id <= 0)
+                    faltantes.Add("Ministro (debe registrar y seleccionar un ministro primero)");
+                if (model.parroquia_id == null || model.parroquia_id <= 0)
+                    faltantes.Add("Parroquia (debe registrar y seleccionar una parroquia primero)");
+                if (string.IsNullOrWhiteSpace(model.denominacion)) faltantes.Add("Denominación");
+                if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
+
+                if (faltantes.Count > 0)
                 {
-                    sql.Add(model);
-                    await sql.SaveChangesAsync();
-                    return Json(new { success = true });
+                    return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
                 }
+
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .Where(m => !string.IsNullOrWhiteSpace(m));
+                    return Json(new { success = false, message = "Datos inválidos: " + string.Join("; ", errores) });
+                }
+
+                model.observaciones ??= "";
+                sql.Add(model);
+                await sql.SaveChangesAsync();
+                return Json(new { success = true });
             }
             catch (Exception e)
             {
-                return Json(new { success = false, message = e.Message });
+                return Json(new { success = false, message = "Error al guardar iglesia: " + e.Message });
             }
-            return Json(new { success = false });
         }
 
         [HttpPost]
