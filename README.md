@@ -38,14 +38,22 @@ Este sistema proporciona una plataforma centralizada para agilizar los procesos 
 - **App:** HTML, CSS, JavaScript, CSHTML (Componente Razor de ASP .NET)
 - **Lenguajes:** C#, Javascript
 
-## Instalación
+## Instalación y Puesta en Marcha Local (Docker Desktop - Recomendada)
 1. Clona este repositorio:
    ```bash
-   git clone https://github.com/Chris-Liter/AplicacionCuria.git
+   git clone https://github.com/whosstixi19/AppCuria.git
+   cd AppCuria
    ```
-2. Configura la base de datos PostgreSQL con los scripts SQL incluidos.
-3. Actualiza el archivo `appsettings.json` con la cadena de conexión a tu base de datos, misma que se recomienda desplegar usando un contenedor docker de manera local en el computador, para facilitar la administracion de la misma.
-4. Ejecuta la aplicación desde Visual Studio Community o Visual Studio Code.
+2. Levanta la base de datos PostgreSQL 17 (con `BD.sql` automático) y el servidor web ASP.NET Core 8:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Ingresa en el navegador a `http://localhost:5155` con el usuario inicial `admin@curia.com` y contraseña temporal `Clave_curia`.
+4. **Orden inicial de registro de catálogos:** Registra primero al **Sacerdote** (`Registrar -> Sacerdote`), luego la **Parroquia** (`Registrar -> Parroquia`), el **Ministro/Catequista**, la **Iglesia** y finalmente crea el usuario propio de la secretaria/párroco en **Crear Usuario**.
+5. **Automatización local (Un solo clic):**
+   - **Auto-actualización desde GitHub:** Ejecuta `instalar_auto_actualizacion.bat` para que Windows verifique y aplique actualizaciones automáticamente al iniciar sesión y cada día a las 08:30 AM sin tocar la base de datos.
+   - **Correo SMTP de la Parroquia (Agenda `.ics`):** Ejecuta `configurar_correo_parroquia.bat` para guardar el correo y la contraseña de aplicación de 16 letras de la parroquia en el archivo local `.env` (ignorado por Git para no perderse en `git pull`).
+   - **Doble respaldo automático (Local + Google Drive compartido):** Inicia sesión en Google Drive for Desktop con la cuenta de la parroquia, añade en *Compartido conmigo* el acceso directo a *Mi unidad* de la subcarpeta compartida por el Administrador Supremo (sin espacios, con guiones bajos, ej. `Parroquia_San_Sebastian`) y ejecuta `instalar_respaldos_automaticos.bat`.
 
 Como funciona la aplicacion, mas claro, como realiza las operaciones CRUD con la base de datos, aqui te explico.
 La aplicacion usa el patron MVC como arquitectura para su desarrollo.
