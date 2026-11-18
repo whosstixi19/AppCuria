@@ -367,6 +367,7 @@ FodyWeavers.xsd
 .vscode/
 
 appsettings.Development.json
+actualizaciones.log
 
 # Guia
 Guia/
