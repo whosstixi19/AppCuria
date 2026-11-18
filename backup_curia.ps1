@@ -37,17 +37,19 @@ if ($RutaDrive -ne "" -and (Test-Path $RutaDrive)) {
     if (Test-Path "G:\.shortcut-targets-by-id") {
         $AccesosDirectos = Get-ChildItem -Path "G:\.shortcut-targets-by-id" -Directory -ErrorAction SilentlyContinue
         foreach ($acc in $AccesosDirectos) {
-            # Si la carpeta por ID es directamente la parroquia
-            if ($acc.Name -eq $Parroquia) {
-                $PosiblesRutas += $acc.FullName
-            }
-            # Si dentro de la carpeta compartida esta la parroquia
+            # 1. Si dentro del acceso directo existe una subcarpeta con el nombre exacto de la parroquia
             $Sub = Join-Path $acc.FullName $Parroquia
             if (Test-Path $Sub) {
                 $PosiblesRutas += $Sub
             }
-            # Si el target mismo es la carpeta
-            $PosiblesRutas += $acc.FullName
+            # 2. Si el acceso directo ya contiene las subcarpetas Diarios o Semanales (acceso directo a la carpeta de la parroquia)
+            if ((Test-Path (Join-Path $acc.FullName "Diarios")) -or (Test-Path (Join-Path $acc.FullName "Semanales"))) {
+                $PosiblesRutas += $acc.FullName
+            }
+        }
+        # 3. Fallback: si solo hay un acceso directo compartido en total, usarlo como destino de la parroquia
+        if ($AccesosDirectos.Count -eq 1) {
+            $PosiblesRutas += $AccesosDirectos[0].FullName
         }
     }
 
