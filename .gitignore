@@ -368,6 +368,7 @@ FodyWeavers.xsd
 
 appsettings.Development.json
 actualizaciones.log
+.env
 
 # Guia
 Guia/

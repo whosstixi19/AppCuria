@@ -23,7 +23,7 @@ services:
       context: ./AplicacionCuria
       dockerfile: Dockerfile
       args:
-        APP_VERSION: ${APP_VERSION:-2.0.46}
+        APP_VERSION: ${APP_VERSION:-2.0.49}
     container_name: curia-web
     restart: always
     depends_on:
@@ -36,6 +36,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: "http://+:5155"
       ConnectionStrings__DefaultConnection: "Host=db-postgres;Port=5432;Database=curia;Username=postgres;Password=Clave_curia"
+      EmailSettings__From: "${SMTP_EMAIL:-}"
+      EmailSettings__SmtpServer: "${SMTP_SERVER:-}"
+      EmailSettings__Port: "${SMTP_PORT:-587}"
+      EmailSettings__Username: "${SMTP_EMAIL:-}"
+      EmailSettings__Password: "${SMTP_PASSWORD:-}"
+      EmailSettings__EnableSsl: "true"
 
 volumes:
   postgres_data:
