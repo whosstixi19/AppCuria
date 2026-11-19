@@ -23,7 +23,7 @@ services:
       context: ./AplicacionCuria
       dockerfile: Dockerfile
       args:
-        APP_VERSION: ${APP_VERSION:-2.0.49}
+        APP_VERSION: ${APP_VERSION:-2.0.51}
     container_name: curia-web
     restart: always
     depends_on:

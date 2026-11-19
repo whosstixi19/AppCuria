@@ -6,8 +6,8 @@ COPY ["AplicacionCuria.csproj", "./"]
 RUN dotnet restore "AplicacionCuria.csproj"
 
 COPY . .
-ARG APP_VERSION=2.0.49
-RUN dotnet publish "AplicacionCuria.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:InformationalVersion=${APP_VERSION}
+ARG APP_VERSION=2.0.51
+RUN dotnet publish "AplicacionCuria.csproj" -c Release -o /app/publish /p:UseAppHost=false "/p:InformationalVersion=${APP_VERSION}"
 
 # Etapa 2: Ejecución (.NET 8 Runtime sobre Ubuntu 22.04 con wkhtmltopdf para PDFs)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS final

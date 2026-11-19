@@ -59,7 +59,7 @@ git pull origin main
 if ($LASTEXITCODE -eq 0) {
     $Count = (git rev-list --count HEAD).Trim()
     $Short = (git rev-parse --short HEAD).Trim()
-    $env:APP_VERSION = "2.0.$Count ($Short)"
+    $env:APP_VERSION = "2.0.$Count+$Short"
     Write-Log "[DOCKER] Reconstruyendo contenedor web (curia-web) en version $($env:APP_VERSION)..."
     docker compose up -d --build
     Write-Log "[OK] Actualizacion completada exitosamente a v$($env:APP_VERSION)."
