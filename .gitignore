@@ -369,6 +369,7 @@ FodyWeavers.xsd
 appsettings.Development.json
 actualizaciones.log
 .env
+backup_curia.local.ps1
 
 # Guia
 Guia/

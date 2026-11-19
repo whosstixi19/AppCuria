@@ -55,6 +55,7 @@ if ($LocalHash -eq $RemoteHash) {
 
 # 4. Descargar cambios y reconstruir contenedor web sin tocar el volumen de base de datos
 Write-Log "[ACTUALIZANDO] Nueva version detectada ($($LocalHash.Substring(0,7)) -> $($RemoteHash.Substring(0,7))). Descargando cambios..."
+git checkout -- backup_curia.ps1 > $null 2>&1
 git pull origin main
 if ($LASTEXITCODE -eq 0) {
     $Count = (git rev-list --count HEAD).Trim()
