@@ -139,7 +139,7 @@
     <div class="marco">
         <div class="container">
             <div class="content">
-                <img src="~/imagenes/logo_certificados.png" class="logo" alt="Logo Parroquia">
+                <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/logo_certificados.png"))" class="logo" alt="Logo Parroquia">
 
                 <div class="title">Parroquia Santa María de El Vergel</div>
                 <div class="sub-title">La Comisión de Catequesis</div>
