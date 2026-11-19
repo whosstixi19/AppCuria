@@ -370,6 +370,9 @@ appsettings.Development.json
 actualizaciones.log
 .env
 backup_curia.local.ps1
+sincronizar_padre.local.ps1
+sincronizacion_padre.log
+.ultimo_sync_secretaria.txt
 
 # Guia
 Guia/

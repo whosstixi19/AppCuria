@@ -33,16 +33,30 @@ if ($RutaDrive -ne "" -and (Test-Path $RutaDrive)) {
         "G:\My Drive\$Parroquia"
     )
 
+    # Buscar en Mi unidad (hasta 2 niveles de profundidad por si esta dentro de una carpeta de parroquia, ej. Parroquia_X\Secretaria)
+    foreach ($baseDrive in @("G:\Mi unidad", "G:\My Drive")) {
+        if (Test-Path $baseDrive) {
+            $encontradas = Get-ChildItem -Path $baseDrive -Directory -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq $Parroquia }
+            foreach ($dir in $encontradas) {
+                $PosiblesRutas += $dir.FullName
+            }
+        }
+    }
+
     # Buscar en accesos directos de Google Drive (.shortcut-targets-by-id)
     if (Test-Path "G:\.shortcut-targets-by-id") {
         $AccesosDirectos = Get-ChildItem -Path "G:\.shortcut-targets-by-id" -Directory -ErrorAction SilentlyContinue
         foreach ($acc in $AccesosDirectos) {
-            # 1. Si dentro del acceso directo existe una subcarpeta con el nombre exacto de la parroquia
-            $Sub = Join-Path $acc.FullName $Parroquia
-            if (Test-Path $Sub) {
-                $PosiblesRutas += $Sub
+            # 1. Si dentro del acceso directo (hasta 2 niveles) existe una subcarpeta con el nombre exacto
+            $SubDirecta = Join-Path $acc.FullName $Parroquia
+            if (Test-Path $SubDirecta) {
+                $PosiblesRutas += $SubDirecta
             }
-            # 2. Si el acceso directo ya contiene las subcarpetas Diarios o Semanales (acceso directo a la carpeta de la parroquia)
+            $SubProfunda = Get-ChildItem -Path $acc.FullName -Directory -Depth 2 -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq $Parroquia }
+            foreach ($dir in $SubProfunda) {
+                $PosiblesRutas += $dir.FullName
+            }
+            # 2. Si el acceso directo ya contiene las subcarpetas Diarios o Semanales
             if ((Test-Path (Join-Path $acc.FullName "Diarios")) -or (Test-Path (Join-Path $acc.FullName "Semanales"))) {
                 $PosiblesRutas += $acc.FullName
             }
