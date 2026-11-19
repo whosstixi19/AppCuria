@@ -117,7 +117,7 @@
         <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo Parroquia">
         <h1>ARQUIDIÓCESIS DE CUENCA</h1>
         <h2>VICARÍA URBANA</h2>
-        <h3>@Model.NombreIglesia</h3>
+        <h3>@(ViewData["NombreParroquia"] as string ?? Model.NombreIglesia)</h3>
         <h3><u>CERTIFICADO DE BAUTISMO</u></h3>
     </div>
 
@@ -174,8 +174,17 @@
     </div>
 
     <div class="footer">
-        <p>Av. 12 de Abril y las Herrerias, Cuenca - Ecuador</p>
-        <p>Teléfonos: 072814-031  Email: elvergelcuenca@hotmail.com</p>
+        <p>@(ViewData["DireccionParroquia"] as string ?? "Cuenca - Ecuador")</p>
+        <p>
+            @if (!string.IsNullOrWhiteSpace(ViewData["TelefonoParroquia"] as string))
+            {
+                <span>Teléfono: @ViewData["TelefonoParroquia"]</span>
+            }
+            @if (!string.IsNullOrWhiteSpace(ViewData["EmailParroquia"] as string))
+            {
+                <span> - Email: @ViewData["EmailParroquia"]</span>
+            }
+        </p>
     </div>
 </body>
 </html>

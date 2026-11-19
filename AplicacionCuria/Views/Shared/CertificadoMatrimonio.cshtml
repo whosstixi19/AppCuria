@@ -157,7 +157,7 @@
                 <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo Parroquia" />
                 <h1>ARQUIDIÓCESIS DE CUENCA</h1>
                 <h2>VICARÍA URBANA</h2>
-                <h3>PARROQUIA SANTA MARÍA DE EL VERGEL</h3>
+                <h3>PARROQUIA @((ViewData["NombreParroquia"] as string ?? Model.NombreParroquia ?? "CRISTO SALVADOR").ToUpper())</h3>
                 <div class="titulo">CERTIFICADO DE MATRIMONIO</div>
             </div>
 
@@ -220,7 +220,17 @@
             </div>
 
             <div class="footer">
-                <p>Av 12 de Abril y las Herrerias Cuenca - Tel:072814-031 - Email: elvergelcuenca@hotmail.com </p>
+                <p>
+                    @(ViewData["DireccionParroquia"] as string ?? "Cuenca - Ecuador")
+                    @if (!string.IsNullOrWhiteSpace(ViewData["TelefonoParroquia"] as string))
+                    {
+                        <span> - Tel: @ViewData["TelefonoParroquia"]</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(ViewData["EmailParroquia"] as string))
+                    {
+                        <span> - Email: @ViewData["EmailParroquia"]</span>
+                    }
+                </p>
             </div>
         </div>
     </main>

@@ -120,7 +120,7 @@
 <body>
     <div class="container">
         <!-- Imagen del escudo -->
-        <div class="pastoral-header">La Pastoral Familiar de la Parroquia @(Model.Cursillo?.Parroquia?.nombre ?? "Santa María de El Vergel")</div>
+        <div class="pastoral-header">La Pastoral Familiar de la Parroquia @(ViewData["NombreParroquia"] as string ?? Model.Cursillo?.Parroquia?.nombre ?? "Cristo Salvador")</div>
 
         <div class="mmmm">
             <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/logo_certificados.png"))" alt="Escudo" class="badge" />
@@ -139,7 +139,7 @@
                 Fecha del Matrimonio:  
                 <strong>@Model.Cursillo.fechamatrimonio.ToString("dd") de @Model.Cursillo.fechamatrimonio.ToString("MMMM") de @Model.Cursillo.fechamatrimonio.ToString("yyyy")</strong>
             </p>
-            <p>Parroquia: <strong>@(Model.Cursillo?.Parroquia?.nombre ?? "")</strong></p>
+            <p>Parroquia: <strong>@(ViewData["NombreParroquia"] as string ?? Model.Cursillo?.Parroquia?.nombre ?? "")</strong></p>
         </div>
 
         <!-- Pie de página con fecha y firma -->

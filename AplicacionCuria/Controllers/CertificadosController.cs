@@ -30,38 +30,66 @@ namespace AplicacionCuria.Controllers
             return File(fileBytes, "application/pdf", fileName);
         }
 
-        private async Task<string> ResolverLogoParroquiaAsync(int? parroquiaId)
+        private async Task ConfigurarDatosParroquiaAsync(int? parroquiaId = null, string? parroquiaNombre = null)
         {
+            Parroquia? parroquia = null;
             if (parroquiaId.HasValue && parroquiaId.Value > 0)
             {
-                var parroquia = await sql.parroquias.FindAsync(parroquiaId.Value);
-                if (parroquia != null && !string.IsNullOrWhiteSpace(parroquia.logo_base64))
+                parroquia = await sql.parroquias.FindAsync(parroquiaId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(parroquiaNombre))
+            {
+                if (int.TryParse(parroquiaNombre, out var parsedId))
                 {
-                    return parroquia.logo_base64;
+                    parroquia = await sql.parroquias.FindAsync(parsedId);
+                }
+                else
+                {
+                    parroquia = await sql.parroquias.FirstOrDefaultAsync(p => p.nombre.ToLower() == parroquiaNombre.ToLower());
                 }
             }
-            return "/imagenes/escudo.png";
+
+            // Si aún no se resolvió, buscar por el contexto de usuario/secretaría autenticada
+            if (parroquia == null)
+            {
+                var activeId = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                if (activeId.HasValue && activeId.Value > 0)
+                {
+                    parroquia = await sql.parroquias.FindAsync(activeId.Value);
+                }
+            }
+
+            // Fallback a primera parroquia activa registrada en el sistema
+            parroquia ??= await sql.parroquias.FirstOrDefaultAsync(p => p.estado == "ACTIVO") ?? await sql.parroquias.FirstOrDefaultAsync();
+
+            if (parroquia != null)
+            {
+                ViewData["LogoParroquia"] = !string.IsNullOrWhiteSpace(parroquia.logo_base64) ? parroquia.logo_base64 : "/imagenes/escudo.png";
+                ViewData["NombreParroquia"] = parroquia.nombre;
+                ViewData["DireccionParroquia"] = parroquia.direccion;
+                ViewData["TelefonoParroquia"] = parroquia.telefono;
+                ViewData["EmailParroquia"] = parroquia.email;
+            }
+            else
+            {
+                ViewData["LogoParroquia"] = "/imagenes/escudo.png";
+                ViewData["NombreParroquia"] = "Parroquia Cristo Salvador";
+                ViewData["DireccionParroquia"] = "";
+                ViewData["TelefonoParroquia"] = "";
+                ViewData["EmailParroquia"] = "";
+            }
+        }
+
+        private async Task<string> ResolverLogoParroquiaAsync(int? parroquiaId)
+        {
+            await ConfigurarDatosParroquiaAsync(parroquiaId);
+            return (ViewData["LogoParroquia"] as string) ?? "/imagenes/escudo.png";
         }
 
         private async Task<string> ResolverLogoParroquiaAsync(string? identificador)
         {
-            if (string.IsNullOrWhiteSpace(identificador))
-            {
-                return "/imagenes/escudo.png";
-            }
-
-            if (int.TryParse(identificador, out var id))
-            {
-                return await ResolverLogoParroquiaAsync(id);
-            }
-
-            var parroquia = await sql.parroquias.FirstOrDefaultAsync(p => p.nombre.ToLower() == identificador.ToLower());
-            if (parroquia != null && !string.IsNullOrWhiteSpace(parroquia.logo_base64))
-            {
-                return parroquia.logo_base64;
-            }
-
-            return "/imagenes/escudo.png";
+            await ConfigurarDatosParroquiaAsync(parroquiaNombre: identificador);
+            return (ViewData["LogoParroquia"] as string) ?? "/imagenes/escudo.png";
         }
 
         #region pasedenivel

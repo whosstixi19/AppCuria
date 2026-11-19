@@ -129,7 +129,7 @@
             <p>Participaron del <strong>CURSILLO PREBAUTISMAL</strong></p>
             <p>efectuado en esta jurisdicción el <strong>@Model.fechacursillo.ToString("dd") de @Model.fechacursillo.ToString("MMMM") de @Model.fechacursillo.ToString("yyyy").</strong></p>
             <p>Fecha del bautismo: <strong>@Model.fechabautizo.ToString("dd") de @Model.fechabautizo.ToString("MMMM") de @Model.fechabautizo.ToString("yyyy")</strong></p>
-            <p>Parroquia: <strong>@Model.parroquia</strong></p>
+            <p>Parroquia: <strong>@(ViewData["NombreParroquia"] as string ?? Model.parroquia)</strong></p>
         </div>
 
         <!-- Pie de página con fecha y firma -->

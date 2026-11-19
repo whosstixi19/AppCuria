@@ -2,6 +2,7 @@ using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 
 namespace AplicacionCuria.Controllers
@@ -84,12 +85,16 @@ namespace AplicacionCuria.Controllers
                 string fecha = DateTime.Now.ToString("dd/MMMM/yyyy");
                 string hora = DateTime.Now.TimeOfDay.ToString();
 
+                var activeParroquiaId = AplicacionCuria.Security.ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                var parroquia = activeParroquiaId.HasValue 
+                    ? await sql.parroquias.FindAsync(activeParroquiaId.Value) 
+                    : (await sql.parroquias.FirstOrDefaultAsync(p => p.estado == "ACTIVO") ?? await sql.parroquias.FirstOrDefaultAsync());
 
-                //Se debera conversar si es que se debe guardar el reporte en la base de datos
-                //sql.Add(model);
-                //await sql.SaveChangesAsync();
+                ViewData["NombreParroquia"] = parroquia?.nombre ?? "Cristo Salvador";
+
                 return new ViewAsPdf("ReporteDatosBeneficiario", model)
                 {
+                    ViewData = ViewData,
                     FileName = $"Reporte Datos Beneficiario-{fecha}-{hora}.pdf",
                     PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait, // ← aquí el cambio
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
