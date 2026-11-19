@@ -166,18 +166,6 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item">
-                <a href="@Url.Action("BarrioView", "Submenus")" class="nav-link @(Convert.ToString(ViewData["ActiveMenu"]) == "Barrio" ? "active" : "")">
-                    <i class="fas fa-map-marker-alt menu-icon"></i> Barrio
-                </a>
-                <ul>
-                    <li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Submenus" asp-action="BarrioView">
-                            <i class="fas fa-map-marker-alt menu-icon"></i> Submenú Barrio
-                        </a>
-                    </li>
-                </ul>
-            </li>
         </ul>
     </nav>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
