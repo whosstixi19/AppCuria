@@ -184,10 +184,12 @@
             ____________________<br />SEGUNDO TESTIGO
         </div>
         <div class="firma parroco">
-            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
-            {
-                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" style="max-height: 65px;" />
-            }
+            <div style="min-height: 55px; margin-bottom: 3px;">
+                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                {
+                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" style="max-height: 55px; max-width: 180px; display: block; margin: 0 auto; object-fit: contain;" />
+                }
+            </div>
             ____________________<br />PÁRROCO
         </div>
     </div>
@@ -207,10 +209,12 @@
             <strong>@Model.Actamatrimonio.padrino2</strong>.
         </p>
         <div class="firma-parroco-footer">
-            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
-            {
-                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" style="max-height: 65px;" />
-            }
+            <div style="min-height: 55px; margin-bottom: 3px;">
+                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                {
+                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" style="max-height: 55px; max-width: 180px; display: block; margin: 0 auto; object-fit: contain;" />
+                }
+            </div>
             <div style="border-top:1px solid #000; width:200px; margin:5px auto 0;"></div>
             PÁRROCO
         </div>

@@ -33,8 +33,11 @@
         }
 
         .encabezado img {
-            max-width: 100px;
+            max-width: 120px;
+            max-height: 85px;
+            width: auto;
             height: auto;
+            object-fit: contain;
             display: block;
             margin: 0 auto 5px;
         }
@@ -90,19 +93,29 @@
 
         .firma {
             text-align: center;
-            margin-top: 80px;
+            margin-top: 35px;
         }
 
         .firma-img-container {
-            min-height: 80px;
+            min-height: 65px;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .img-firma {
-            max-height: 100px;
-            max-width: 250px;
+            max-height: 65px;
+            max-width: 200px;
             height: auto;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 220px;
+            margin: 0 auto 5px auto;
         }
 
         .firma p {
@@ -116,8 +129,8 @@
         }
 
         p {
-            margin-top: 30px;
-            margin-bottom: 30px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .footer {
@@ -127,7 +140,7 @@
             border-top: 1px solid #ccc;
             padding: 10px 0;
             background-color: #fff;
-            margin-top: 125px;
+            margin-top: 30px;
         }
         .nombre-sacerdote,
         .titulo-parroco {
@@ -201,7 +214,8 @@
                         <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
                     }
                 </div>
-                <p class="nombre-sacerdote">@Model.NombreSacerdote</p>
+                <div class="linea-firma"></div>
+                <p class="nombre-sacerdote" style="font-weight: bold;">@Model.NombreSacerdote</p>
                 <p class="titulo-parroco">PARROCO</p>
             </div>
 

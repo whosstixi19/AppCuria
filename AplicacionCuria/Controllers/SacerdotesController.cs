@@ -21,7 +21,6 @@ namespace AplicacionCuria.Controllers
                 if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
                 if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
                 if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
-                if (firma == null || firma.Length == 0) faltantes.Add("Firma Digital");
 
                 if (faltantes.Count > 0)
                 {
@@ -37,12 +36,19 @@ namespace AplicacionCuria.Controllers
                     return Json(new { success = false, message = "Datos inválidos: " + string.Join("; ", errores) });
                 }
 
-                if (firma!.Length > 2 * 1024 * 1024)
-                    return Json(new { success = false, message = "La firma digital no puede superar los 2 MB." });
+                if (firma != null && firma.Length > 0)
+                {
+                    if (firma.Length > 2 * 1024 * 1024)
+                        return Json(new { success = false, message = "La firma digital no puede superar los 2 MB." });
 
-                using var ms = new MemoryStream();
-                await firma.CopyToAsync(ms);
-                model.firma = ms.ToArray();
+                    using var ms = new MemoryStream();
+                    await firma.CopyToAsync(ms);
+                    model.firma = ms.ToArray();
+                }
+                else
+                {
+                    model.firma = null;
+                }
                 model.observaciones ??= "";
 
                 sql.Add(model);
@@ -69,7 +75,7 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [FromForm] Sacerdote model, IFormFile? firma)
+        public async Task<IActionResult> Edit(int id, [FromForm] Sacerdote model, IFormFile? firma, [FromForm] bool eliminarFirma = false)
         {
             if (id != model.id)
             {
@@ -89,8 +95,6 @@ namespace AplicacionCuria.Controllers
                 if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
                 if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
                 if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
-                if ((sacerdote.firma == null || sacerdote.firma.Length == 0) && (firma == null || firma.Length == 0))
-                    faltantes.Add("Firma Digital");
 
                 if (faltantes.Count > 0)
                 {
@@ -141,8 +145,12 @@ namespace AplicacionCuria.Controllers
                     });
                 }
 
-                // Actualizar firma si viene una nueva
-                if (firma != null && firma.Length > 0)
+                // Manejo de firma: eliminar si se solicita, o actualizar si viene un nuevo archivo
+                if (eliminarFirma)
+                {
+                    sacerdote.firma = null;
+                }
+                else if (firma != null && firma.Length > 0)
                 {
                     if (firma.Length > 2 * 1024 * 1024)
                         return Json(new { success = false, message = "La firma digital no puede superar los 2 MB." });
@@ -195,7 +203,8 @@ namespace AplicacionCuria.Controllers
                 s.telefono,
                 s.email,
                 s.estado,
-                s.observaciones
+                s.observaciones,
+                tieneFirma = s.firma != null && s.firma.Length > 0
             }).ToList();
 
             return Json(sacerdotes);
@@ -217,9 +226,9 @@ namespace AplicacionCuria.Controllers
                     s.telefono,
                     s.email,
                     s.estado,
-                    s.observaciones
-                })
-                .ToList();
+                    s.observaciones,
+                    tieneFirma = s.firma != null && s.firma.Length > 0
+                }).ToList();
 
             return Json(resultados);
         }

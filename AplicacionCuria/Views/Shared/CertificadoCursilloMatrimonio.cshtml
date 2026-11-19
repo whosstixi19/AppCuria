@@ -19,110 +19,115 @@
             width: 100%;
             font-family: Arial, Helvetica, sans-serif;
             background-color: #FFFFFF;
-            padding: 20px;
+            padding: 20px 30px;
         }
 
         .container {
             display: block;
             width: 100%;
-            padding: 15px 30px;
+            padding: 10px 20px;
             background-color: #FFFFFF;
             text-align: center;
         }
 
+        .pastoral-header {
+            font-size: 15px;
+            font-weight: bold;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
         .header {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: bold;
             color: #D62429;
-            margin-top: 10px;
+            margin-top: 5px;
+            letter-spacing: 1px;
         }
 
         .sub-header {
-            font-size: 30px;
+            font-size: 17px;
             color: #333;
-            margin: 10px 0 20px;
+            margin: 15px auto;
+            line-height: 1.6;
+            max-width: 680px;
         }
 
-        .content {
-            font-size: 30px;
-            color: #000;
-            line-height: 1.5;
-            margin: 0 15%;
+        .sub-header p {
+            margin-bottom: 8px;
         }
 
         .footer {
-            font-size: 30px;
-            margin-top: 30px;
+            font-size: 15px;
+            margin-top: 25px;
         }
 
         .mmmm {
             text-align: center;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .badge {
-            width: 140px;
-            max-height: 140px;
+            max-height: 95px;
+            max-width: 130px;
             object-fit: contain;
             height: auto;
+            width: auto;
+            display: block;
+            margin: 0 auto;
         }
 
-        .firma {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
+        .tabla-firmas {
             width: 100%;
+            margin-top: 35px;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        .tabla-firmas td {
+            text-align: center;
+            vertical-align: bottom;
+            border: none;
+            padding: 0;
+        }
+
+        .firma-box {
+            min-height: 65px;
+            display: block;
+            margin-bottom: 5px;
         }
 
         .img-firma {
-            max-height: 120px;     /* Ajusta tamaño de la firma */
-            position: relative;    /* Permite moverla sin afectar el resto */
-            top: 25px;             /* Bajar la firma sin mover la línea */
-            margin-bottom: -25px; /* Acerca más la firma a la línea */
-            margin-left: 160px;    /* Mueve más a la derecha (ajusta este valor) */
-            display: block;       /* Evita espacios extra */
+            max-height: 65px;
+            max-width: 200px;
+            height: auto;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
         }
 
         .linea-firma {
-            border: 1px solid black;
-            margin: 0 auto 5px auto; /* reduce el espacio */
-            width: 80%;
-        }
-
-        .footer p:nth-of-type(2) { 
-            margin-top: 0;         /* Evita subir o bajar la línea en exceso */
-        }
-
-        .firma-col {
-            text-align: center;
-            width: 45%;
-            margin-top: 0; /* Evita espacio extra arriba */
-            min-height: 100px;
-        }
-
-        .firma-col img {
-            all: unset;            /* Limpia estilos previos */
-        }
-
-        .linea {
-            margin-top: -10px;
-            border-top: 2px solid black;
-            width: 100%;
+            border-top: 1px solid #000;
+            width: 75%;
+            margin: 0 auto 5px auto;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Imagen del escudo -->
-        <div class="sub-header">La Pastoral Familiar de la Parroquia Santa Maria de El Vergel</div>
+        <div class="pastoral-header">La Pastoral Familiar de la Parroquia @(Model.Cursillo?.Parroquia?.nombre ?? "Santa María de El Vergel")</div>
 
         <div class="mmmm">
             <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/logo_certificados.png"))" alt="Escudo" class="badge" />
         </div>
 
         <!-- Encabezado del certificado -->
-        <div class="header">Certificado</div>
+        <div class="header">CERTIFICADO</div>
         <div class="sub-header">
             <p>Que los Señores: <strong>@Model.Cursillo.nombrenovio</strong> y <strong>@Model.Cursillo.nombrenovia</strong></p>
             <p>Participaron del <strong>CURSILLO PREMATRIMONIAL</strong></p>
@@ -134,28 +139,39 @@
                 Fecha del Matrimonio:  
                 <strong>@Model.Cursillo.fechamatrimonio.ToString("dd") de @Model.Cursillo.fechamatrimonio.ToString("MMMM") de @Model.Cursillo.fechamatrimonio.ToString("yyyy")</strong>
             </p>
-            <p>Parroquia: <strong>@Model.Cursillo.Parroquia.nombre</strong></p>
+            <p>Parroquia: <strong>@(Model.Cursillo?.Parroquia?.nombre ?? "")</strong></p>
         </div>
 
         <!-- Pie de página con fecha y firma -->
         <div class="footer">
             <p>Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
-            @*  <div class="signature">__________________________</div>
-            <p>Maestro/a</p> *@
-            ‎
-            <div class="firma-col">
-                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
-                {
-                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
-                }
-            </div>
-            <div>
 
-                ‎
-            </div>
-            <p>________________________ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ________________________</p>
-            <p>‎‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎  PARROCO ‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎  ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Representante Pastoral Familiar</p>
-
+            <table class="tabla-firmas">
+                <tr>
+                    <td style="width: 46%;">
+                        <div class="firma-box">
+                            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                            {
+                                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
+                            }
+                        </div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 15px; font-weight: bold;">Párroco</p>
+                        @if (!string.IsNullOrEmpty(Model.NombreSacerdote))
+                        {
+                            <p style="margin: 0; font-size: 13px; color: #333;">@Model.NombreSacerdote</p>
+                        }
+                    </td>
+                    <td style="width: 8%;"></td>
+                    <td style="width: 46%;">
+                        <div class="firma-box">
+                            <!-- Espacio en blanco para firma manual -->
+                        </div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 15px; font-weight: bold;">Representante Pastoral Familiar</p>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

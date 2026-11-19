@@ -21,83 +21,93 @@
             width: 100%;
             font-family: Arial, Helvetica, sans-serif;
             background-color: #FFFFFF;
-            padding: 20px;
+            padding: 20px 30px;
         }
 
         .container {
             display: block;
             width: 100%;
-            padding: 15px 30px;
+            padding: 10px 20px;
             background-color: #FFFFFF;
             text-align: center;
         }
 
         .header {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: bold;
             color: #D62429;
-            margin-top: 10px;
+            margin-top: 8px;
+            letter-spacing: 1px;
         }
 
         .sub-header {
-            font-size: 30px;
+            font-size: 17px;
             color: #333;
-            margin: 10px 0 20px;
+            margin: 15px auto;
+            line-height: 1.6;
+            max-width: 680px;
         }
 
-        .content {
-            font-size: 30px;
-            color: #000;
-            line-height: 1.5;
-            margin: 0 15%;
-        }
-
-        .line {
-            width: 60%;
-            height: 2px;
-            background-color: black;
-            margin: 20px auto;
+        .sub-header p {
+            margin-bottom: 8px;
         }
 
         .footer {
-            font-size: 30px;
-            margin-top: 30px;
-        }
-
-        .signature {
-            font-size: 30px;
-            font-weight: bold;
-            margin-top: 40px;
+            font-size: 15px;
+            margin-top: 25px;
         }
 
         .mmmm {
             text-align: center;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .badge {
-            width: 140px;
-            max-height: 140px;
+            max-height: 95px;
+            max-width: 130px;
             object-fit: contain;
             height: auto;
+            width: auto;
+            display: block;
+            margin: 0 auto;
         }
 
+        .tabla-firmas {
+            width: 100%;
+            margin-top: 35px;
+            border-collapse: collapse;
+            border: none;
+        }
 
-        .character {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 100px;
-            height: auto;
+        .tabla-firmas td {
+            text-align: center;
+            vertical-align: bottom;
+            border: none;
+            padding: 0;
+        }
+
+        .firma-box {
+            min-height: 65px;
+            display: block;
+            margin-bottom: 5px;
         }
 
         .img-firma {
-        max-height: 220px !important;
-        width: 300px !important;
-        display: block;
-        margin-left: 200px;
-    }
+            max-height: 65px;
+            max-width: 200px;
+            height: auto;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 75%;
+            margin: 0 auto 5px auto;
+        }
     </style>
 </head>
 <body>
@@ -105,55 +115,53 @@
         <!-- Imagen del escudo -->
         <div class="mmmm">
             <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/logo_certificados.png"))" alt="Escudo" class="badge" />
-@*             <img src="~/imagenes/comunion.jpg" alt="Escudo" class="badgee" />
- *@        </div>
-
-        <!-- Encabezado del certificado -->
-        <div class="header">Certificado</div>
-        <div class="sub-header">
-            <p>
-                <p>
-                    Que los Señores: 
-                    <strong>@Model.nombrepadre y @Model.nombremadre</strong>, 
-                    @Model.EtiquetaPadre.ToLower() y @Model.EtiquetaMadre.ToLower() de 
-                    <strong>@Model.nombrecompletonino.</strong>
-                </p>
-                <p>Participaron del CURSILLO PREBAUTISMAL</p>
-                <p>efectuado en esta jurisdicción el <strong>@Model.fechacursillo.ToString("dd") - 
-                @Model.fechacursillo.ToString("MMMM") - @Model.fechacursillo.ToString("yyyy").</strong></p>
-                <p>Fecha del bautismo: <strong>@Model.fechabautizo.ToString("dd") - 
-                @Model.fechabautizo.ToString("MMMM") - @Model.fechabautizo.ToString("yyyy")</strong></p>
-                <p>Parroquia: <strong>@Model.parroquia</strong></p>
-            </p>
         </div>
 
-        <!-- Contenido del certificado -->
-        <div class="content">
-            
+        <!-- Encabezado del certificado -->
+        <div class="header">CERTIFICADO</div>
+        <div class="sub-header">
+            <p>
+                Que los Señores: 
+                <strong>@Model.nombrepadre y @Model.nombremadre</strong>, 
+                @Model.EtiquetaPadre.ToLower() y @Model.EtiquetaMadre.ToLower() de 
+                <strong>@Model.nombrecompletonino.</strong>
+            </p>
+            <p>Participaron del <strong>CURSILLO PREBAUTISMAL</strong></p>
+            <p>efectuado en esta jurisdicción el <strong>@Model.fechacursillo.ToString("dd") de @Model.fechacursillo.ToString("MMMM") de @Model.fechacursillo.ToString("yyyy").</strong></p>
+            <p>Fecha del bautismo: <strong>@Model.fechabautizo.ToString("dd") de @Model.fechabautizo.ToString("MMMM") de @Model.fechabautizo.ToString("yyyy")</strong></p>
+            <p>Parroquia: <strong>@Model.parroquia</strong></p>
         </div>
 
         <!-- Pie de página con fecha y firma -->
         <div class="footer">
             <p>Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
-            @*  <div class="signature">__________________________</div>
-            <p>Maestro/a</p> *@
-            <div>
 
-                ‎
-            </div>
-            <div>
-
-                ‎
-                @if (!string.IsNullOrEmpty(Model.firmaSacerdote))
-                {
-                    <img src="data:image/png;base64,@Model.firmaSacerdote" 
-                        alt="Firma Sacerdote" 
-                        class="img-firma" />
-                }
-            </div>
-            <p>________________________ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ________________________</p>
-            <p>‎‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎‎ ‎‎ ‎ ‎  Párroco ‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎  ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Representante Pastoral Familiar</p>
-
+            <table class="tabla-firmas">
+                <tr>
+                    <td style="width: 46%;">
+                        <div class="firma-box">
+                            @if (!string.IsNullOrEmpty(Model.firmaSacerdote))
+                            {
+                                <img src="data:image/png;base64,@Model.firmaSacerdote" alt="Firma Párroco" class="img-firma" />
+                            }
+                        </div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 15px; font-weight: bold;">Párroco</p>
+                        @if (!string.IsNullOrEmpty(Model.nombreSacerdote))
+                        {
+                            <p style="margin: 0; font-size: 13px; color: #333;">@Model.nombreSacerdote</p>
+                        }
+                    </td>
+                    <td style="width: 8%;"></td>
+                    <td style="width: 46%;">
+                        <div class="firma-box">
+                            <!-- Espacio en blanco para firma manual -->
+                        </div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 15px; font-weight: bold;">Representante Pastoral Familiar</p>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

@@ -45,8 +45,14 @@
 
                         <div class="row">
                             <div class="col-md-7 mb-2">
-                                <label for="firma" class="form-label mb-1 fw-semibold">Firma Digital <span class="text-danger">*</span></label>
+                                <label for="firma" class="form-label mb-1 fw-semibold">Firma Digital <span class="text-muted fw-normal" style="font-size: 0.78rem;">(Opcional - vacía para firma a mano)</span></label>
                                 <input type="file" class="form-control form-control-sm" id="firma" name="firma" accept="image/*" />
+                                <div id="divEliminarFirma" class="form-check mt-1 d-none">
+                                    <input class="form-check-input" type="checkbox" id="eliminarFirma" name="eliminarFirma" />
+                                    <label class="form-check-label text-danger small fw-semibold" for="eliminarFirma">
+                                        Quitar firma actual (el sacerdote firmará a mano)
+                                    </label>
+                                </div>
                             </div>
                             <div class="col-md-5 mb-2">
                                 <label for="estado" class="form-label mb-1 fw-semibold">Estado <span class="text-danger">*</span></label>
@@ -63,7 +69,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center gap-2">
-                            <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
+                            <button type="submit" class="btn btn-primary btn-sm px-4 mr-2" id="btnGuardar">Registrar</button>
                             <button type="button" class="btn btn-secondary btn-sm px-4" id="btnNuevo">Nuevo</button>
                         </div>
                     </form>
@@ -88,6 +94,7 @@
                                     <th>Cédula</th>
                                     <th>Teléfono</th>
                                     <th>Email</th>
+                                    <th>Firma</th>
                                     <th>Estado</th>
                                     <th>Observaciones</th>
                                     <th>Acciones</th>
@@ -130,7 +137,6 @@
                 if (!cedula) faltantes.push("Cédula");
                 if (!telefono) faltantes.push("Teléfono");
                 if (!email) faltantes.push("Correo electrónico");
-                if (id == 0 && !file) faltantes.push("Firma Digital");
                 if (!estado) faltantes.push("Estado");
 
                 if (faltantes.length > 0) {
@@ -150,8 +156,9 @@
                 formData.append("estado", estado);
                 formData.append("observaciones", $("#observaciones").val() || "");
 
-                // Adjuntar la firma si existe
-                if (file) {
+                if ($("#eliminarFirma").is(":checked")) {
+                    formData.append("eliminarFirma", "true");
+                } else if (file) {
                     formData.append("firma", file);
                 }
 
@@ -200,12 +207,16 @@
         function renderTabla(data) {
             let html = "";
             data.forEach(function (s) {
+                let badgeFirma = s.tieneFirma
+                    ? '<span class="badge bg-success text-white">Digital</span>'
+                    : '<span class="badge bg-secondary text-white">A mano</span>';
                 html += `<tr>
                     <td>${s.nombre}</td>
                     <td>${s.apellido}</td>
                     <td>${s.cedula ?? ""}</td>
                     <td>${s.telefono ?? ""}</td>
                     <td>${s.email ?? ""}</td>
+                    <td>${badgeFirma}</td>
                     <td>${s.estado ?? ""}</td>
                     <td>${s.observaciones ?? ""}</td>
                     <td>
@@ -229,6 +240,14 @@
                     $("#email").val(sacerdote.email);
                     $("#estado").val(sacerdote.estado);
                     $("#observaciones").val(sacerdote.observaciones);
+                    $("#btnGuardar").text("Actualizar");
+
+                    $("#eliminarFirma").prop("checked", false);
+                    if (sacerdote.tieneFirma) {
+                        $("#divEliminarFirma").removeClass("d-none");
+                    } else {
+                        $("#divEliminarFirma").addClass("d-none");
+                    }
                 }
             });
         }
@@ -256,6 +275,9 @@
             $("#firma").val("");
             $("#estado").val("ACTIVO");
             $("#observaciones").val("");
+            $("#btnGuardar").text("Registrar");
+            $("#eliminarFirma").prop("checked", false);
+            $("#divEliminarFirma").addClass("d-none");
         }
 
         function mostrarMsg(msg, exito) {

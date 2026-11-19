@@ -19,51 +19,68 @@
             width: 100%;
             font-family: Arial, Helvetica, sans-serif;
             background-color: #FFFFFF;
-            padding: 20px;
+            padding: 20px 30px;
         }
 
         .container {
             display: block;
             width: 100%;
-            padding: 15px 30px;
+            padding: 10px 20px;
             background-color: #FFFFFF;
             text-align: center;
         }
 
         .header {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: bold;
             color: #D62429;
-            margin-top: 10px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
         }
 
         .sub-header {
-            font-size: 30px;
+            font-size: 18px;
             color: #333;
-            margin: 10px 0 20px;
+            margin: 10px 0 15px;
         }
 
         .content {
-            font-size: 30px;
+            font-size: 17px;
             color: #000;
-            line-height: 1.5;
-            margin: 0 15%;
+            line-height: 1.6;
+            margin: 0 10%;
         }
 
         .footer {
-            font-size: 26px;
-            margin-top: 30px;
+            font-size: 15px;
+            margin-top: 25px;
         }
 
         .firma {
             text-align: center;
-            margin-top: 40px;
-            min-height: 100px;
+            margin-top: 25px;
+        }
+
+        .firma-box {
+            min-height: 65px;
+            display: block;
+            margin-bottom: 5px;
         }
 
         .img-firma {
-            max-width: 250px;
+            max-height: 65px;
+            max-width: 200px;
+            width: auto;
             height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 220px;
+            margin: 0 auto 5px auto;
         }
 
         .mmmm {
@@ -73,27 +90,29 @@
         }
 
         .badge {
-            width: 140px;
-            max-height: 140px;
+            max-height: 85px;
+            max-width: 120px;
             object-fit: contain;
             height: auto;
+            width: auto;
             display: inline-block;
-            margin: 0 40px;
+            margin: 0 25px;
             vertical-align: middle;
         }
 
         .badgee {
-            width: 140px;
-            max-height: 140px;
+            max-height: 85px;
+            max-width: 120px;
             object-fit: contain;
             height: auto;
+            width: auto;
             display: inline-block;
-            margin: 0 40px;
+            margin: 0 25px;
             vertical-align: middle;
         }
 
         .fecha {
-            margin-top: 20px; /* Espacio entre SACERDOTE y la fecha */
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -102,11 +121,11 @@
         <!-- Imagen del escudo -->
         <div class="mmmm">
             <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo" class="badge" />
-            <img src="~/imagenes/confirmacion.jpg" alt="Escudo" class="badgee" />
+            <img src="~/imagenes/confirmacion.jpg" alt="Confirmación" class="badgee" />
         </div>
 
         <!-- Encabezado del certificado -->
-        <div class="header">Certificado de Confirmación</div>
+        <div class="header">CERTIFICADO DE CONFIRMACIÓN</div>
         <div class="sub-header">Este certificado es otorgado a</div>
 
         <!-- Contenido del certificado -->
@@ -118,15 +137,18 @@
         <!-- Pie de página con fecha y firma -->
         <div class="footer">
             <div class="firma">
-                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
-                {
-                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
-                }
+                <div class="firma-box">
+                    @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                    {
+                        <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" class="img-firma" />
+                    }
+                </div>
+                <div class="linea-firma"></div>
+                <p style="margin: 0; font-weight: bold;">@Model.NombreSacerdote</p>
+                <p style="margin: 0;">SACERDOTE</p>
             </div>
-            <p>@Model.NombreSacerdote</p>
-            <p>SACERDOTE</p>
             <p class="fecha">Cuenca, a @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
-            <p>"Pero recibirán poder cuando el Espíritu Santo venga sobre ustedes; y serán mis testigos en Jerusalén, en toda Judea y Samaria, y hasta los confines de la tierra." </p>
+            <p style="margin-top: 10px; font-style: italic;">"Pero recibirán poder cuando el Espíritu Santo venga sobre ustedes; y serán mis testigos en Jerusalén, en toda Judea y Samaria, y hasta los confines de la tierra."</p>
             <p><em>(Hechos 1:8)</em></p>
         </div>
     </div>

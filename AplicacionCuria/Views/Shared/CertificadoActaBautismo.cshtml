@@ -27,8 +27,11 @@
         }
 
         .encabezado img {
-            max-width: 100px;
+            max-width: 120px;
+            max-height: 85px;
+            width: auto;
             height: auto;
+            object-fit: contain;
             display: block;
             margin: 0 auto;
         }
@@ -71,15 +74,30 @@
         }
 
         .firmas {
-            margin-top: 100px;
+            margin-top: 40px;
             text-align: center;
         }
 
+        .firma-box {
+            min-height: 65px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
         .firma-parroco img {
-            width: 250px;
+            max-width: 200px;
+            max-height: 65px;
+            width: auto;
             height: auto;
+            object-fit: contain;
             display: block;
             margin: 0 auto 3px;
+        }
+
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 220px;
+            margin: 0 auto 5px auto;
         }
 
         .firma-parroco p {
@@ -143,12 +161,14 @@
     <!-- Firmas -->
     <div class="firmas">
         <div class="firma-parroco">
-            @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
-            {
-                <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" />
-            }
-            <p>________________________</p>
-            <p>@Model.NombreSacerdote</p>
+            <div class="firma-box">
+                @if (!string.IsNullOrEmpty(Model.FirmaSacerdote))
+                {
+                    <img src="data:image/png;base64,@Model.FirmaSacerdote" alt="Firma Sacerdote" />
+                }
+            </div>
+            <div class="linea-firma"></div>
+            <p><strong>@Model.NombreSacerdote</strong></p>
             <p>Párroco</p>
         </div>
     </div>

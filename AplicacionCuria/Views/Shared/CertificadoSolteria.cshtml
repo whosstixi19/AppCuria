@@ -39,19 +39,38 @@
         }
 
         img {
-            max-width: 140px;
+            max-width: 130px;
+            max-height: 90px;
             height: auto;
+            width: auto;
+            object-fit: contain;
             display: block;
             margin: 0 auto 10px auto;
         }
 
         .firmas {
-            margin-top: 120px;
+            margin-top: 40px;
             text-align: center;
         }
 
-        .firma p {
-            margin: 8px 0; /* Espaciado dentro de la firma */
+        .tabla-firmas-3 {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        .tabla-firmas-3 td {
+            text-align: center;
+            vertical-align: bottom;
+            border: none;
+            padding: 0;
+        }
+
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 85%;
+            margin: 0 auto 5px auto;
         }
 
         .footer {
@@ -109,10 +128,29 @@
             </ul>
         </div>
         <div class="firmas">
-            <div class="col-2 text-center">
-                <p>‎‎ ‎‎‎‎‎‎‎ ____________________ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ____________________  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ____________________</p>
-                <p>‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎  Primer Testigo ‎‎‎‎‎‎‎‎‎‎‎‎‎‎ ‎ ‎ ‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎  Parroco ‎ ‎ ‎‎ ‎‎‎‎‎‎ ‎ ‎‎‎‎‎‎‎‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Segundo Testigo</p>
-            </div>
+            <table class="tabla-firmas-3">
+                <tr>
+                    <td style="width: 30%;">
+                        <div style="height: 55px;"></div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 14px; font-weight: bold;">Primer Testigo</p>
+                        <p style="margin: 0; font-size: 13px;">@Model.testigo1</p>
+                    </td>
+                    <td style="width: 5%;"></td>
+                    <td style="width: 30%;">
+                        <div style="height: 55px;"></div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 14px; font-weight: bold;">Párroco</p>
+                    </td>
+                    <td style="width: 5%;"></td>
+                    <td style="width: 30%;">
+                        <div style="height: 55px;"></div>
+                        <div class="linea-firma"></div>
+                        <p style="margin: 0; font-size: 14px; font-weight: bold;">Segundo Testigo</p>
+                        <p style="margin: 0; font-size: 13px;">@Model.testigo2</p>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="footer text-center">
             <p>Cuenca, @DateTime.Now.ToString("dd") de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</p>
