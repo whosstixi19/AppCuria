@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 > nul
-cd /d "%~dp0"
+cd /d "%~dp0.."
 echo ============================================================================
 echo  CONFIGURACIÓN DE CORREO LOCAL (SMTP AGENDA): ECLESOFT 2.0
 echo  (Se guarda en .env local, ignorado por Git para no perderse en git pull)

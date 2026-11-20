@@ -13,7 +13,8 @@ param (
 )
 
 $ErrorActionPreference = "Continue"
-$ProyectoDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProyectoDir = Split-Path -Parent $ScriptDir
 Set-Location $ProyectoDir
 
 $LogFile = Join-Path $ProyectoDir "sincronizacion_padre.log"

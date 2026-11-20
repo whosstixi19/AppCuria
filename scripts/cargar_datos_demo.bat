@@ -1,12 +1,12 @@
 @echo off
 chcp 65001 > nul
-cd /d "%~dp0"
+cd /d "%~dp0.."
 echo ============================================================================
 echo  CARGAR DATOS SEMILLA DE DEMOSTRACIÓN / CAPACITACIÓN: ECLESOFT 2.0
 echo ============================================================================
 echo.
 
-set "SEED_FILE=%~dp0AplicacionCuria\DatosSemilla.sql"
+set "SEED_FILE=%~dp0..\AplicacionCuria\DatosSemilla.sql"
 
 if not exist "%SEED_FILE%" (
     echo [ERROR] No se encontró el archivo AplicacionCuria\DatosSemilla.sql

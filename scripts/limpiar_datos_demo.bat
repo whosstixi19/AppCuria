@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 > nul
-cd /d "%~dp0"
+cd /d "%~dp0.."
 echo ============================================================================
 echo  LIMPIAR DATOS DE DEMOSTRACIÓN Y DEJAR SISTEMA EN CERO: ECLESOFT 2.0
 echo ============================================================================
