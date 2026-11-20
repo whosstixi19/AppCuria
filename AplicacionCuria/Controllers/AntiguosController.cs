@@ -115,6 +115,47 @@ namespace AplicacionCuria.Controllers
             return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAntiguo(int id)
+        {
+            var item = await sql.bautismosantiguos.FindAsync(id);
+            if (item == null) return Json(new { success = false, message = "Registro no encontrado." });
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    item.id,
+                    item.nombrecompleto,
+                    item.lugarnacimiento,
+                    item.cedula,
+                    item.sexo,
+                    fechanacimiento = item.fechanacimiento.ToString("yyyy-MM-dd"),
+                    fechabautizo = item.fechabautizo.ToString("yyyy-MM-dd"),
+                    item.nombrepadre,
+                    item.nombremadre,
+                    item.cedulapadrino1,
+                    item.cedulapadrino2,
+                    item.cedulapadrino3,
+                    item.cedulapadrino4,
+                    item.cedulapadrino5,
+                    item.tomo,
+                    item.pagina,
+                    item.acta,
+                    item.ministro_id,
+                    item.sacerdote_id,
+                    item.iglesia_id,
+                    item.parroquia_id,
+                    item.registrocivilano,
+                    item.registrociviltomo,
+                    item.registrocivilfolio,
+                    item.registrocivilacta,
+                    registrocivilfecha = item.registrocivilfecha.ToString("yyyy-MM-dd"),
+                    item.observaciones
+                }
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

@@ -232,7 +232,7 @@
                         <td>${item.apellido}</td>
                         <td>${item.cedula}</td>
                         <td>${item.telefono}</td>
-                        <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td>
+                        <td>${new Date(item.fechanacimiento).toLocaleDateString('es-EC')}</td>
                         <td>${item.parroquia || "Sin asignar"}</td>
                         <td>
                             <a class="btn btn-success btn-seleccionar" data-id="${item.id}" 

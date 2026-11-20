@@ -268,7 +268,7 @@
                 resultadosBody.innerHTML += `
                     <tr>
                         <td>${item.nombrecompletonino}</td>
-                        <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                        <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
                         <td>${item.nombrepadre || ''}</td>
                         <td>${item.nombremadre || ''}</td>
                         <td>
@@ -347,7 +347,7 @@
                 resultadosBody.innerHTML += `
                     <tr>
                         <td>${item.nombrecompleto}</td>
-                        <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                        <td>${new Date(item.fechabautizo).toLocaleDateString('es-EC')}</td>
                         <td>${item.iglesia}</td>
                         <td>
                             <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">

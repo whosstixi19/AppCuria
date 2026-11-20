@@ -1,7 +1,13 @@
+using System.Globalization;
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+
+var defaultCulture = new CultureInfo("es-EC");
+defaultCulture.DateTimeFormat.ShortDatePattern = "dd/MM/yyyy";
+CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
+CultureInfo.DefaultThreadCurrentUICulture = defaultCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +100,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(defaultCulture),
+    SupportedCultures = new[] { defaultCulture },
+    SupportedUICultures = new[] { defaultCulture }
+};
+app.UseRequestLocalization(localizationOptions);
 
 app.UseRouting();
 

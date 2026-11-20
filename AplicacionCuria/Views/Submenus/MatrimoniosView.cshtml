@@ -20,7 +20,7 @@
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="acta-prematrimonial-tab" data-bs-toggle="tab" data-bs-target="#acta" data-toggle="tab" data-target="#acta" type="button" role="tab" aria-controls="acta" aria-selected="false">
-            Acta Pre Matrimonial
+            Acta de Matrimonio
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -346,25 +346,15 @@
                                 </div>
                             </div>
 
-                            <!-- Testigos -->
+                            <!-- Testigos (Únicamente 2 testigos canónicos) -->
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="testigo1" class="form-label mb-1 fw-semibold small">Testigo 1</label>
-                                    <input type="text" id="testigo1" name="testigo1" class="form-control form-control-sm" />
+                                    <input type="text" id="testigo1" name="testigo1" class="form-control form-control-sm" required />
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="testigo2" class="form-label mb-1 fw-semibold small">Testigo 2</label>
-                                    <input type="text" id="testigo2" name="testigo2" class="form-control form-control-sm" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <label for="testigo3" class="form-label mb-1 fw-semibold small">Testigo 3 (opc)</label>
-                                    <input type="text" id="testigo3" name="testigo3" class="form-control form-control-sm" placeholder="(Opcional)"/>
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label for="testigo4" class="form-label mb-1 fw-semibold small">Testigo 4 (opc)</label>
-                                    <input type="text" id="testigo4" name="testigo4" class="form-control form-control-sm" placeholder="(Opcional)"/>
+                                    <input type="text" id="testigo2" name="testigo2" class="form-control form-control-sm" required />
                                 </div>
                             </div>
 
@@ -855,27 +845,17 @@
                                 </div>
                             </div>
 
-                            <!-- Testigos -->
+                            <!-- Testigos (Únicamente 2 testigos) -->
                             <div class="border rounded p-2 mb-2 bg-light">
                                 <h6 class="fw-bold text-secondary mb-2 small"><i class="fas fa-users me-1 text-primary"></i> Testigos</h6>
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="cedulatestigo1" class="form-label mb-1 fw-semibold small">Cédula Testigo 1</label>
-                                        <input type="text" id="cedulatestigo1" name="cedulatestigo1" class="form-control form-control-sm" />
+                                        <label for="cedulatestigo1" class="form-label mb-1 fw-semibold small">Cédula / Nombre Testigo 1</label>
+                                        <input type="text" id="cedulatestigo1" name="cedulatestigo1" class="form-control form-control-sm" required />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="cedulatestigo2" class="form-label mb-1 fw-semibold small">Cédula Testigo 2</label>
-                                        <input type="text" id="cedulatestigo2" name="cedulatestigo2" class="form-control form-control-sm" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-1">
-                                        <label for="cedulatestigo3" class="form-label mb-1 fw-semibold small">Cédula Testigo 3 (opc)</label>
-                                        <input type="text" id="cedulatestigo3" name="cedulatestigo3" class="form-control form-control-sm" placeholder="Opcional" />
-                                    </div>
-                                    <div class="col-md-6 mb-1">
-                                        <label for="cedulatestigo4" class="form-label mb-1 fw-semibold small">Cédula Testigo 4 (opc)</label>
-                                        <input type="text" id="cedulatestigo4" name="cedulatestigo4" class="form-control form-control-sm" placeholder="Opcional" />
+                                        <label for="cedulatestigo2" class="form-label mb-1 fw-semibold small">Cédula / Nombre Testigo 2</label>
+                                        <input type="text" id="cedulatestigo2" name="cedulatestigo2" class="form-control form-control-sm" required />
                                     </div>
                                 </div>
                             </div>
@@ -1013,7 +993,7 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
                                 <td><button type="button" class="btn btn-success" onclick="seleccionarCursillo(${item.id})">Seleccionar</button></td>
                             </tr>`;
                         tbody.innerHTML += row;
@@ -1427,8 +1407,8 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
-                                <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
+                                <td>${new Date(item.fechamatrimonio).toLocaleDateString('es-EC')}</td>
                                 <td>${item.estado}</td>
                                 <td><a href="/CursilloPreMatrimonial/ModifyCursilloMatView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                                 <td><a href="/CursilloPreMatrimonial/DeleteCursilloMatView/${item.id}" class="btn btn-danger">Eliminar</a></td>
@@ -1481,7 +1461,7 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechamatrimonio).toLocaleDateString('es-EC')}</td>
                                 <td>${item.estado}</td>
                                 <td><a href="/ActaPrematrimonial/ModifyActaPrematrimonialView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                                 <td><a href="/ActaPrematrimonial/DeleteActaPrematrimonialView/${item.id}" class="btn btn-danger">Eliminar</a></td>
@@ -1520,7 +1500,7 @@
                             <tr>
                                 <td>${item.nombreNovio}</td>
                                 <td>${item.nombreNovia}</td>
-                                <td>${new Date(item.fechaMatrimonio).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechaMatrimonio).toLocaleDateString('es-EC')}</td>
                                 <td><button type="button" onclick="seleccionarActaPreYEnviar(${item.id})" class="btn btn-success">Seleccionar</button></td>
                             </tr>`;
                         resultadosBody.innerHTML += row;
@@ -1561,7 +1541,7 @@
                                 <td>${item.nombreNovia}</td>
                                 <td>${item.padrino1}</td>
                                 <td>${item.padrino2}</td>
-                                <td>${new Date(item.fechaRegistro).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechaRegistro).toLocaleDateString('es-EC')}</td>
                                 <td><a href="/ActaMatrimonial/ModifyActamatrimonialView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                                 <td><a href="/ActaMatrimonial/DeleteActamatrimonialView/${item.id}" class="btn btn-danger">Eliminar</a></td>
                             </tr>`;
@@ -1601,7 +1581,7 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${new Date(item.fechamatrimonio || item.fecharegistro).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechamatrimonio || item.fecharegistro).toLocaleDateString('es-EC')}</td>
                                 <td><a href="/ActasAntiguas/ModifyActasAntiguasView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                                 <td><a href="/ActasAntiguas/DeleteActasAntiguasView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
                             </tr>`;

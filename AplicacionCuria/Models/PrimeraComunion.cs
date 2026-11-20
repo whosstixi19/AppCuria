@@ -37,8 +37,7 @@ namespace AplicacionCuria.Models
         [Required]
         public string observaciones { get; set; }
         
-        [Required]
-        public int alumno_id { get; set; }
+        public int? alumno_id { get; set; }
 
     }
 }

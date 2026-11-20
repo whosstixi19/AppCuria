@@ -43,17 +43,8 @@ namespace AplicacionCuria.Controllers
                     return Json(new { success = false, errors = "Sacerdote o Parroquia no encontrados." });
                 }
 
-                Console.WriteLine($"Antes de asignar: {model.alumno_id}");
                 var alumno = sql.alumnoscatequesis.FirstOrDefault(a => a.cedula == model.cedula);
-                if (alumno == null)
-                {
-                    return Json(new { success = false, errors = "No se encontró un alumno con esa cédula. Verifica si está registrado." });
-                }
-                Console.WriteLine($"Cédula enviada: {model.cedula}");
-                Console.WriteLine($"Alumno encontrado: {(alumno != null ? alumno.cedula : "NO ENCONTRADO")}");
-
-                model.alumno_id = alumno.id;
-                Console.WriteLine($"Después de asignar: {model.alumno_id}");
+                model.alumno_id = alumno?.id;
                 model.sacerdote_id = sacerdote.id;
 
                 var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
@@ -84,11 +75,7 @@ namespace AplicacionCuria.Controllers
             try
             {
                 var alumno = sql.alumnoscatequesis.FirstOrDefault(a => a.cedula == model.cedula);
-                if (alumno == null)
-                {
-                    return Json(new { success = false, errors = "No se encontró un alumno con esa cédula. Verifica si está registrado." });
-                }
-                model.alumno_id = alumno.id;
+                model.alumno_id = alumno?.id;
 
                 var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
 

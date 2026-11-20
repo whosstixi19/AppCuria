@@ -18,35 +18,35 @@
                         <input type="hidden" id="id" name="id" value="0" />
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre <span class="text-danger">*</span></label>
                                 <input class="form-control form-control-sm" id="nombre" name="nombre" required maxlength="255" />
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="ciudad" class="form-label mb-1 fw-semibold">Ciudad</label>
-                                <input class="form-control form-control-sm" id="ciudad" name="ciudad" maxlength="255" />
+                                <label for="ciudad" class="form-label mb-1 fw-semibold">Ciudad <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-sm" id="ciudad" name="ciudad" required maxlength="255" />
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="direccion" class="form-label mb-1 fw-semibold">Dirección</label>
-                                <input class="form-control form-control-sm" id="direccion" name="direccion" maxlength="255" />
+                                <label for="direccion" class="form-label mb-1 fw-semibold">Dirección <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-sm" id="direccion" name="direccion" required maxlength="255" />
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono</label>
-                                <input class="form-control form-control-sm" id="telefono" name="telefono" maxlength="20" />
+                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-sm" id="telefono" name="telefono" required maxlength="20" />
                             </div>
                         </div>
 
                         <div class="mb-2">
-                            <label for="email" class="form-label mb-1 fw-semibold">Correo electrónico</label>
-                            <input type="email" class="form-control form-control-sm" id="email" name="email" maxlength="255" />
+                            <label for="email" class="form-label mb-1 fw-semibold">Correo electrónico <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control form-control-sm" id="email" name="email" required maxlength="255" />
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="ministro_id" class="form-label mb-0 fw-semibold">Ministro</label>
+                                    <label for="ministro_id" class="form-label mb-0 fw-semibold">Ministro <span class="text-danger">*</span></label>
                                     <a href="/Submenus/MinistrosCatequistasView#ministro" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar un nuevo ministro">+ Nuevo</a>
                                 </div>
                                 <select class="form-control form-control-sm" id="ministro_id" name="ministro_id" required>
@@ -58,7 +58,7 @@
                             </div>
                             <div class="col-md-6 mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="parroquia_id" class="form-label mb-0 fw-semibold">Parroquia</label>
+                                    <label for="parroquia_id" class="form-label mb-0 fw-semibold">Parroquia <span class="text-danger">*</span></label>
                                     <a href="/Submenus/ParroquiaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar una nueva parroquia">+ Nueva</a>
                                 </div>
                                 <select class="form-control form-control-sm" id="parroquia_id" name="parroquia_id" required>
@@ -76,7 +76,7 @@
                                 <input class="form-control form-control-sm" id="denominacion" name="denominacion" maxlength="255" />
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="estado" class="form-label mb-1 fw-semibold">Estado</label>
+                                <label for="estado" class="form-label mb-1 fw-semibold">Estado <span class="text-danger">*</span></label>
                                 <select class="form-control form-control-sm" id="estado" name="estado">
                                     <option value="ACTIVO">ACTIVO</option>
                                     <option value="INACTIVO">INACTIVO</option>

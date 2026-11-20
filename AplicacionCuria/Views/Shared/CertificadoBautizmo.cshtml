@@ -54,7 +54,7 @@
 
         .footer {
             font-size: 15px;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         .mmmm {
@@ -64,8 +64,8 @@
         }
 
         .badge {
-            max-height: 95px;
-            max-width: 130px;
+            max-height: 110px;
+            max-width: 480px;
             object-fit: contain;
             height: auto;
             width: auto;
@@ -75,7 +75,7 @@
 
         .tabla-firmas {
             width: 100%;
-            margin-top: 35px;
+            margin-top: 25px;
             border-collapse: collapse;
             border: none;
         }
@@ -88,14 +88,14 @@
         }
 
         .firma-box {
-            min-height: 65px;
+            min-height: 105px;
             display: block;
             margin-bottom: 5px;
         }
 
         .img-firma {
-            max-height: 65px;
-            max-width: 200px;
+            max-height: 95px;
+            max-width: 220px;
             height: auto;
             width: auto;
             display: block;
@@ -106,7 +106,7 @@
         .linea-firma {
             border-top: 1px solid #000;
             width: 75%;
-            margin: 0 auto 5px auto;
+            margin: 0 auto 8px auto;
         }
     </style>
 </head>
@@ -121,10 +121,22 @@
         <div class="header">CERTIFICADO</div>
         <div class="sub-header">
             <p>
-                Que los Señores: 
-                <strong>@Model.nombrepadre y @Model.nombremadre</strong>, 
-                @Model.EtiquetaPadre.ToLower() y @Model.EtiquetaMadre.ToLower() de 
-                <strong>@Model.nombrecompletonino.</strong>
+                @if (!string.IsNullOrWhiteSpace(Model.nombrepadre) && !string.IsNullOrWhiteSpace(Model.nombremadre))
+                {
+                    <span>Que los Señores: <strong>@Model.nombrepadre y @Model.nombremadre</strong>, @Model.EtiquetaPadre.ToLower() y @Model.EtiquetaMadre.ToLower() de <strong>@Model.nombrecompletonino.</strong></span>
+                }
+                else if (!string.IsNullOrWhiteSpace(Model.nombrepadre))
+                {
+                    <span>Que el Señor: <strong>@Model.nombrepadre</strong>, @Model.EtiquetaPadre.ToLower() de <strong>@Model.nombrecompletonino.</strong></span>
+                }
+                else if (!string.IsNullOrWhiteSpace(Model.nombremadre))
+                {
+                    <span>Que la Señora: <strong>@Model.nombremadre</strong>, @Model.EtiquetaMadre.ToLower() de <strong>@Model.nombrecompletonino.</strong></span>
+                }
+                else
+                {
+                    <span>Que el/la representante de <strong>@Model.nombrecompletonino.</strong></span>
+                }
             </p>
             <p>Participaron del <strong>CURSILLO PREBAUTISMAL</strong></p>
             <p>efectuado en esta jurisdicción el <strong>@Model.fechacursillo.ToString("dd") de @Model.fechacursillo.ToString("MMMM") de @Model.fechacursillo.ToString("yyyy").</strong></p>

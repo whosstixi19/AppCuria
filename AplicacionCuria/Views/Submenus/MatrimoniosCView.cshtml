@@ -282,8 +282,8 @@
                         const row = `<tr>
                             <td>${item.nombrenovio}</td>
                             <td>${item.nombrenovia}</td>
-                            <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
-                            <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                            <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
+                            <td>${new Date(item.fechamatrimonio).toLocaleDateString('es-EC')}</td>
                             <td><a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a></td>
                         </tr>`;
                         resultadosBody.innerHTML += row;
@@ -331,8 +331,8 @@
                             const row = `<tr>
                                                <td>${item.nombrenovio}</td>
                                                <td>${item.nombrenovia}</td>
-                                               <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
-                                               <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                               <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
+                                               <td>${new Date(item.fechamatrimonio).toLocaleDateString('es-EC')}</td>
                                                <td><a  class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a></td>
                                                     </tr>
                                             `;
@@ -363,8 +363,8 @@
                             const row = `<tr >
                                                    <td>${item.nombrenovio}</td>
                                                    <td>${item.nombrenovia}</td>
-                                                   <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
-                                                   <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                                   <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
+                                                   <td>${new Date(item.fechamatrimonio).toLocaleDateString('es-EC')}</td>
                                                    <td><a  class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a></td>
                                                  </tr>`;
                             resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
@@ -401,8 +401,8 @@
                             <tr>
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
-                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
-                                <td>${new Date(item.fechamatrimonio).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
+                                <td>${new Date(item.fechamatrimonio).toLocaleDateString('es-EC')}</td>
                                 <td>
                                     <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a>
                                 </td>
@@ -439,7 +439,7 @@
                                 <td>${item.nombrenovio}</td>
                                 <td>${item.nombrenovia}</td>
                                 <td>${formatFecha(item.fecha_matrimonio || item.fechamatrimonio)}</td>
-                                <td>${new Date(item.fecharegistro).toLocaleDateString()}</td>
+                                <td>${new Date(item.fecharegistro).toLocaleDateString('es-EC')}</td>
                                 <td><button class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarActa(this)">Seleccionar</button></td>
                             </tr>`;
                     });
@@ -456,7 +456,7 @@
     function formatFecha(fecha) {
         if (!fecha) return "Sin fecha";
         const d = new Date(fecha);
-        return isNaN(d.getTime()) ? fecha : d.toLocaleDateString();
+        return isNaN(d.getTime()) ? fecha : d.toLocaleDateString('es-EC');
     }
 
     function limpiarBusquedaActa() {
@@ -512,6 +512,9 @@
                     option.textContent = p.nombre;
                     select.appendChild(option);
                 });
+                if (data.length === 1) {
+                    select.value = data[0].id;
+                }
             })
             .catch(error => console.error("Error al cargar parroquias:", error));
     }
@@ -557,7 +560,7 @@
                     <tr>
                         <td>${item.novio}</td>
                         <td>${item.novia}</td>
-                        <td>${new Date(item.fechaMatrimonio).toLocaleDateString()}</td>
+                        <td>${new Date(item.fechaMatrimonio).toLocaleDateString('es-EC')}</td>
                         <td>
                             <button type="button" class="btn btn-success btn-sm" onclick="seleccionarReporte(${item.id})">
                                 Seleccionar

@@ -36,16 +36,7 @@ namespace AplicacionCuria.Controllers
 
 
                 var alumno = sql.alumnoscatequesis.FirstOrDefault(a => a.cedula == model.cedula);
-                if (alumno == null)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        errors = "No se encontró un alumno con esa cédula. Verifica si está registrado."
-                    });
-                }
-
-                model.alumno_id = alumno.id;
+                model.alumno_id = alumno?.id;
 
                 var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
                 if (pid.HasValue)
@@ -91,17 +82,8 @@ namespace AplicacionCuria.Controllers
                 model.fechaconfirmacion = DateTime.SpecifyKind(model.fechaconfirmacion, DateTimeKind.Unspecified);
                 model.fechaconfirmacion = TimeZoneInfo.ConvertTimeToUtc(model.fechaconfirmacion, zonaEcuador);
 
-                // Recuperar alumno por cédula para asegurar integridad referencial
                 var alumno = sql.alumnoscatequesis.FirstOrDefault(a => a.cedula == model.cedula);
-                if (alumno == null)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        errors = "No se encontró un alumno con esa cédula. Verifica si está registrado."
-                    });
-                }
-                model.alumno_id = alumno.id;
+                model.alumno_id = alumno?.id;
 
                 sql.Entry(model).State = EntityState.Modified;
                 sql.SaveChanges();

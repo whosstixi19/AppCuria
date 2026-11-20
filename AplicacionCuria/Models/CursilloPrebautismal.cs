@@ -11,22 +11,18 @@ namespace AplicacionCuria.Models
         [StringLength(255, ErrorMessage = "El nombre no puede superar los 255 caracteres.")]
         public string nombrecompletonino { get; set; }
 
-        // Datos del padre, madre, padrino y madrina
-        [Required(ErrorMessage = "El nombre del padre es obligatorio.")]
+        // Datos del padre, madre, padrino y madrina (flexibles)
         [StringLength(100, ErrorMessage = "El nombre del padre no puede superar los 100 caracteres.")]
-        public string nombrepadre { get; set; }
+        public string? nombrepadre { get; set; }
 
-        [Required(ErrorMessage = "El nombre de la madre es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre de la madre no puede superar los 100 caracteres.")]
-        public string nombremadre { get; set; }
+        public string? nombremadre { get; set; }
 
-        [Required(ErrorMessage = "El nombre del padrino es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre del padrino no puede superar los 100 caracteres.")]
-        public string nombrepadrino { get; set; }
+        public string? nombrepadrino { get; set; }
 
-        [Required(ErrorMessage = "El nombre de la madrina es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre de la madrina no puede superar los 100 caracteres.")]
-        public string nombremadrina { get; set; }
+        public string? nombremadrina { get; set; }
 
         // Foreign Key
         [Range(1, int.MaxValue, ErrorMessage = "La parroquia es obligatoria.")]

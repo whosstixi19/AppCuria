@@ -35,8 +35,9 @@ namespace AplicacionCuria.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, PersonasEvento model)
+        public IActionResult Edit(int id, [FromBody] PersonasEvento model)
         {
+            if (model.id == 0 && id != 0) model.id = id;
             if (id != model.id)
             {
                 return NotFound();

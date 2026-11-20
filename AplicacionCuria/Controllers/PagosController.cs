@@ -17,6 +17,11 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
+                model.direccion = string.IsNullOrWhiteSpace(model.direccion) ? "S/N" : model.direccion.Trim();
+                model.concepto = string.IsNullOrWhiteSpace(model.concepto) ? "Donación" : model.concepto.Trim();
+                ModelState.Remove("direccion");
+                ModelState.Remove("concepto");
+
                 if (ModelState.IsValid)
                 {
                     // Asignar campos adicionales

@@ -6,8 +6,7 @@ namespace AplicacionCuria.Models
     {
         public int id { get; set; }
 
-        [Required]
-        public int alumno_id { get; set; }
+        public int? alumno_id { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(255, ErrorMessage = "El nombre no puede exceder los 255 caracteres.")]

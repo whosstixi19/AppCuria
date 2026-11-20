@@ -17,26 +17,26 @@
                         <input type="hidden" id="id" name="id" value="0" />
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                <label for="nombre" class="form-label mb-1 fw-semibold">Nombre <span class="text-danger">*</span></label>
                                 <input class="form-control form-control-sm" id="nombre" name="nombre" required maxlength="100" />
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono</label>
-                                <input class="form-control form-control-sm" id="telefono" name="telefono" maxlength="20" />
+                                <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-sm" id="telefono" name="telefono" required maxlength="20" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-7 mb-3">
-                                <label for="email" class="form-label mb-1 fw-semibold">Correo</label>
+                                <label for="email" class="form-label mb-1 fw-semibold">Correo <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control form-control-sm" id="email" name="email" required maxlength="150" />
                             </div>
                             <div class="col-md-5 mb-3">
-                                <label for="rol" class="form-label mb-1 fw-semibold">Rol</label>
-                                <input class="form-control form-control-sm" id="rol" name="rol" maxlength="50" />
+                                <label for="rol" class="form-label mb-1 fw-semibold">Rol <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-sm" id="rol" name="rol" required maxlength="50" />
                             </div>
                         </div>
                         <div class="d-flex justify-content-center gap-2">
-                            <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
+                            <button type="submit" id="btnGuardarEncargado" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
                             <button type="button" class="btn btn-secondary btn-sm px-4" id="btnNuevo">Limpiar</button>
                         </div>
                     </form>
@@ -80,21 +80,27 @@
 </div>
 @section Scripts {
     <script>
+        let encargadosCache = [];
+
         document.addEventListener("DOMContentLoaded", function () {
             cargarEncargados();
 
-            // Evento para registrar encargado
+            // Evento para registrar o actualizar encargado
             document.getElementById("formEncargado").addEventListener("submit", function (e) {
                 e.preventDefault();
 
+                const id = parseInt(document.getElementById("id").value) || 0;
                 const encargado = {
+                    id: id,
                     nombre: document.getElementById("nombre").value.trim(),
                     email: document.getElementById("email").value.trim(),
                     telefono: document.getElementById("telefono").value.trim(),
                     rol: document.getElementById("rol").value.trim()
                 };
 
-                fetch("/Encargados/Create", {
+                const url = id > 0 ? `/Encargados/Edit?id=${id}` : "/Encargados/Create";
+
+                fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(encargado)
@@ -103,14 +109,21 @@
                 .then(data => {
                     const msg = document.getElementById("msgEncargado");
                     if (data.success) {
-                        msg.innerHTML = `<span class="text-success">Encargado registrado correctamente.</span>`;
+                        msg.innerHTML = `<span class="text-success">${id > 0 ? "Encargado actualizado correctamente." : "Encargado registrado correctamente."}</span>`;
                         limpiarFormulario();
                         cargarEncargados();
                     } else {
-                        msg.innerHTML = `<span class="text-danger">${data.message || "Error al registrar."}</span>`;
+                        msg.innerHTML = `<span class="text-danger">${data.message || "Error al procesar la solicitud."}</span>`;
                     }
+                    setTimeout(() => { msg.innerHTML = ""; }, 4000);
+                })
+                .catch(err => {
+                    const msg = document.getElementById("msgEncargado");
+                    msg.innerHTML = `<span class="text-danger">Error de conexión: ${err.message}</span>`;
                 });
             });
+
+            document.getElementById("btnNuevo").addEventListener("click", limpiarFormulario);
 
             // Buscar encargado por nombre
             document.getElementById("btnBuscarEncargado").addEventListener("click", buscarEncargados);
@@ -123,7 +136,10 @@
         function cargarEncargados() {
             fetch("/Encargados/GetEncargados")
                 .then(res => res.json())
-                .then(renderTablaEncargados);
+                .then(data => {
+                    encargadosCache = data || [];
+                    renderTablaEncargados(encargadosCache);
+                });
         }
 
         function buscarEncargados() {
@@ -134,13 +150,16 @@
             }
             fetch(`/Encargados/SearchByName?nombre=${encodeURIComponent(nombre)}`)
                 .then(res => res.json())
-                .then(renderTablaEncargados);
+                .then(data => {
+                    encargadosCache = data || [];
+                    renderTablaEncargados(encargadosCache);
+                });
         }
 
         function renderTablaEncargados(data) {
             const tbody = document.getElementById("tablaEncargados");
             tbody.innerHTML = "";
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 tbody.innerHTML = "<tr><td colspan='5'>No se encontraron encargados.</td></tr>";
                 return;
             }
@@ -151,11 +170,29 @@
                         <td>${e.email}</td>
                         <td>${e.telefono ?? ""}</td>
                         <td>${e.rol ?? ""}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="eliminarEncargado(${e.id})">Eliminar</button>
+                        <td class="text-nowrap">
+                            <button class="btn btn-warning btn-sm py-0 px-2 me-1" onclick="editarEncargado(${e.id})">Actualizar</button>
+                            <button class="btn btn-danger btn-sm py-0 px-2" onclick="eliminarEncargado(${e.id})">Eliminar</button>
                         </td>
                     </tr>`;
             });
+        }
+
+        function editarEncargado(id) {
+            const enc = encargadosCache.find(x => x.id === id);
+            if (!enc) return;
+
+            document.getElementById("id").value = enc.id;
+            document.getElementById("nombre").value = enc.nombre ?? "";
+            document.getElementById("email").value = enc.email ?? "";
+            document.getElementById("telefono").value = enc.telefono ?? "";
+            document.getElementById("rol").value = enc.rol ?? "";
+
+            const btn = document.getElementById("btnGuardarEncargado");
+            btn.textContent = "Actualizar";
+            btn.className = "btn btn-warning btn-sm px-4 mr-2";
+            document.getElementById("btnNuevo").textContent = "Cancelar";
+            document.getElementById("formEncargado").scrollIntoView({ behavior: 'smooth' });
         }
 
         function eliminarEncargado(id) {
@@ -173,6 +210,7 @@
             .then(data => {
                 if (data.success) {
                     cargarEncargados();
+                    limpiarFormulario();
                 } else {
                     alert(data.message || "No se pudo eliminar.");
                 }
@@ -188,7 +226,11 @@
             document.getElementById("email").value = "";
             document.getElementById("telefono").value = "";
             document.getElementById("rol").value = "";
+
+            const btn = document.getElementById("btnGuardarEncargado");
+            btn.textContent = "Registrar";
+            btn.className = "btn btn-primary btn-sm px-4 mr-2";
+            document.getElementById("btnNuevo").textContent = "Limpiar";
         }
     </script>
 }
-

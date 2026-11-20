@@ -19,7 +19,7 @@ namespace AplicacionCuria.Controllers
             // Solo se permiten los PDF que genera este controlador (path traversal bloqueado)
             if (string.IsNullOrWhiteSpace(fileName) ||
                 fileName.Contains('/') || fileName.Contains('\\') || fileName.Contains("..") ||
-                !fileName.StartsWith("Certificado_") || !fileName.EndsWith(".pdf"))
+                !(fileName.StartsWith("Certificado_") || fileName.StartsWith("Reporte_") || fileName.StartsWith("Comprobante_")) || !fileName.EndsWith(".pdf"))
                 return BadRequest("Nombre de archivo no válido.");
 
             var filePath = Path.Combine(Path.GetTempPath(), fileName);
@@ -28,6 +28,32 @@ namespace AplicacionCuria.Controllers
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/pdf", fileName);
+        }
+
+        private static string? _logoFallbackBase64;
+        private static string ObtenerLogoFallbackBase64()
+        {
+            if (!string.IsNullOrEmpty(_logoFallbackBase64))
+                return _logoFallbackBase64;
+
+            try
+            {
+                var ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes", "logo_cristo_salvador.png");
+                if (!System.IO.File.Exists(ruta))
+                    ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes", "logo_certificados.png");
+                if (!System.IO.File.Exists(ruta))
+                    ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes", "escudo.png");
+
+                if (System.IO.File.Exists(ruta))
+                {
+                    var bytes = System.IO.File.ReadAllBytes(ruta);
+                    _logoFallbackBase64 = $"data:image/png;base64,{Convert.ToBase64String(bytes)}";
+                    return _logoFallbackBase64;
+                }
+            }
+            catch { }
+
+            return "/imagenes/logo_cristo_salvador.png";
         }
 
         private async Task ConfigurarDatosParroquiaAsync(int? parroquiaId = null, string? parroquiaNombre = null)
@@ -62,9 +88,20 @@ namespace AplicacionCuria.Controllers
             // Fallback a primera parroquia activa registrada en el sistema
             parroquia ??= await sql.parroquias.FirstOrDefaultAsync(p => p.estado == "ACTIVO") ?? await sql.parroquias.FirstOrDefaultAsync();
 
+            string logoFinal = parroquia?.logo_base64 ?? "";
+            if (!string.IsNullOrWhiteSpace(logoFinal))
+            {
+                if (!logoFinal.StartsWith("data:image"))
+                    logoFinal = $"data:image/png;base64,{logoFinal}";
+            }
+            else
+            {
+                logoFinal = ObtenerLogoFallbackBase64();
+            }
+
             if (parroquia != null)
             {
-                ViewData["LogoParroquia"] = !string.IsNullOrWhiteSpace(parroquia.logo_base64) ? parroquia.logo_base64 : "/imagenes/escudo.png";
+                ViewData["LogoParroquia"] = logoFinal;
                 ViewData["NombreParroquia"] = parroquia.nombre;
                 ViewData["DireccionParroquia"] = parroquia.direccion;
                 ViewData["TelefonoParroquia"] = parroquia.telefono;
@@ -72,10 +109,10 @@ namespace AplicacionCuria.Controllers
             }
             else
             {
-                ViewData["LogoParroquia"] = "/imagenes/escudo.png";
+                ViewData["LogoParroquia"] = logoFinal;
                 ViewData["NombreParroquia"] = "Parroquia Cristo Salvador";
-                ViewData["DireccionParroquia"] = "";
-                ViewData["TelefonoParroquia"] = "";
+                ViewData["DireccionParroquia"] = "José María Egas 1-99 y Max Uhle";
+                ViewData["TelefonoParroquia"] = "2801951";
                 ViewData["EmailParroquia"] = "";
             }
         }
@@ -83,13 +120,13 @@ namespace AplicacionCuria.Controllers
         private async Task<string> ResolverLogoParroquiaAsync(int? parroquiaId)
         {
             await ConfigurarDatosParroquiaAsync(parroquiaId);
-            return (ViewData["LogoParroquia"] as string) ?? "/imagenes/escudo.png";
+            return (ViewData["LogoParroquia"] as string) ?? ObtenerLogoFallbackBase64();
         }
 
         private async Task<string> ResolverLogoParroquiaAsync(string? identificador)
         {
             await ConfigurarDatosParroquiaAsync(parroquiaNombre: identificador);
-            return (ViewData["LogoParroquia"] as string) ?? "/imagenes/escudo.png";
+            return (ViewData["LogoParroquia"] as string) ?? ObtenerLogoFallbackBase64();
         }
 
         #region pasedenivel
@@ -252,7 +289,14 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchPrimeraComunion(string? nombre)
         {
-            var query = from pc in sql.primerascomuniones
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var baseQuery = sql.primerascomuniones.AsQueryable();
+            if (pid.HasValue)
+            {
+                baseQuery = baseQuery.Where(pc => pc.parroquia_id == pid.Value);
+            }
+
+            var query = from pc in baseQuery
                         join p in sql.parroquias on pc.parroquia_id equals p.id
                         select new
                         {
@@ -336,7 +380,14 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchConfirmacion(string? nombre)
         {
-            var query = from c in sql.confirmaciones
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var baseQuery = sql.confirmaciones.AsQueryable();
+            if (pid.HasValue)
+            {
+                baseQuery = baseQuery.Where(c => c.parroquia_id == pid.Value);
+            }
+
+            var query = from c in baseQuery
                         join p in sql.parroquias on c.parroquia_id equals p.id into pj
                         from p in pj.DefaultIfEmpty()
                         select new
@@ -771,6 +822,48 @@ namespace AplicacionCuria.Controllers
         }
 
         #endregion
+        [HttpGet]
+        public async Task<IActionResult> ImprimirComprobanteDonacion(int id)
+        {
+            var pago = await sql.pagos.FindAsync(id);
+            if (pago == null)
+            {
+                return NotFound("No se encontró el registro de la donación.");
+            }
+
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var parroquia = pid.HasValue ? await sql.parroquias.FindAsync(pid.Value) : await sql.parroquias.FirstOrDefaultAsync();
+
+            var sacerdote = await sql.sacerdotes.FirstOrDefaultAsync(s => s.estado == "ACTIVO") ?? await sql.sacerdotes.FirstOrDefaultAsync();
+
+            var modelo = new ComprobanteDonacionViewModel
+            {
+                Id = pago.id,
+                Donante = $"{pago.nombres} {pago.apellidos}".Trim(),
+                Cedula = pago.cedula,
+                Telefono = pago.telefono,
+                Direccion = pago.direccion,
+                Valor = pago.valor,
+                MetodoDonacion = pago.tipoPago,
+                TipoServicio = pago.tipo_pago,
+                Concepto = string.IsNullOrWhiteSpace(pago.concepto) ? "Donación" : pago.concepto,
+                Observaciones = pago.observaciones ?? "",
+                FechaDonacion = pago.fechaPago,
+                NombreSacerdote = sacerdote != null ? $"{sacerdote.nombre} {sacerdote.apellido}".Trim() : "Párroco",
+                FirmaSacerdote = sacerdote?.firma != null ? Convert.ToBase64String(sacerdote.firma) : null,
+                Parroquia = parroquia?.nombre ?? "Parroquia Cristo Salvador"
+            };
+
+            ViewData["LogoParroquia"] = await ResolverLogoParroquiaAsync(parroquia?.id);
+
+            return new ViewAsPdf("ComprobanteDonacion", modelo)
+            {
+                ViewData = ViewData,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
+        }
+
         [HttpGet]
         public IActionResult GetSacerdotes()
         {

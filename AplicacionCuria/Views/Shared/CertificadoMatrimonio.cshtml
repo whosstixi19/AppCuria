@@ -33,8 +33,8 @@
         }
 
         .encabezado img {
-            max-width: 120px;
-            max-height: 85px;
+            max-width: 480px;
+            max-height: 120px;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -217,20 +217,6 @@
                 <div class="linea-firma"></div>
                 <p class="nombre-sacerdote" style="font-weight: bold;">@Model.NombreSacerdote</p>
                 <p class="titulo-parroco">PARROCO</p>
-            </div>
-
-            <div class="footer">
-                <p>
-                    @(ViewData["DireccionParroquia"] as string ?? "Cuenca - Ecuador")
-                    @if (!string.IsNullOrWhiteSpace(ViewData["TelefonoParroquia"] as string))
-                    {
-                        <span> - Tel: @ViewData["TelefonoParroquia"]</span>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(ViewData["EmailParroquia"] as string))
-                    {
-                        <span> - Email: @ViewData["EmailParroquia"]</span>
-                    }
-                </p>
             </div>
         </div>
     </main>

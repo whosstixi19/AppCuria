@@ -27,8 +27,8 @@
         }
 
         .encabezado img {
-            max-width: 120px;
-            max-height: 85px;
+            max-width: 480px;
+            max-height: 120px;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -171,20 +171,6 @@
             <p><strong>@Model.NombreSacerdote</strong></p>
             <p>Párroco</p>
         </div>
-    </div>
-
-    <div class="footer">
-        <p>@(ViewData["DireccionParroquia"] as string ?? "Cuenca - Ecuador")</p>
-        <p>
-            @if (!string.IsNullOrWhiteSpace(ViewData["TelefonoParroquia"] as string))
-            {
-                <span>Teléfono: @ViewData["TelefonoParroquia"]</span>
-            }
-            @if (!string.IsNullOrWhiteSpace(ViewData["EmailParroquia"] as string))
-            {
-                <span> - Email: @ViewData["EmailParroquia"]</span>
-            }
-        </p>
     </div>
 </body>
 </html>

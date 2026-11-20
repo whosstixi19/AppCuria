@@ -17,11 +17,10 @@ namespace AplicacionCuria.Models
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         public DateTime fechanacimiento { get; set; }
 
-        [Required(ErrorMessage = "La fecha de bautizo es obligatoria.")]
-        public DateTime fechabautizo { get; set; }
+        public DateTime? fechabautizo { get; set; }
 
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "La 'Cédula' no cumple con el formato.")]
-        public string cedula { get; set; }
+        [StringLength(20, ErrorMessage = "La 'Cédula' no puede exceder los 20 caracteres.")]
+        public string? cedula { get; set; }
 
         [StringLength(50, ErrorMessage = "La 'Dirección' no puede exceder los 50 caracteres.")]
         [Required(ErrorMessage = "El campo 'Dirección' es obligatorio.")]

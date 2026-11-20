@@ -1,0 +1,209 @@
+@model List<AplicacionCuria.Models.AlumnoCatequesis>
+@{
+    Layout = null;
+    var periodo = ViewBag.Periodo as AplicacionCuria.Models.Periodo;
+    string nivelFiltro = ViewBag.NivelFiltro as string ?? "Todos los niveles";
+    string paraleloFiltro = ViewBag.ParaleloFiltro as string ?? "Todos";
+    string logoBase64 = ViewBag.LogoBase64 as string ?? "";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alumnos de Catequesis - @(periodo?.nombre ?? "Período")</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px 30px;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .header-logo {
+            max-width: 460px;
+            max-height: 110px;
+            height: auto;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .titulo-doc {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a3c6e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .meta-info div {
+            margin: 2px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid #bbb;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2c4d75;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+
+        .firmas-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .firma-box {
+            width: 250px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn-imprimir {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            background-color: #0d6efd;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        @@media print {
+            .btn-imprimir { display: none; }
+            body { margin: 10px; }
+            tr { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <button type="button" class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+
+    <div class="header-container">
+        @if (!string.IsNullOrEmpty(logoBase64))
+        {
+            <img src="@logoBase64" alt="Parroquia Cristo Salvador" class="header-logo" />
+        }
+        else
+        {
+            <h2 style="margin: 0; color: #1a3c6e;">PARROQUIA CRISTO SALVADOR</h2>
+            <p style="margin: 2px 0; font-size: 12px;">Cuenca - Ecuador</p>
+        }
+        <div class="titulo-doc">Nómina de Estudiantes de Catequesis</div>
+    </div>
+
+    <div class="meta-info">
+        <div><strong>Período:</strong> @(periodo?.nombre ?? "No especificado")</div>
+        <div><strong>Nivel:</strong> @nivelFiltro</div>
+        <div><strong>Paralelo:</strong> @paraleloFiltro</div>
+        <div><strong>Total Estudiantes:</strong> @(Model?.Count ?? 0)</div>
+        <div><strong>Fecha:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30px;">#</th>
+                <th>Apellidos y Nombres</th>
+                <th style="width: 95px;">Cédula</th>
+                <th style="width: 100px;">Nivel</th>
+                <th style="width: 40px;">Par.</th>
+                <th>Representante</th>
+                <th style="width: 90px;">Teléfono</th>
+                <th style="width: 60px;">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var a in Model)
+                {
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td><strong>@a.apellido</strong> @a.nombre</td>
+                        <td class="text-center">@(string.IsNullOrWhiteSpace(a.cedula) ? "-" : a.cedula)</td>
+                        <td>@a.nivel</td>
+                        <td class="text-center">@(string.IsNullOrWhiteSpace(a.paralelo) ? "-" : a.paralelo)</td>
+                        <td>@a.nombrerepresentante</td>
+                        <td>@(string.IsNullOrWhiteSpace(a.telefonorepresentante) ? a.telefono : a.telefonorepresentante)</td>
+                        <td class="text-center">@(a.estado ?? "ACTIVO")</td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center" style="padding: 20px; color: #777;">
+                        No se encontraron estudiantes registrados para los filtros seleccionados.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="firmas-container">
+        <div>
+            <div class="firma-box">
+                Catequista / Coordinador
+            </div>
+        </div>
+        <div>
+            <div class="firma-box">
+                P. Marco Matamoros Pereira<br />
+                <span style="font-weight: normal; font-size: 11px;">PÁRROCO</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

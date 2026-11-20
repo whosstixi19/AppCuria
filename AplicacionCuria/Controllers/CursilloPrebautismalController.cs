@@ -36,18 +36,14 @@ namespace AplicacionCuria.Controllers
                 model.telefono = model.celular;
             }
 
-            // Validación manual
+            // Validación manual: al menos el padre o la madre
             var errores = new List<string>();
-            if (string.IsNullOrWhiteSpace(model.nombrepadre))
-                errores.Add("La cédula del padre es obligatoria.");
-            if (string.IsNullOrWhiteSpace(model.nombremadre))
-                errores.Add("La cédula de la madre es obligatoria.");
-            if (string.IsNullOrWhiteSpace(model.nombrepadrino))
-                errores.Add("La cédula del padrino es obligatoria.");
-            if (string.IsNullOrWhiteSpace(model.nombremadrina))
-                errores.Add("La cédula de la madrina es obligatoria.");
+            if (string.IsNullOrWhiteSpace(model.nombrepadre) && string.IsNullOrWhiteSpace(model.nombremadre))
+                errores.Add("Debe ingresar al menos los datos del padre o de la madre.");
             if (model.parroquia == 0)
                 errores.Add("La parroquia es obligatoria.");
+            if (string.IsNullOrWhiteSpace(model.estado))
+                model.estado = "Aprobado";
 
             if (errores.Count > 0)
             {
@@ -110,9 +106,15 @@ namespace AplicacionCuria.Controllers
         {
             try
             {
+                var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+                var baseQuery = sql.cursillosprebautismales.Where(c => c.estado.ToLower() == "aprobado");
+                if (pid.HasValue)
+                {
+                    baseQuery = baseQuery.Where(c => c.parroquia == pid.Value);
+                }
+
                 var cursillosAprobados = await (
-                    from c in sql.cursillosprebautismales
-                    where c.estado.ToLower() == "aprobado"
+                    from c in baseQuery
                     join fp in sql.feligreses on c.nombrepadre equals fp.cedula into padreJoin
                     from padre in padreJoin.DefaultIfEmpty()
                     join fm in sql.feligreses on c.nombremadre equals fm.cedula into madreJoin
@@ -214,9 +216,14 @@ namespace AplicacionCuria.Controllers
         public IActionResult SearchByNameAprobado(string? nombrecompleto)
         {
             var filtro = (nombrecompleto ?? "").Trim().ToLower();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var baseQuery = sql.cursillosprebautismales.Where(c => c.estado.ToLower() == "aprobado");
+            if (pid.HasValue)
+            {
+                baseQuery = baseQuery.Where(c => c.parroquia == pid.Value);
+            }
 
-            var query = from c in sql.cursillosprebautismales
-                        where c.estado.ToLower() == "aprobado"
+            var query = from c in baseQuery
                         join fp in sql.feligreses on c.nombrepadre equals fp.cedula into padreJoin
                         from padre in padreJoin.DefaultIfEmpty()
                         join fm in sql.feligreses on c.nombremadre equals fm.cedula into madreJoin
@@ -248,13 +255,21 @@ namespace AplicacionCuria.Controllers
         [HttpPost]
         public IActionResult Update(int id, CursilloPrebautismal model)
         {
-            // Asigna las cédulas y parroquia desde los selects
-            model.nombrepadre = Request.Form["padre_id"];
-            model.nombremadre = Request.Form["madre_id"];
-            model.nombrepadrino = Request.Form["padrino_id"];
-            model.nombremadrina = Request.Form["madrina_id"];
-            model.quieninscribe = Request.Form["quieninscribe_select"];
-            model.parroquia = int.TryParse(Request.Form["parroquia"], out var parroquiaId) ? parroquiaId : 0;
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest" ||
+                          Request.Headers.Accept.ToString().Contains("application/json");
+
+            var padreVal = Request.Form["padre_id"].FirstOrDefault() ?? Request.Form["nombrepadre"].FirstOrDefault();
+            var madreVal = Request.Form["madre_id"].FirstOrDefault() ?? Request.Form["nombremadre"].FirstOrDefault();
+            var padrinoVal = Request.Form["padrino_id"].FirstOrDefault() ?? Request.Form["nombrepadrino"].FirstOrDefault();
+            var madrinaVal = Request.Form["madrina_id"].FirstOrDefault() ?? Request.Form["nombremadrina"].FirstOrDefault();
+            var quienInscribeVal = Request.Form["quieninscribe_id"].FirstOrDefault() ?? Request.Form["quieninscribe"].FirstOrDefault() ?? Request.Form["quieninscribe_select"].FirstOrDefault();
+
+            if (!string.IsNullOrWhiteSpace(padreVal)) model.nombrepadre = padreVal;
+            if (!string.IsNullOrWhiteSpace(madreVal)) model.nombremadre = madreVal;
+            if (!string.IsNullOrWhiteSpace(padrinoVal)) model.nombrepadrino = padrinoVal;
+            if (!string.IsNullOrWhiteSpace(madrinaVal)) model.nombremadrina = madrinaVal;
+            if (!string.IsNullOrWhiteSpace(quienInscribeVal)) model.quieninscribe = quienInscribeVal;
+            if (int.TryParse(Request.Form["parroquia"], out var parroquiaId) && parroquiaId > 0) model.parroquia = parroquiaId;
 
             // Remueve validaciones automáticas para estos campos
             ModelState.Remove("nombrepadre");
@@ -264,26 +279,27 @@ namespace AplicacionCuria.Controllers
             ModelState.Remove("quieninscribe");
             ModelState.Remove("parroquia");
 
-            // Validación manual
+            // Validación manual: al menos el padre o la madre
             var errores = new List<string>();
-            if (string.IsNullOrWhiteSpace(model.nombrepadre))
-                errores.Add("La cédula del padre es obligatoria.");
-            if (string.IsNullOrWhiteSpace(model.nombremadre))
-                errores.Add("La cédula de la madre es obligatoria.");
-            if (string.IsNullOrWhiteSpace(model.nombrepadrino))
-                errores.Add("La cédula del padrino es obligatoria.");
-            if (string.IsNullOrWhiteSpace(model.nombremadrina))
-                errores.Add("La cédula de la madrina es obligatoria.");
+            if (string.IsNullOrWhiteSpace(model.nombrepadre) && string.IsNullOrWhiteSpace(model.nombremadre))
+                errores.Add("Debe ingresar al menos los datos del padre o de la madre.");
             if (model.parroquia == 0)
                 errores.Add("La parroquia es obligatoria.");
+            if (string.IsNullOrWhiteSpace(model.estado))
+                model.estado = "Aprobado";
 
-            if (id != model.id)
+            if (id != model.id && model.id != 0 && id != 0)
             {
                 errores.Add("El identificador no coincide.");
+            }
+            if (model.id == 0 && id > 0)
+            {
+                model.id = id;
             }
 
             if (errores.Count > 0)
             {
+                if (isAjax) return Json(new { success = false, message = string.Join(" ", errores) });
                 TempData["ErrorMessage"] = string.Join(" ", errores);
                 return View(model);
             }
@@ -296,6 +312,7 @@ namespace AplicacionCuria.Controllers
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
+                if (isAjax) return Json(new { success = false, message = string.Join(" ", modelStateErrors) });
                 TempData["ErrorMessage"] = string.Join(" ", modelStateErrors);
                 return View(model);
             }
@@ -312,8 +329,12 @@ namespace AplicacionCuria.Controllers
                 sql.Update(model);
                 sql.SaveChanges();
 
-                TempData["SuccessMessage"] = "El cursillo se ha actualizado correctamente.";
+                if (isAjax)
+                {
+                    return Json(new { success = true, message = "El cursillo se ha actualizado correctamente." });
+                }
 
+                TempData["SuccessMessage"] = "El cursillo se ha actualizado correctamente.";
                 return RedirectToAction("BautizadosView", "Submenus");
             }
             catch (DbUpdateConcurrencyException)
@@ -406,14 +427,20 @@ namespace AplicacionCuria.Controllers
                 .Where(c => c.id == id)
                 .Select(c => new
                 {
+                    c.id,
                     c.nombrecompletonino,
                     c.nombrepadre,
                     c.nombremadre,
                     c.nombrepadrino,
                     c.nombremadrina,
                     c.telefono,
-                    c.celular
-                    // Agrega más campos si necesitas
+                    c.celular,
+                    fechabautizo = c.fechabautizo.ToString("yyyy-MM-dd"),
+                    fechacursillo = c.fechacursillo.ToString("yyyy-MM-dd"),
+                    c.quieninscribe,
+                    c.parroquia,
+                    c.estado,
+                    c.observaciones
                 })
                 .FirstOrDefault();
 

@@ -25,9 +25,8 @@ namespace AplicacionCuria.Models
         [StringLength(255)]
         public string direccion { get; set; }
 
-        [Required]
         [StringLength(20)]
-        public string telefono { get; set; }
+        public string? telefono { get; set; }
 
         [Required]
         [StringLength(255)]

@@ -38,7 +38,7 @@
 
                 <div class="mb-3">
                     <label for="fechabautizo" class="form-label">Fecha de Bautizo</label>
-                    <label type="date" class="form-control" id="fechabautizo" name="fechabautizo">@Model.fechabautizo.ToString("yyyy-MM-dd")</label>
+                    <label type="date" class="form-control" id="fechabautizo" name="fechabautizo">@(Model.fechabautizo?.ToString("yyyy-MM-dd") ?? "")</label>
                 </div>
 
                 <div class="mb-3">

@@ -245,7 +245,7 @@
                                             <td>${item.nombre}</td>
                                             <td>${item.apellido}</td>
                                             <td>${item.telefono}</td>
-                                            <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td> <!-- Formatea la fecha en JavaScript -->
+                                            <td>${new Date(item.fechanacimiento).toLocaleDateString('es-EC')}</td> <!-- Formatea la fecha en JavaScript -->
                                             <td>${item.parroquia}</td>
                                                 <td><a href="/PrimeraComunion/ModifyPrimeraComunionView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                                                 <td><a href="/PrimeraComunion/DeletePrimeraComunionView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
@@ -279,7 +279,7 @@
                             <td>${item.nombre}</td>
                             <td>${item.apellido}</td>
                             <td>${item.telefono}</td>
-                            <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td>
+                            <td>${new Date(item.fechanacimiento).toLocaleDateString('es-EC')}</td>
                             <td>${item.parroquia}</td>
                             <td><a href="/PrimeraComunion/ModifyPrimeraComunionView/${item.id}" class="btn btn-warning">Actualizar</a></td>
                             <td><a href="/PrimeraComunion/DeletePrimeraComunionView/${item.id}" class="btn btn-danger">Eliminar</a></td>

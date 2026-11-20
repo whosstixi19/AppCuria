@@ -229,6 +229,56 @@ namespace AplicacionCuria.Controllers
 
         #region AbrirPestanas
 
+        [HttpGet]
+        public async Task<IActionResult> GetActa(int id)
+        {
+            var acta = await sql.actasbautismo.FindAsync(id);
+            if (acta == null)
+            {
+                return Json(new { success = false, message = "Acta no encontrada." });
+            }
+
+            var obj = new
+            {
+                acta.id,
+                acta.cursillo_id,
+                acta.nombrecompleto,
+                acta.lugarnacimiento,
+                acta.cedula,
+                acta.sexo,
+                fechanacimiento = acta.fechanacimiento.ToString("yyyy-MM-dd"),
+                fechabautizo = acta.fechabautizo.ToString("yyyy-MM-dd"),
+                acta.cedulapadre,
+                acta.cedulamadre,
+                acta.cedulapadrino1,
+                acta.cedulapadrino2,
+                acta.cedulapadrino3,
+                acta.cedulapadrino4,
+                acta.cedulapadrino5,
+                acta.tomo,
+                acta.pagina,
+                acta.acta,
+                acta.ministro_id,
+                acta.sacerdote_id,
+                acta.iglesia_id,
+                acta.parroquia_id,
+                acta.registrocivilano,
+                acta.registrociviltomo,
+                acta.registrocivilfolio,
+                acta.registrocivilacta,
+                registrocivilfecha = acta.registrocivilfecha.ToString("yyyy-MM-dd"),
+                acta.observaciones,
+                acta.estado
+            };
+
+            return Json(new
+            {
+                success = true,
+                acta = obj,
+                data = obj
+            });
+        }
+
         public async Task<IActionResult> ModifyActaBautismoView(int? id)
         {
             if (id == null || sql.actasbautismo == null)
@@ -319,8 +369,14 @@ namespace AplicacionCuria.Controllers
         public IActionResult SearchByName(string? nombrecompleto)
         {
             var filtro = (nombrecompleto ?? "").Trim().ToLower();
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var baseQuery = sql.actasbautismo.AsQueryable();
+            if (pid.HasValue)
+            {
+                baseQuery = baseQuery.Where(a => a.parroquia_id == pid.Value);
+            }
 
-            var query = from a in sql.actasbautismo
+            var query = from a in baseQuery
                         join i in sql.iglesias on a.iglesia_id equals i.id
                         select new
                         {
@@ -344,7 +400,14 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult SearchAll(int count = 20)
         {
-            var resultados = (from a in sql.actasbautismo
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var baseQuery = sql.actasbautismo.AsQueryable();
+            if (pid.HasValue)
+            {
+                baseQuery = baseQuery.Where(a => a.parroquia_id == pid.Value);
+            }
+
+            var resultados = (from a in baseQuery
                               join i in sql.iglesias on a.iglesia_id equals i.id
                               orderby a.id descending
                               select new

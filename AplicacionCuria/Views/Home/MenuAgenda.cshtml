@@ -199,7 +199,7 @@
             if (data && data.length > 0) {
                 data.forEach(item => {
                     const row = `<tr>
-                        <td>${new Date(item.fechaagenda).toLocaleDateString()}</td>
+                        <td>${new Date(item.fechaagenda).toLocaleDateString('es-EC')}</td>
                         <td>${formatoHora12Horas(item.hora) ?? ''}</td>
                         <td>${item.lugar ?? ''}</td>
                         <td>${item.descripcion ?? ''}</td>

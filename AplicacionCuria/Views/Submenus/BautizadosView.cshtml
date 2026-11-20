@@ -39,6 +39,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body p-3">
                         <form asp-controller="CursilloPrebautismal" asp-action="Create" method="post" id="formularioCursillo" autocomplete="off">
+                            <input type="hidden" id="cursillo_edit_id" name="id" value="0">
                             <h5 class="card-title text-primary fw-bold mb-3">
                                 <i class="fas fa-water me-1 text-primary"></i> Formulario de Cursillos Prebautismales
                             </h5>
@@ -49,33 +50,33 @@
                                 <input type="text" class="form-control form-control-sm" id="nombrecompletonino" name="nombrecompletonino" required>
                             </div>
 
-                            <!-- Nombre de los padres -->
+                            <!-- Nombre de los padres (Flexible: al menos uno) -->
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="padre_nombre" class="form-label mb-1 fw-semibold small">Padre</label>
-                                    <input class="form-control form-control-sm" list="padres_datalist" id="padre_nombre" placeholder="Buscar padre..." autocomplete="off" required>
+                                    <input class="form-control form-control-sm" list="padres_datalist" id="padre_nombre" placeholder="Nombre / Cédula padre..." autocomplete="off">
                                     <datalist id="padres_datalist"></datalist>
                                     <input type="hidden" id="padre_id" name="nombrepadre">
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="madre_nombre" class="form-label mb-1 fw-semibold small">Madre</label>
-                                    <input class="form-control form-control-sm" list="madres_datalist" id="madre_nombre" placeholder="Buscar madre..." autocomplete="off" required>
+                                    <input class="form-control form-control-sm" list="madres_datalist" id="madre_nombre" placeholder="Nombre / Cédula madre..." autocomplete="off">
                                     <datalist id="madres_datalist"></datalist>
                                     <input type="hidden" id="madre_id" name="nombremadre">
                                 </div>
                             </div>
 
-                            <!-- Nombres de los padrinos -->
+                            <!-- Nombres de los padrinos (Opcionales) -->
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="padrino_nombre" class="form-label mb-1 fw-semibold small">Padrino</label>
-                                    <input class="form-control form-control-sm" list="padrinos_datalist" id="padrino_nombre" placeholder="Buscar padrino..." autocomplete="off" required>
+                                    <input class="form-control form-control-sm" list="padrinos_datalist" id="padrino_nombre" placeholder="Nombre / Cédula padrino..." autocomplete="off">
                                     <datalist id="padrinos_datalist"></datalist>
                                     <input type="hidden" id="padrino_id" name="nombrepadrino">
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="madrina_nombre" class="form-label mb-1 fw-semibold small">Madrina</label>
-                                    <input class="form-control form-control-sm" list="madrinas_datalist" id="madrina_nombre" placeholder="Buscar madrina..." autocomplete="off" required>
+                                    <input class="form-control form-control-sm" list="madrinas_datalist" id="madrina_nombre" placeholder="Nombre / Cédula madrina..." autocomplete="off">
                                     <datalist id="madrinas_datalist"></datalist>
                                     <input type="hidden" id="madrina_id" name="nombremadrina">
                                 </div>
@@ -102,25 +103,18 @@
                                 </div>
                             </div>
 
-                            <!-- Quien inscribe -->
+                            <!-- Quien inscribe (Independiente) -->
                             <div class="mb-2">
                                 <label for="quieninscribe_nombre" class="form-label mb-1 fw-semibold small">Quien inscribe</label>
-                                <input class="form-control form-control-sm" list="quieninscribe_datalist" id="quieninscribe_nombre" placeholder="Buscar y seleccionar..." autocomplete="off" required>
+                                <input class="form-control form-control-sm" list="quieninscribe_datalist" id="quieninscribe_nombre" placeholder="Nombre de quien inscribe..." autocomplete="off" oninput="document.getElementById('quieninscribe_id').value = this.value;">
                                 <datalist id="quieninscribe_datalist"></datalist>
                                 <input type="hidden" id="quieninscribe_id" name="quieninscribe">
                             </div>
 
-                            <!-- Estado del cursillo y Parroquia -->
+                            <!-- Estado del cursillo (Pre-aprobado para emisión) y Parroquia -->
+                            <input type="hidden" id="estado" name="estado" value="Aprobado">
                             <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <label for="estado" class="form-label mb-1 fw-semibold small">Estado del Cursillo</label>
-                                    <select class="form-select form-select-sm" id="estado" name="estado" required>
-                                        <option value="Cursando">Cursando</option>
-                                        <option value="Aprobado">Aprobado</option>
-                                        <option value="Retirado">Retirado</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-2">
+                                <div class="col-12 mb-2">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <label for="parroquia" class="form-label mb-0 fw-semibold small">Parroquia</label>
                                         <a href="/Submenus/ParroquiaView" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.72rem;" title="Ir a registrar parroquia">+ Nueva</a>
@@ -139,8 +133,8 @@
 
                             <!-- Botón de registro -->
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
-                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2" id="btnGuardarCursillo">Registrar</button>
+                                <button type="button" class="btn btn-secondary btn-sm px-4" id="btnNuevoCursillo" onclick="limpiarFormularioCursillo()">Nuevo</button>
                             </div>
                             <div id="exito" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Cursillo Registrado</div>
                         </form>
@@ -195,10 +189,10 @@
                                                 <td>@item.fechacursillo.ToString("dd/MM/yyyy")</td>
                                                 <td>@item.estado</td>
                                                 <td>
-                                                    <a asp-action="ModifyCursilloView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
+                                                    <button type="button" class="btn btn-warning btn-sm" onclick="editarCursillo(@item.id)">Actualizar</button>
                                                 </td>
                                                 <td>
-                                                    <a asp-action="DeleteCursilloView" asp-controller="CursilloPrebautismal" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="eliminarCursillo(@item.id)">Eliminar</button>
                                                 </td>
                                             </tr>
                                         }
@@ -275,8 +269,10 @@
                     <div class="card-body p-3">
                         <form asp-action="Create" method="post" id="acta-form" asp-controller="ActaBautismo" autocomplete="off">
                             <h5 class="card-title text-primary fw-bold mb-3">
+                                <span class="badge bg-primary text-white me-1">Paso 2</span>
                                 <i class="fas fa-file-alt me-1 text-primary"></i> Formulario de Actas de Bautismo
                             </h5>
+                            <input type="hidden" id="ActaId" name="id" value="0"/>
                             <input type="hidden" id="CursilloId" name="cursillo_id" value="0"/>
 
                             <!-- Nombre completo -->
@@ -365,8 +361,8 @@
                                     <input type="text" class="form-control form-control-sm" id="Pagina" name="pagina">
                                 </div>
                                 <div class="col-md-4 mb-2">
-                                    <label for="Acta" class="form-label mb-1 fw-semibold small">Acta</label>
-                                    <input type="text" class="form-control form-control-sm" id="Acta" name="acta">
+                                    <label for="Acta" class="form-label mb-1 fw-semibold small">Acta <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="Acta" name="acta" required>
                                 </div>
                             </div>
 
@@ -445,10 +441,10 @@
                                 <textarea class="form-control form-control-sm" id="Observaciones" name="observaciones" rows="2">Sin Observaciones</textarea>
                             </div>
 
-                            <!-- Botones de acciones -->
+                            <!-- Botones de acciones actas -->
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
-                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2" id="btnGuardarActa">Registrar</button>
+                                <button type="button" class="btn btn-secondary btn-sm px-4" id="btnNuevoActa" onclick="limpiarFormularioActa()">Nuevo</button>
                             </div>
                             <div id="exito2" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Acta Registrada</div>
                         </form>
@@ -462,6 +458,7 @@
                 <div class="card shadow-sm mb-3">
                     <div class="card-body p-3">
                         <h5 class="card-title text-primary fw-bold mb-2">
+                            <span class="badge bg-primary text-white me-1">Paso 1</span>
                             <i class="fas fa-check-circle me-1 text-primary"></i> Seleccionar Cursillo Prebautismal
                         </h5>
                         <div class="d-flex mb-2">
@@ -494,6 +491,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body p-3">
                         <h5 class="card-title text-primary fw-bold mb-2">
+                            <span class="badge bg-primary text-white me-1">Paso 3</span>
                             <i class="fas fa-search me-1 text-primary"></i> Búsqueda de Actas de Bautismo
                         </h5>
                         <form asp-action="Search" method="get" id="buscar-acta" asp-controller="ActaBautismo">
@@ -529,10 +527,10 @@
                                                     <td>@item.fechabautizo.ToString("dd/MM/yyyy")</td>
                                                     <td>@item.iglesia</td>
                                                     <td>
-                                                        <a asp-action="ModifyActaBautismoView" asp-controller="ActaBautismo" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
+                                                        <button type="button" class="btn btn-warning btn-sm" onclick="editarActaBautismo(@item.id)">Actualizar</button>
                                                     </td>
                                                     <td>
-                                                        <a asp-action="DeleteActaBautismoView" asp-controller="ActaBautismo" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarActaBautismo(@item.id)">Eliminar</button>
                                                     </td>
                                                 </tr>
                                             }
@@ -559,6 +557,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body p-3">
                         <form asp-action="Create" method="post" id="acta-antigua" asp-controller="Antiguos" autocomplete="off">
+                            <input type="hidden" id="AntiguoId" name="id" value="0"/>
                             <h5 class="card-title text-primary fw-bold mb-3">
                                 <i class="fas fa-history me-1 text-primary"></i> Formulario de Bautizos Antiguos
                             </h5>
@@ -725,10 +724,10 @@
                                 <textarea class="form-control form-control-sm" id="Observacionesant" name="observaciones" rows="2"></textarea>
                             </div>
 
-                            <!-- Botones de acciones -->
+                            <!-- Botones de acciones antiguas -->
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2">Registrar</button>
-                                <button type="reset" class="btn btn-secondary btn-sm px-4">Limpiar</button>
+                                <button type="submit" class="btn btn-primary btn-sm px-4 mr-2" id="btnGuardarAntiguo">Registrar</button>
+                                <button type="button" class="btn btn-secondary btn-sm px-4" id="btnNuevoAntiguo" onclick="limpiarFormularioAntiguo()">Nuevo</button>
                             </div>
                             <div id="exito3" class="text-success mt-2 text-center fw-semibold small" style="display: none;">Acta antigua Registrada</div>
                         </form>
@@ -776,10 +775,10 @@
                                                     <td>@item.fechabautizo.ToString("dd/MM/yyyy")</td>
                                                     <td>@item.iglesia</td>
                                                     <td>
-                                                        <a asp-action="ModifyAntiguosView" asp-controller="Antiguos" asp-route-id="@item.id" class="btn btn-warning btn-sm">Actualizar</a>
+                                                        <button type="button" class="btn btn-warning btn-sm" onclick="editarAntiguo(@item.id)">Actualizar</button>
                                                     </td>
                                                     <td>
-                                                        <a asp-action="DeleteAntiguosView" asp-controller="Antiguos" asp-route-id="@item.id" class="btn btn-danger btn-sm" id="btnEliminar">Eliminar</a>
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarAntiguo(@item.id)">Eliminar</button>
                                                     </td>
                                                 </tr>
                                             }
@@ -807,14 +806,23 @@
     document.getElementById("formularioCursillo").addEventListener("submit", function (event) {
 
         event.preventDefault();
-        // Validaciones personalizadas antes de enviar
-        const estado = document.getElementById('estado').value;
-        const observaciones = document.getElementById('observaciones').value.trim();
-        const quienInscribe = document.getElementById('quieninscribe_id').value;
+        // Validaciones personalizadas antes de enviar (flexibles)
+        const padre = document.getElementById('padre_id').value || document.getElementById('padre_nombre').value;
+        const madre = document.getElementById('madre_id').value || document.getElementById('madre_nombre').value;
+        const padrino = document.getElementById('padrino_id').value || document.getElementById('padrino_nombre').value;
+        const madrina = document.getElementById('madrina_id').value || document.getElementById('madrina_nombre').value;
+        const quienInscribe = document.getElementById('quieninscribe_id').value || document.getElementById('quieninscribe_nombre').value;
+        const estado = document.getElementById('estado').value || 'Aprobado';
+
+        document.getElementById('padre_id').value = padre;
+        document.getElementById('madre_id').value = madre;
+        document.getElementById('padrino_id').value = padrino;
+        document.getElementById('madrina_id').value = madrina;
+        document.getElementById('quieninscribe_id').value = quienInscribe;
 
         let errores = [];
+        if (!padre && !madre) errores.push("Debe ingresar al menos los datos del padre o de la madre.");
         if (!quienInscribe) errores.push("El campo 'Quien inscribe' es obligatorio.");
-        if (!estado) errores.push("El campo 'Estado del Cursillo' es obligatorio.");
 
         if (errores.length > 0) {
             const mensajeExito = document.getElementById("exito");
@@ -825,9 +833,15 @@
         }
 
         var formData = new FormData(this);
-        fetch(this.action, {
+        const cursilloEditId = parseInt(document.getElementById('cursillo_edit_id').value) || 0;
+        const targetUrl = cursilloEditId > 0 ? `/CursilloPrebautismal/Update/${cursilloEditId}` : this.action;
+
+        fetch(targetUrl, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         })
         .then(response => response.json())
         .then(data => {
@@ -838,11 +852,11 @@
                 // Mostrar mensaje de éxito por 4 segundos
                 const mensajeExito = document.getElementById("exito");
                 mensajeExito.className = "text-success";
-                mensajeExito.textContent = "Cursillo Prebautismal Generado con Éxito";
+                mensajeExito.textContent = cursilloEditId > 0 ? "Cursillo Prebautismal Actualizado con Éxito" : "Cursillo Prebautismal Generado con Éxito";
                 mensajeExito.style.display = "block";
 
                 // Limpiar formulario
-                document.getElementById("formularioCursillo").reset();
+                limpiarFormularioCursillo();
                 cargarCursillosRecientes();
 
                 // Ocultar mensaje después de 4 segundos
@@ -855,7 +869,7 @@
                 if (Array.isArray(data.errors)) {
                     document.getElementById("exito").textContent = data.errors.join(", ");
                 } else {
-                    document.getElementById("exito").textContent = data.errors || "Error desconocido.";
+                    document.getElementById("exito").textContent = data.message || data.errors || "Error desconocido.";
                 }
                 document.getElementById("exito").style.display = "block";
             }
@@ -887,10 +901,15 @@
         event.preventDefault(); // Evitar el envío del formulario por defecto
 
         var formData = new FormData(this);
+        const actaId = parseInt(document.getElementById('ActaId').value) || 0;
+        const targetUrl = actaId > 0 ? `/ActaBautismo/Edit/${actaId}` : this.action;
 
-        fetch(this.action, {
+        fetch(targetUrl, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         })
             .then(response => response.json())
             .then(data => {
@@ -899,11 +918,11 @@
 
                 if (data.success) {
                     document.getElementById("exito2").className = "text-success";
-                    document.getElementById("exito2").textContent = "Acta de bautismo registrada.";
+                    document.getElementById("exito2").textContent = actaId > 0 ? "Acta de bautismo actualizada con éxito." : "Acta de bautismo registrada.";
                     document.getElementById("exito2").style.display = "block";
 
-                    document.getElementById("acta-form").reset(); 
-                    limpiarCursilloenActa();
+                    limpiarFormularioActa();
+                    cargarPrimerosActasBautismo();
 
                     // Ocultar mensaje después de 3 segundos
                     setTimeout(function () {
@@ -915,7 +934,7 @@
                     if (Array.isArray(data.errors)) {
                         document.getElementById("exito2").textContent = data.errors.join(", ");
                     } else {
-                        document.getElementById("exito2").textContent = data.errors || "Error desconocido.";
+                        document.getElementById("exito2").textContent = data.errors || data.error || data.message || "Error desconocido.";
                     }                    
                     document.getElementById("exito2").style.display = "block";
                 }
@@ -931,10 +950,15 @@
         event.preventDefault(); // Evitar el envío del formulario por defecto
 
         var formData = new FormData(this);
+        const antiguoId = parseInt(document.getElementById('AntiguoId').value) || 0;
+        const targetUrl = antiguoId > 0 ? `/Antiguos/Edit/${antiguoId}` : this.action;
 
-        fetch(this.action, {
+        fetch(targetUrl, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         })
             .then(response => response.json())
             .then(data => {
@@ -945,11 +969,12 @@
                 const mensaje = document.getElementById("exito3");
 
                 mensaje.className = "text-success";
-                mensaje.textContent = "Registro exitoso";
+                mensaje.textContent = antiguoId > 0 ? "Registro antiguo actualizado con éxito." : "Registro exitoso";
                 mensaje.style.display = "block";
 
                 // Limpiar formulario
-                document.getElementById("acta-antigua").reset();
+                limpiarFormularioAntiguo();
+                ListActasAntiguas();
 
                 // Ocultar mensaje después de 3 segundos
                 setTimeout(function () {
@@ -1120,10 +1145,10 @@
                     data.forEach(item => {
                         const row = `<tr>
                                         <td>${item.nombrecompleto}</td>
-                                        <td>${new Date(item.fechabautizo).toLocaleDateString()}</td> <!-- Formatea la fecha en JavaScript -->
+                                        <td>${new Date(item.fechabautizo).toLocaleDateString('es-EC')}</td> <!-- Formatea la fecha en JavaScript -->
                                         <td>${item.iglesia}</td>
-                                        <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                                        <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                        <td><button type="button" class="btn btn-warning btn-sm" onclick="editarActaBautismo(${item.id})">Actualizar</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarActaBautismo(${item.id})">Eliminar</button></td>
                                     </tr>`;
                         resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
                     });
@@ -1150,10 +1175,10 @@
                         const row = `<tr >
                                                 <td>${item.nombrecompletonino}</td>
                                                 <td>${item.telefono}</td>
-                                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                                <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
                                                 <td>${item.estado}</td>
-                                                <td><a href="/CursilloPrebautismal/ModifyCursilloView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                                                <td><a href="/CursilloPrebautismal/DeleteCursilloView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                                <td><button type="button" class="btn btn-warning btn-sm" onclick="editarCursillo(${item.id})">Actualizar</button></td>
+                                                <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarCursillo(${item.id})">Eliminar</button></td>
                                         </tr>`;
                         resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
                     });
@@ -1178,10 +1203,10 @@
                     data.forEach(item => {
                         const row = `<tr>
                                             <td>${item.nombrecompleto}</td>
-                                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td> <!-- Formatea la fecha en JavaScript -->
+                                            <td>${new Date(item.fechabautizo).toLocaleDateString('es-EC')}</td> <!-- Formatea la fecha en JavaScript -->
                                             <td>${item.iglesia}</td>
-                                            <td><a href="/Antiguos/ModifyAntiguosView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                                            <td><a href="/Antiguos/DeleteAntiguosView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                            <td><button type="button" class="btn btn-warning btn-sm" onclick="editarAntiguo(${item.id})">Actualizar</button></td>
+                                            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarAntiguo(${item.id})">Eliminar</button></td>
                                         </tr>`;
                         resultadosBody.innerHTML += row; // Agregar cada resultado a la tabla
                     });
@@ -1212,10 +1237,10 @@
                             <tr>
                                 <td>${item.nombrecompletonino}</td>
                                 <td>${item.telefono}</td>
-                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
                                 <td>${item.estado}</td>
-                                <td><a href="/CursilloPrebautismal/ModifyCursilloView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                                <td><a href="/CursilloPrebautismal/DeleteCursilloView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                <td><button type="button" class="btn btn-warning btn-sm" onclick="editarCursillo(${item.id})">Actualizar</button></td>
+                                <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarCursillo(${item.id})">Eliminar</button></td>
                             </tr>`;
                         resultadosBody.innerHTML += row;
                     });
@@ -1259,10 +1284,10 @@
                     data.forEach(item => {
                         const row = `<tr>
                             <td>${item.nombrecompleto}</td>
-                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                            <td>${new Date(item.fechabautizo).toLocaleDateString('es-EC')}</td>
                             <td>${item.iglesia || item.iglesia_nombre || ''}</td>
-                            <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                            <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            <td><button type="button" class="btn btn-warning btn-sm" onclick="editarActaBautismo(${item.id})">Actualizar</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarActaBautismo(${item.id})">Eliminar</button></td>
                         </tr>`;
                         resultadosBody.innerHTML += row;
                     });
@@ -1312,7 +1337,7 @@
                 data.forEach(cursillo => {
                     const fila = `<tr>
                         <td>${cursillo.nombrecompletonino}</td>
-                        <td>${new Date(cursillo.fechacursillo).toLocaleDateString()}</td>
+                        <td>${new Date(cursillo.fechacursillo).toLocaleDateString('es-EC')}</td>
                         <td><button type="button" class="btn btn-success" onclick="seleccionarCursillo(${cursillo.id}, '${cursillo.nombrecompletonino}')">Seleccionar</button></td>
                     </tr>`;
                     tablaBody.innerHTML += fila;
@@ -1339,13 +1364,26 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.cursillo) {
+                    const c = data.cursillo;
                     // Rellena los campos del formulario de Acta de Bautismo
-                    document.getElementById('NombreCompleto').value = data.cursillo.nombrecompletonino || '';
-                    document.getElementById('cedulapadre').value = data.cursillo.nombrepadre || '';
-                    document.getElementById('cedulamadre').value = data.cursillo.nombremadre || '';
-                    document.getElementById('cedulapadrino1').value = data.cursillo.nombrepadrino || '';
-                    document.getElementById('cedulapadrino2').value = data.cursillo.nombremadrina || '';
-                    // Si tienes más campos, agrégalos aquí
+                    document.getElementById('NombreCompleto').value = c.nombrecompletonino || '';
+                    if (c.fechabautizo) {
+                        document.getElementById('FechaBautizo').value = c.fechabautizo.split('T')[0];
+                    }
+                    document.getElementById('cedulapadre').value = c.nombrepadre || '';
+                    document.getElementById('cedulamadre').value = c.nombremadre || '';
+                    document.getElementById('cedulapadrino1').value = c.nombrepadrino || '';
+                    document.getElementById('cedulapadrino2').value = c.nombremadrina || '';
+                    if (c.parroquia) {
+                        const selParroquia = document.getElementById('Parroquia');
+                        if (selParroquia) selParroquia.value = c.parroquia;
+                    }
+
+                    const exito2 = document.getElementById("exito2");
+                    exito2.className = "text-info";
+                    exito2.textContent = `Cursillo seleccionado: ${c.nombrecompletonino}. Se han precargado los datos y la fecha de bautizo en el formulario.`;
+                    exito2.style.display = "block";
+                    setTimeout(() => { exito2.style.display = "none"; }, 5000);
                 } else {
                     alert('No se pudo obtener la información del cursillo.');
                 }
@@ -1354,8 +1392,6 @@
                 console.error('Error al obtener cursillo:', error);
                 alert('Error al obtener la información del cursillo.');
             });
-
-        alert(`Cursillo seleccionado: ${nombre}`);
     }
 
     function limpiarCursilloenActa() {
@@ -1438,10 +1474,10 @@
                     data.forEach(item => {
                         const row = `<tr>
                             <td>${item.nombrecompleto}</td>
-                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                            <td>${new Date(item.fechabautizo).toLocaleDateString('es-EC')}</td>
                             <td>${item.iglesia}</td>
-                            <td><a href="/Antiguos/ModifyAntiguosView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                            <td><a href="/Antiguos/DeleteAntiguosView/${item.id}" class="btn btn-danger">Eliminar</a></td>
+                            <td><button type="button" class="btn btn-warning btn-sm" onclick="editarAntiguo(${item.id})">Actualizar</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarAntiguo(${item.id})">Eliminar</button></td>
                         </tr>`;
                         resultadosBody.innerHTML += row;
                     });
@@ -1478,10 +1514,10 @@
                             <tr>
                                 <td>${item.nombrecompletonino}</td>
                                 <td>${item.telefono}</td>
-                                <td>${new Date(item.fechacursillo).toLocaleDateString()}</td>
+                                <td>${new Date(item.fechacursillo).toLocaleDateString('es-EC')}</td>
                                 <td>${item.estado}</td>
-                                <td><a href="/CursilloPrebautismal/ModifyCursilloView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                                <td><a href="/CursilloPrebautismal/DeleteCursilloView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                                <td><button type="button" class="btn btn-warning btn-sm" onclick="editarCursillo(${item.id})">Actualizar</button></td>
+                                <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarCursillo(${item.id})">Eliminar</button></td>
                             </tr>`;
                         resultadosBody.innerHTML += row;
                     });
@@ -1519,7 +1555,7 @@
                     data.forEach(cursillo => {
                         const fila = `<tr>
                             <td>${cursillo.nombrecompletonino}</td>
-                            <td>${new Date(cursillo.fechacursillo).toLocaleDateString()}</td>
+                            <td>${new Date(cursillo.fechacursillo).toLocaleDateString('es-EC')}</td>
                             <td><button type="button" class="btn btn-success" onclick="seleccionarCursillo(${cursillo.id}, '${cursillo.nombrecompletonino}')">Seleccionar</button></td>
                         </tr>`;
                         tablaBody.innerHTML += fila;
@@ -1544,10 +1580,10 @@
                     data.forEach(item => {
                         const row = `<tr>
                             <td>${item.nombrecompleto}</td>
-                            <td>${new Date(item.fechabautizo).toLocaleDateString()}</td>
+                            <td>${new Date(item.fechabautizo).toLocaleDateString('es-EC')}</td>
                             <td>${item.iglesia_nombre}</td>
-                            <td><a href="/ActaBautismo/ModifyActaBautismoView/${item.id}" class="btn btn-warning">Actualizar</a></td>
-                            <td><a href="/ActaBautismo/DeleteActaBautismoView/${item.id}" class="btn btn-danger" id="btnEliminar">Eliminar</a></td>
+                            <td><button type="button" class="btn btn-warning btn-sm" onclick="editarActaBautismo(${item.id})">Actualizar</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarActaBautismo(${item.id})">Eliminar</button></td>
                         </tr>`;
                         resultadosBody.innerHTML += row;
                     });
@@ -1853,6 +1889,249 @@
         cargarFeligresesQuienInscribe();
         ListActasAntiguas();
     });
+
+    // ==========================================
+    // EDICIÓN Y ELIMINACIÓN IN-PLACE (CURSILLO)
+    // ==========================================
+    function editarCursillo(id) {
+        fetch(`/CursilloPrebautismal/GetCursillo?id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.cursillo) {
+                    const c = data.cursillo;
+                    document.getElementById('cursillo_edit_id').value = c.id;
+                    document.getElementById('nombrecompletonino').value = c.nombrecompletonino || '';
+
+                    document.getElementById('padre_nombre').value = c.nombrepadre || '';
+                    document.getElementById('padre_id').value = c.nombrepadre || '';
+
+                    document.getElementById('madre_nombre').value = c.nombremadre || '';
+                    document.getElementById('madre_id').value = c.nombremadre || '';
+
+                    document.getElementById('padrino_nombre').value = c.nombrepadrino || '';
+                    document.getElementById('padrino_id').value = c.nombrepadrino || '';
+
+                    document.getElementById('madrina_nombre').value = c.nombremadrina || '';
+                    document.getElementById('madrina_id').value = c.nombremadrina || '';
+
+                    document.getElementById('celular').value = c.celular || c.telefono || '';
+                    document.getElementById('telefono').value = c.telefono || c.celular || '';
+
+                    if (c.fechabautizo) {
+                        document.getElementById('fechabautizo').value = c.fechabautizo.split('T')[0];
+                    }
+                    if (c.fechacursillo) {
+                        document.getElementById('fechacursillo').value = c.fechacursillo.split('T')[0];
+                    }
+
+                    document.getElementById('quieninscribe_nombre').value = c.quieninscribe || '';
+                    document.getElementById('quieninscribe_id').value = c.quieninscribe || '';
+
+                    if (c.parroquia) {
+                        document.getElementById('parroquia').value = c.parroquia;
+                    }
+                    document.getElementById('estado').value = c.estado || 'Aprobado';
+                    document.getElementById('observaciones').value = c.observaciones || 'Sin Observaciones';
+
+                    document.getElementById('btnGuardarCursillo').textContent = "Actualizar";
+                    document.getElementById('formularioCursillo').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('No se pudo cargar la información del cursillo.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Error de conexión al cargar el cursillo.');
+            });
+    }
+
+    function limpiarFormularioCursillo() {
+        document.getElementById('cursillo_edit_id').value = 0;
+        document.getElementById('formularioCursillo').reset();
+        document.getElementById('padre_id').value = '';
+        document.getElementById('madre_id').value = '';
+        document.getElementById('padrino_id').value = '';
+        document.getElementById('madrina_id').value = '';
+        document.getElementById('quieninscribe_id').value = '';
+        document.getElementById('estado').value = 'Aprobado';
+        document.getElementById('observaciones').value = 'Sin Observaciones';
+        document.getElementById('btnGuardarCursillo').textContent = "Registrar";
+    }
+
+    function eliminarCursillo(id) {
+        if (confirm("¿Seguro que deseas eliminar este cursillo prebautismal?")) {
+            fetch(`/CursilloPrebautismal/DeleteConfirmed/${id}`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarCursillosRecientes();
+                    } else {
+                        alert("No se pudo eliminar el cursillo.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error al eliminar.");
+                });
+        }
+    }
+
+    // ==========================================
+    // EDICIÓN Y ELIMINACIÓN IN-PLACE (ACTAS)
+    // ==========================================
+    function editarActaBautismo(id) {
+        fetch(`/ActaBautismo/GetActa?id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                const a = data && (data.acta || data.data);
+                if (data && data.success && a) {
+                    document.getElementById('ActaId').value = a.id;
+                    document.getElementById('CursilloId').value = a.cursillo_id || 0;
+                    document.getElementById('NombreCompleto').value = a.nombrecompleto || '';
+                    document.getElementById('LugarNacimiento').value = a.lugarnacimiento || '';
+                    document.getElementById('Cedula').value = a.cedula || '';
+                    if (a.sexo) document.getElementById('Sexo').value = a.sexo;
+                    if (a.fechanacimiento) document.getElementById('FechaNacimiento').value = a.fechanacimiento.split('T')[0];
+                    if (a.fechabautizo) document.getElementById('FechaBautizo').value = a.fechabautizo.split('T')[0];
+
+                    document.getElementById('cedulapadre').value = a.cedulapadre || '';
+                    document.getElementById('cedulamadre').value = a.cedulamadre || '';
+                    document.getElementById('cedulapadrino1').value = a.cedulapadrino1 || '';
+                    document.getElementById('cedulapadrino2').value = a.cedulapadrino2 || '';
+                    document.getElementById('cedulapadrino3').value = a.cedulapadrino3 || '';
+                    document.getElementById('cedulapadrino4').value = a.cedulapadrino4 || '';
+                    document.getElementById('cedulapadrino5').value = a.cedulapadrino5 || '';
+
+                    document.getElementById('Tomo').value = a.tomo || '';
+                    document.getElementById('Pagina').value = a.pagina || '';
+                    document.getElementById('Acta').value = a.acta || '';
+
+                    if (a.ministro_id) document.getElementById('Ministro').value = a.ministro_id;
+                    if (a.sacerdote_id) document.getElementById('Sacerdote').value = a.sacerdote_id;
+                    if (a.iglesia_id) document.getElementById('Iglesia').value = a.iglesia_id;
+                    if (a.parroquia_id) document.getElementById('Parroquia').value = a.parroquia_id;
+
+                    document.getElementById('RegistroCivilAno').value = a.registrocivilano || '';
+                    document.getElementById('RegistroCivilTomo').value = a.registrociviltomo || '';
+                    document.getElementById('RegistroCivilFolio').value = a.registrocivilfolio || '';
+                    document.getElementById('RegistroCivilActa').value = a.registrocivilacta || '';
+                    if (a.registrocivilfecha) document.getElementById('RegistroCivilFecha').value = a.registrocivilfecha.split('T')[0];
+
+                    document.getElementById('Observaciones').value = a.observaciones || 'Sin Observaciones';
+                    document.getElementById('btnGuardarActa').textContent = "Actualizar";
+                    document.getElementById('acta-form').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('No se pudo cargar la información del acta.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Error de conexión al cargar el acta.');
+            });
+    }
+
+    function limpiarFormularioActa() {
+        document.getElementById('ActaId').value = 0;
+        document.getElementById('CursilloId').value = 0;
+        document.getElementById('acta-form').reset();
+        document.getElementById('Observaciones').value = 'Sin Observaciones';
+        document.getElementById('btnGuardarActa').textContent = "Registrar";
+    }
+
+    function eliminarActaBautismo(id) {
+        if (confirm("¿Seguro que deseas eliminar esta acta de bautismo?")) {
+            fetch(`/ActaBautismo/DeleteConfirmed/${id}`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cargarPrimerosActasBautismo();
+                    } else {
+                        alert("No se pudo eliminar el acta.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error al eliminar.");
+                });
+        }
+    }
+
+    // ==========================================
+    // EDICIÓN Y ELIMINACIÓN IN-PLACE (ANTIGUOS)
+    // ==========================================
+    function editarAntiguo(id) {
+        fetch(`/Antiguos/GetAntiguo?id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const a = data.data;
+                    document.getElementById('AntiguoId').value = a.id;
+                    document.getElementById('NombreCompletoant').value = a.nombrecompleto || '';
+                    document.getElementById('LugarNacimientoant').value = a.lugarnacimiento || '';
+                    document.getElementById('Cedulaant').value = a.cedula || '';
+                    if (a.sexo) document.getElementById('Sexoant').value = a.sexo;
+                    if (a.fechanacimiento) document.getElementById('FechaNacimientoant').value = a.fechanacimiento.split('T')[0];
+                    if (a.fechabautizo) document.getElementById('FechaBautizoant').value = a.fechabautizo.split('T')[0];
+
+                    document.getElementById('NombrePadreant').value = a.nombrepadre || '';
+                    document.getElementById('NombreMadreant').value = a.nombremadre || '';
+                    document.getElementById('cedulapadrino1').value = a.cedulapadrino1 || '';
+                    document.getElementById('cedulapadrino2').value = a.cedulapadrino2 || '';
+                    document.getElementById('cedulapadrino3').value = a.cedulapadrino3 || '';
+                    document.getElementById('cedulapadrino4').value = a.cedulapadrino4 || '';
+                    document.getElementById('cedulapadrino5').value = a.cedulapadrino5 || '';
+
+                    document.getElementById('Tomoant').value = a.tomo || '';
+                    document.getElementById('Paginaant').value = a.pagina || '';
+                    document.getElementById('Actaant').value = a.acta || '';
+
+                    if (a.ministro_id) document.getElementById('Ministroant').value = a.ministro_id;
+                    if (a.sacerdote_id) document.getElementById('Sacerdoteant').value = a.sacerdote_id;
+                    if (a.iglesia_id) document.getElementById('Iglesiaant').value = a.iglesia_id;
+                    if (a.parroquia_id) document.getElementById('Parroquiaant').value = a.parroquia_id;
+
+                    document.getElementById('RegistroCivilAnoant').value = a.registrocivilano || '';
+                    document.getElementById('RegistroCivilTomoant').value = a.registrociviltomo || '';
+                    document.getElementById('RegistroCivilFolioant').value = a.registrocivilfolio || '';
+                    document.getElementById('RegistroCivilActaant').value = a.registrocivilacta || '';
+                    if (a.registrocivilfecha) document.getElementById('RegistroCivilFechaant').value = a.registrocivilfecha.split('T')[0];
+
+                    document.getElementById('Observacionesant').value = a.observaciones || '';
+                    document.getElementById('btnGuardarAntiguo').textContent = "Actualizar";
+                    document.getElementById('acta-antigua').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('No se pudo cargar la información del registro.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Error de conexión al cargar el registro antiguo.');
+            });
+    }
+
+    function limpiarFormularioAntiguo() {
+        document.getElementById('AntiguoId').value = 0;
+        document.getElementById('acta-antigua').reset();
+        document.getElementById('btnGuardarAntiguo').textContent = "Registrar";
+    }
+
+    function eliminarAntiguo(id) {
+        if (confirm("¿Seguro que deseas eliminar este registro antiguo?")) {
+            fetch(`/Antiguos/DeleteConfirmed/${id}`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        ListActasAntiguas();
+                    } else {
+                        alert("No se pudo eliminar.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error al eliminar.");
+                });
+        }
+    }
 
 </script>
 

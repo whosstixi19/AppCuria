@@ -12,15 +12,30 @@
     <style>
         body {
             font-family: 'Times New Roman', serif;
-            font-size: 19px;
-            margin: 30px;
+            font-size: 17px;
+            margin: 20px 40px;
             color: #000;
-            line-height: 1.5;
+            line-height: 1.45;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .logo-header img {
+            max-width: 440px;
+            max-height: 95px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
 
         .header {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 17px;
             margin-bottom: 10px;
         }
 
@@ -32,7 +47,7 @@
         .cajavacia {
             position: absolute;
             left: 0;
-            top: 50px; /* La caja vacía estará arriba */
+            top: 30px;
             width: 130px;
             border: 1px solid black;
             padding: 10px;
@@ -42,7 +57,7 @@
         .registro-civil {
             position: absolute;
             left: 50;
-            top: 300px; /* Baja 100px para dar espacio a la cajavacia */
+            top: 250px;
             width: 130px;
             border: 1px solid black;
             padding: 10px;
@@ -51,46 +66,46 @@
 
         .datos {
             margin-left: 185px;
-            font-size: 19px;
+            font-size: 17px;
             text-align: justify;
         }
 
         .firmas-container {
             position: relative;
-            height: 400px; /* Ajusta la altura según lo necesites */
+            height: 330px;
             width: 100%;
-            margin-top: 40px;
+            margin-top: 25px;
             margin-left: 40px;
         }
 
         .firma {
             position: absolute;
             text-align: center;
-            width: 200px; /* Ajusta el ancho de cada bloque de firma */
+            width: 200px;
         }
 
         .firma.novio {
-            top: -10;
-            left: 20%; /* Ajusta la posición horizontal */
+            top: 0;
+            left: 20%;
         }
 
         .firma.novia {
-            top: -10;
-            right: 10%; /* Ajusta la posición horizontal */
+            top: 0;
+            right: 10%;
         }
 
         .firma.testigo1 {
-            top: 100px;
+            top: 90px;
             left: 20%;
         }
 
         .firma.testigo2 {
-            top: 100px;
+            top: 90px;
             right: 10%;
         }
 
         .firma.parroco {
-            top: 200px;
+            top: 180px;
             bottom: 0;
             left: 45%;
             transform: translateX(-60%);
@@ -99,25 +114,29 @@
         .acta-matrimonio {
             margin-left: 185px;
             border-top: 2px solid #000;
-            padding-top: 15px;
-            margin-top: -40px;
-            font-size: 19px;
+            padding-top: 10px;
+            margin-top: -20px;
+            font-size: 17px;
             text-align: justify;
         }
 
         .acta-title {
             text-align: center;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 17px;
             margin-bottom: 10px;
         }
         .firma-parroco-footer {
-            margin-top: 70px;
+            margin-top: 45px;
             text-align: center;
         }
     </style>
 </head>
 <body>
+    <div class="logo-header">
+        <img src="@(ViewData["LogoParroquia"] as string ?? Url.Content("~/imagenes/escudo.png"))" alt="Escudo Parroquia" />
+    </div>
+
     <div class="header">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOLIO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>ACTA N°</strong>
     </div>

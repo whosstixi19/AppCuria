@@ -264,7 +264,7 @@
                         <td>${item.cedula}</td>
                         <td>${item.nivel}</td>
                         <td>${item.telefono}</td>
-                        <td>${new Date(item.fechanacimiento).toLocaleDateString()}</td>
+                        <td>${new Date(item.fechanacimiento).toLocaleDateString('es-EC')}</td>
                         <td>${item.direccion}</td>
                         <td>
                             <a class="btn btn-success btn-seleccionar" data-id="${item.id}" onclick="seleccionarAlumno(this)">Seleccionar</a>

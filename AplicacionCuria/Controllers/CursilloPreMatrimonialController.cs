@@ -1,5 +1,6 @@
 using AplicacionCuria.Conexion;
 using AplicacionCuria.Models;
+using AplicacionCuria.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +67,13 @@ namespace AplicacionCuria.Controllers
         [HttpGet]
         public IActionResult GetParroquias()
         {
-            var parroquias = sql.parroquias
+            var pid = ParroquiaTenantHelper.ObtenerParroquiaActivaId(User, HttpContext);
+            var query = sql.parroquias.AsQueryable();
+            if (pid.HasValue)
+            {
+                query = query.Where(p => p.id == pid.Value);
+            }
+            var parroquias = query
                 .Select(p => new
                 {
                     id = p.id,

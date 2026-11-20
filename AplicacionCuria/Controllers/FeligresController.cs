@@ -66,7 +66,6 @@ namespace AplicacionCuria.Controllers
             if (string.IsNullOrWhiteSpace(model.cedula)) faltantes.Add("Cédula");
             if (model.fechanacimiento == default) faltantes.Add("Fecha de nacimiento");
             if (string.IsNullOrWhiteSpace(model.direccion)) faltantes.Add("Dirección");
-            if (string.IsNullOrWhiteSpace(model.telefono)) faltantes.Add("Teléfono");
             if (string.IsNullOrWhiteSpace(model.email)) faltantes.Add("Correo electrónico");
             if (string.IsNullOrWhiteSpace(model.estado)) faltantes.Add("Estado");
 
@@ -74,6 +73,7 @@ namespace AplicacionCuria.Controllers
             {
                 return Json(new { success = false, message = "Falta ingresar los siguientes datos obligatorios: " + string.Join(", ", faltantes) + "." });
             }
+            model.telefono ??= "";
             model.observaciones ??= "";
 
             // Normalizar nombre y apellido

@@ -25,7 +25,10 @@ namespace AplicacionCuria.Controllers
                 model.id = 0;
                 var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
 
-                model.fechabautizo = TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(model.fechabautizo, DateTimeKind.Unspecified), zonaEcuador);
+                if (model.fechabautizo.HasValue)
+                {
+                    model.fechabautizo = TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(model.fechabautizo.Value, DateTimeKind.Unspecified), zonaEcuador);
+                }
                 model.fechanacimiento = TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(model.fechanacimiento, DateTimeKind.Unspecified), zonaEcuador);
 
                 // Solo procesamos la foto si no es nula y tiene contenido
@@ -61,8 +64,15 @@ namespace AplicacionCuria.Controllers
             {
                 var zonaEcuador = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
 
-                model.fechabautizo = TimeZoneInfo.ConvertTimeToUtc(
-                    DateTime.SpecifyKind(model.fechabautizo, DateTimeKind.Unspecified), zonaEcuador);
+                if (model.fechabautizo.HasValue)
+                {
+                    model.fechabautizo = TimeZoneInfo.ConvertTimeToUtc(
+                        DateTime.SpecifyKind(model.fechabautizo.Value, DateTimeKind.Unspecified), zonaEcuador);
+                }
+                else
+                {
+                    model.fechabautizo = null;
+                }
 
                 model.fechanacimiento = TimeZoneInfo.ConvertTimeToUtc(
                     DateTime.SpecifyKind(model.fechanacimiento, DateTimeKind.Unspecified), zonaEcuador);
@@ -137,6 +147,62 @@ namespace AplicacionCuria.Controllers
         private bool AlumnoCatequesisExists(int id)
         {
             return sql.alumnoscatequesis.Any(e => e.id == id);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FiltrarAlumnos(string? nombre, int? periodo_id, string? nivel, string? paralelo)
+        {
+            var query = sql.alumnoscatequesis.AsQueryable();
+
+            if (periodo_id.HasValue && periodo_id.Value > 0)
+                query = query.Where(a => a.periodo_id == periodo_id.Value);
+
+            if (!string.IsNullOrWhiteSpace(nivel))
+                query = query.Where(a => a.nivel == nivel);
+
+            if (!string.IsNullOrWhiteSpace(paralelo))
+                query = query.Where(a => a.paralelo == paralelo);
+
+            if (!string.IsNullOrWhiteSpace(nombre))
+            {
+                var filtro = nombre.Trim().ToLower();
+                query = query.Where(a => (a.nombre + " " + a.apellido).ToLower().Contains(filtro) ||
+                                         (a.cedula ?? "").ToLower().Contains(filtro));
+            }
+
+            var resultados = await query.OrderBy(a => a.apellido).ThenBy(a => a.nombre).ToListAsync();
+            return Json(resultados);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ImprimirLista(int? periodo_id, string? nivel, string? paralelo)
+        {
+            if (!periodo_id.HasValue || periodo_id.Value <= 0)
+                return BadRequest("Debe seleccionar un período para imprimir la lista.");
+
+            var periodo = await sql.periodos.FindAsync(periodo_id.Value);
+            var query = sql.alumnoscatequesis.Where(a => a.periodo_id == periodo_id.Value);
+
+            if (!string.IsNullOrWhiteSpace(nivel))
+                query = query.Where(a => a.nivel == nivel);
+
+            if (!string.IsNullOrWhiteSpace(paralelo))
+                query = query.Where(a => a.paralelo == paralelo);
+
+            var alumnos = await query.OrderBy(a => a.apellido).ThenBy(a => a.nombre).ToListAsync();
+
+            ViewBag.Periodo = periodo;
+            ViewBag.NivelFiltro = nivel;
+            ViewBag.ParaleloFiltro = paralelo;
+            ViewBag.Total = alumnos.Count;
+
+            var rutaLogo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes", "logo_cristo_salvador.png");
+            if (System.IO.File.Exists(rutaLogo))
+            {
+                ViewBag.LogoBase64 = $"data:image/png;base64,{Convert.ToBase64String(System.IO.File.ReadAllBytes(rutaLogo))}";
+            }
+
+            return View("ListaAlumnosImprimir", alumnos);
         }
 
         #endregion
@@ -218,7 +284,7 @@ namespace AplicacionCuria.Controllers
                 .Select(c => new
                 {
                     c.id,
-                    c.nombre
+                    nombre = (c.nombre + " " + c.apellido).Trim()
                 })
                 .ToList();
 
@@ -234,6 +300,7 @@ namespace AplicacionCuria.Controllers
 
             return Json(periodos);
         }
+
         #endregion
     }
 }

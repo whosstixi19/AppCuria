@@ -12,9 +12,8 @@ namespace AplicacionCuria.Models
         [Column("tipo_pago")]
         public string tipo_pago { get; set; }
 
-        [Required]
         [StringLength(50)]
-        public string concepto { get; set; } = string.Empty;
+        public string? concepto { get; set; } = "Donación";
 
         [Required]
         [StringLength(255)]
@@ -24,8 +23,7 @@ namespace AplicacionCuria.Models
         [StringLength(255)]
         public string apellidos { get; set; }
 
-        [Required]
-        public string direccion { get; set; }
+        public string? direccion { get; set; }
 
         [Required]
         [StringLength(20)]

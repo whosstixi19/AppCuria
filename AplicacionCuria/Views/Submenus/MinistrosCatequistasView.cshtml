@@ -28,37 +28,37 @@
                                 <input type="hidden" id="id" name="id" value="0" />
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                        <label for="nombre" class="form-label mb-1 fw-semibold">Nombre <span class="text-danger">*</span></label>
                                         <input class="form-control form-control-sm" id="nombre" name="nombre" required />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="apellido" class="form-label mb-1 fw-semibold">Apellido</label>
+                                        <label for="apellido" class="form-label mb-1 fw-semibold">Apellido <span class="text-danger">*</span></label>
                                         <input class="form-control form-control-sm" id="apellido" name="apellido" required />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="cedula" class="form-label mb-1 fw-semibold">Cédula</label>
-                                        <input class="form-control form-control-sm" id="cedula" name="cedula" />
+                                        <label for="cedula" class="form-label mb-1 fw-semibold">Cédula <span class="text-danger">*</span></label>
+                                        <input class="form-control form-control-sm" id="cedula" name="cedula" required />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono</label>
-                                        <input class="form-control form-control-sm" id="telefono" name="telefono" />
+                                        <label for="telefono" class="form-label mb-1 fw-semibold">Teléfono <span class="text-danger">*</span></label>
+                                        <input class="form-control form-control-sm" id="telefono" name="telefono" required />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="direccion" class="form-label mb-1 fw-semibold">Dirección</label>
-                                        <input class="form-control form-control-sm" id="direccion" name="direccion" />
+                                        <label for="direccion" class="form-label mb-1 fw-semibold">Dirección <span class="text-danger">*</span></label>
+                                        <input class="form-control form-control-sm" id="direccion" name="direccion" required />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="fecha_nacimiento" class="form-label mb-1 fw-semibold">Fecha de Nacimiento</label>
-                                        <input type="date" class="form-control form-control-sm" id="fecha_nacimiento" name="fecha_nacimiento" />
+                                        <label for="fecha_nacimiento" class="form-label mb-1 fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control form-control-sm" id="fecha_nacimiento" name="fecha_nacimiento" required />
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <label for="email" class="form-label mb-1 fw-semibold">Email</label>
-                                    <input class="form-control form-control-sm" id="email" name="email" type="email" />
+                                    <label for="email" class="form-label mb-1 fw-semibold">Email <span class="text-danger">*</span></label>
+                                    <input class="form-control form-control-sm" id="email" name="email" type="email" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="observaciones" class="form-label mb-1 fw-semibold">Observaciones</label>
@@ -110,22 +110,22 @@
                                 <input type="hidden" id="ministro_id" name="id" value="0" />
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="ministro_nombre" class="form-label mb-1 fw-semibold">Nombre</label>
+                                        <label for="ministro_nombre" class="form-label mb-1 fw-semibold">Nombre <span class="text-danger">*</span></label>
                                         <input class="form-control form-control-sm" id="ministro_nombre" name="nombre" required maxlength="255" />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="ministro_apellido" class="form-label mb-1 fw-semibold">Apellido</label>
+                                        <label for="ministro_apellido" class="form-label mb-1 fw-semibold">Apellido <span class="text-danger">*</span></label>
                                         <input class="form-control form-control-sm" id="ministro_apellido" name="apellido" required maxlength="255" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label for="ministro_email" class="form-label mb-1 fw-semibold">Email</label>
-                                        <input class="form-control form-control-sm" id="ministro_email" name="email" type="email" maxlength="255" />
+                                        <label for="ministro_email" class="form-label mb-1 fw-semibold">Email <span class="text-danger">*</span></label>
+                                        <input class="form-control form-control-sm" id="ministro_email" name="email" type="email" required maxlength="255" />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="ministro_telefono" class="form-label mb-1 fw-semibold">Teléfono</label>
-                                        <input class="form-control form-control-sm" id="ministro_telefono" name="telefono" maxlength="20" />
+                                        <label for="ministro_telefono" class="form-label mb-1 fw-semibold">Teléfono <span class="text-danger">*</span></label>
+                                        <input class="form-control form-control-sm" id="ministro_telefono" name="telefono" required maxlength="20" />
                                     </div>
                                 </div>
                                 <div class="row">
@@ -134,7 +134,7 @@
                                         <input type="date" class="form-control form-control-sm" id="ministro_fechaordenacion" name="fechaordenacion" />
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="ministro_estado" class="form-label mb-1 fw-semibold">Estado</label>
+                                        <label for="ministro_estado" class="form-label mb-1 fw-semibold">Estado <span class="text-danger">*</span></label>
                                         <select class="form-control form-control-sm" id="ministro_estado" name="estado">
                                             <option value="ACTIVO">ACTIVO</option>
                                             <option value="INACTIVO">INACTIVO</option>
